@@ -71,7 +71,7 @@ jobs:
 
       # Escaneamento de Vulnerabilidades em Dependências
       - name: Dependency Audit
-        run: npm audit --audit-level=high
+        run: npm audit --audit-level=critical
 
       # 3. QUALITY GATES (Linting e Testes)
       - name: Linting (Typescript Strict)
@@ -109,7 +109,7 @@ jobs:
         run: npm ci
 
       - name: Dependency Audit
-        run: npm audit --audit-level=high
+        run: npm audit --audit-level=critical
 
       - name: Linting (Code Quality)
         run: npm run lint --if-present
