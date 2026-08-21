@@ -35,7 +35,7 @@ export const getDashboardData = async (req: Request, res: Response, next: NextFu
     const totalAppointments = tenants.reduce((acc, t) => acc + (t._count.appointments || 0), 0);
 
     const formattedTenants = tenants.map(t => {
-      let daysRemaining = null;
+      let daysRemaining: number | null = null;
       let isExpired = false;
 
       if (t.subscriptionStatus === 'trial' && t.trialEndsAt) {

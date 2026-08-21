@@ -151,7 +151,7 @@ export class AuthService {
 
     const now = new Date();
     const isTrial = updatedUser.tenant.subscriptionStatus === 'trial';
-    let trialDaysRemaining = null;
+    let trialDaysRemaining: number | null = null;
     if (isTrial && updatedUser.tenant.trialEndsAt) {
       const diffMs = new Date(updatedUser.tenant.trialEndsAt).getTime() - now.getTime();
       trialDaysRemaining = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
@@ -292,7 +292,7 @@ export class AuthService {
 
     const token = jwt.sign(payload, secret, { expiresIn: '12h' });
 
-    let trialDaysRemaining = null;
+    let trialDaysRemaining: number | null = null;
     if (isTrial && user.tenant.trialEndsAt) {
       const diffMs = new Date(user.tenant.trialEndsAt).getTime() - now.getTime();
       trialDaysRemaining = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
