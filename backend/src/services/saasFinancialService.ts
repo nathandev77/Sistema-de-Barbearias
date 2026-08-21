@@ -40,13 +40,13 @@ export class SaasFinancialService {
 
     const totalMonthlyCosts = costs
       .filter(c => c.isRecurring)
-      .reduce((acc, c) => acc + c.amount, 0);
+      .reduce((acc: number, c: any) => acc + c.amount, 0);
 
     const totalOneTimeCosts = costs
       .filter(c => !c.isRecurring)
-      .reduce((acc, c) => acc + c.amount, 0);
+      .reduce((acc: number, c: any) => acc + c.amount, 0);
 
-    const activeTenants = tenants.filter(t => t.subscriptionStatus === 'active' && t.isActive);
+    const activeTenants = tenants.filter((t: any) => t.subscriptionStatus === 'active' && t.isActive);
     
     const planPriceMap: Record<string, number> = {};
     for (const plan of SAAS_PLANS) {
@@ -68,8 +68,8 @@ export class SaasFinancialService {
       revenueByPlan[planId].revenue += monthlyPrice;
     }
 
-    const trialTenants = tenants.filter(t => t.subscriptionStatus === 'trial');
-    const expiredTrials = tenants.filter(t => 
+    const trialTenants = tenants.filter((t: any) => t.subscriptionStatus === 'trial');
+    const expiredTrials = tenants.filter((t: any) => 
       (t.subscriptionStatus === 'trial' && t.trialEndsAt && new Date(t.trialEndsAt) < now) ||
       t.subscriptionStatus === 'expired'
     );
@@ -79,14 +79,14 @@ export class SaasFinancialService {
       : 0;
 
     const twelveWeeksAgo = new Date(now.getTime() - 12 * 7 * 24 * 60 * 60 * 1000);
-    const recentTenants = tenants.filter(t => new Date(t.createdAt) >= twelveWeeksAgo);
+    const recentTenants = tenants.filter((t: any) => new Date(t.createdAt) >= twelveWeeksAgo);
     
     const weeklyGrowth: { week: string; count: number }[] = [];
     for (let i = 11; i >= 0; i--) {
       const weekStart = new Date(now.getTime() - (i + 1) * 7 * 24 * 60 * 60 * 1000);
       const weekEnd = new Date(now.getTime() - i * 7 * 24 * 60 * 60 * 1000);
       
-      const count = recentTenants.filter(t => {
+      const count = recentTenants.filter((t: any) => {
         const created = new Date(t.createdAt);
         return created >= weekStart && created < weekEnd;
       }).length;
@@ -102,12 +102,12 @@ export class SaasFinancialService {
       const monthDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
       const nextMonth = new Date(now.getFullYear(), now.getMonth() - i + 1, 1);
       
-      const newInMonth = tenants.filter(t => {
+      const newInMonth = tenants.filter((t: any) => {
         const created = new Date(t.createdAt);
         return created >= monthDate && created < nextMonth;
       }).length;
 
-      const activatedInMonth = activeTenants.filter(t => {
+      const activatedInMonth = activeTenants.filter((t: any) => {
         if (!t.subscriptionExpiresAt) return false;
         const expires = new Date(t.subscriptionExpiresAt);
         const planDuration = t.planType === 'annual' ? 12 : t.planType === 'quarterly' ? 3 : 1;
@@ -122,7 +122,7 @@ export class SaasFinancialService {
       });
     }
 
-    const churned = tenants.filter(t => 
+    const churned = tenants.filter((t: any) => 
       t.subscriptionStatus === 'expired' || 
       (t.subscriptionStatus === 'active' && t.subscriptionExpiresAt && new Date(t.subscriptionExpiresAt) < now)
     );
@@ -134,8 +134,8 @@ export class SaasFinancialService {
 
     const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-    const newLast7Days = tenants.filter(t => new Date(t.createdAt) >= sevenDaysAgo).length;
-    const newLast30Days = tenants.filter(t => new Date(t.createdAt) >= thirtyDaysAgo).length;
+    const newLast7Days = tenants.filter((t: any) => new Date(t.createdAt) >= sevenDaysAgo).length;
+    const newLast30Days = tenants.filter((t: any) => new Date(t.createdAt) >= thirtyDaysAgo).length;
 
     const costsByCategory: Record<string, number> = {};
     for (const cost of costs.filter(c => c.isRecurring)) {
@@ -149,7 +149,7 @@ export class SaasFinancialService {
         totalTrials: totalTrialsEver,
         activePaying: activeTenants.length,
         conversionRate,
-        trialActive: trialTenants.filter(t => !t.trialEndsAt || new Date(t.trialEndsAt) >= now).length,
+        trialActive: trialTenants.filter((t: any) => !t.trialEndsAt || new Date(t.trialEndsAt) >= now).length,
         trialExpired: expiredTrials.length,
       },
       churn: { churned: churned.length, churnRate },
@@ -159,9 +159,9 @@ export class SaasFinancialService {
         totalTenants: tenants.length,
         activeTenants: activeTenants.length,
         trialTenants: trialTenants.length,
-        totalBarbers: tenants.reduce((acc, t) => acc + (t._count.barbers || 0), 0),
-        totalClients: tenants.reduce((acc, t) => acc + (t._count.clients || 0), 0),
-        totalAppointments: tenants.reduce((acc, t) => acc + (t._count.appointments || 0), 0),
+        totalBarbers: tenants.reduce((acc: number, t: any) => acc + (t._count.barbers || 0), 0),
+        totalClients: tenants.reduce((acc: number, t: any) => acc + (t._count.clients || 0), 0),
+        totalAppointments: tenants.reduce((acc: number, t: any) => acc + (t._count.appointments || 0), 0),
       },
     };
   }

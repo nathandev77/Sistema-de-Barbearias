@@ -237,7 +237,7 @@ export class BotService {
       orderBy: { endDate: 'asc' }
     });
 
-    let finalPrice = services.reduce((acc, s) => acc + s.price, 0);
+    let finalPrice = services.reduce((acc: number, s: any) => acc + s.price, 0);
     let appointmentNotes = 'Agendado via n8n/WhatsApp genérico';
 
     if (activeSubscription) {

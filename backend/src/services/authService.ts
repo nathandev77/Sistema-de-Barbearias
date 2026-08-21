@@ -59,7 +59,7 @@ export class AuthService {
     const trialEndsAt = new Date(Date.now() + fourDaysInMs);
 
     // 5. Transação Atômica para Criar Tenant + Usuário Admin
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx: any) => {
       const newTenant = await tx.tenant.create({
         data: {
           name: data.barbershopName,
@@ -195,7 +195,7 @@ export class AuthService {
     const fourDaysInMs = 4 * 24 * 60 * 60 * 1000;
     const trialEndsAt = new Date(Date.now() + fourDaysInMs);
 
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx: any) => {
       const newTenant = await tx.tenant.create({
         data: {
           name: data.barbershopName,
