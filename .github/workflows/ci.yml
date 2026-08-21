@@ -36,6 +36,14 @@ jobs:
           path: ./
           extra_args: --debug --only-verified
 
+      # SAST - Static Application Security Testing (OWASP Top 10)
+      - name: Initialize CodeQL (SAST)
+        uses: github/codeql-action/init@v4
+        with:
+          languages: javascript, typescript
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4
+
   # ──────────────────────────────────────────────────────────
   # JOB 2: BACKEND QUALITY & BUILD
   # ──────────────────────────────────────────────────────────
