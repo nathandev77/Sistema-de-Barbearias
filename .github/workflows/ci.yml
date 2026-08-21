@@ -184,3 +184,8 @@ jobs:
             
             # Limpa imagens antigas (otimização)
             docker image prune -f
+            
+            echo "--- DEBUG LOGS ---"
+            docker ps -a
+            docker logs saas-barber-frontend-1 || true
+            docker logs saas-barber-backend-1 || true
