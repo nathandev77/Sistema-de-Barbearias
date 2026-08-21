@@ -163,12 +163,21 @@ jobs:
             echo "Acessando diretório: $PROJECT_DIR"
             cd "$PROJECT_DIR"
             
-            # Descarta qualquer edição manual feita na VPS para não travar o pull
-            git reset --hard HEAD || true
-            git clean -fd || true
-            
-            # Atualiza o repositório
-            git pull origin main
+            # Se a pasta não for um repositório git (ex: arquivos upados via FTP), converte ela agora
+            if [ ! -d ".git" ]; then
+              echo "A pasta não é um repositório Git! Inicializando..."
+              git init
+              git remote add origin https://github.com/nathandev77/Sistema-de-Barbearias.git
+              git fetch origin main
+              git reset --hard origin/main
+            else
+              # Descarta qualquer edição manual feita na VPS para não travar o pull
+              git reset --hard HEAD || true
+              git clean -fd || true
+              
+              # Atualiza o repositório
+              git pull origin main
+            fi
             
             # Builda as novas imagens em background
             docker compose up -d --build
