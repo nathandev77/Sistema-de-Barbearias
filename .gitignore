@@ -1,0 +1,65 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Dependencies
+node_modules
+dist
+dist-ssr
+*.local
+
+# Environment variables & secrets (NÃO subir para o GitHub!)
+.env
+.env.*
+!.env.example
+backend/.env
+backend/.env.*
+!backend/.env.example
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Temporary / Scratch files
+*.tar.gz
+*.zip
+*.tgz
+dev.db
+*.sqlite
+*.sqlite3
+
+# Security & Private Keys (NUNCA versionar!)
+*.pem
+*.key
+*.cert
+*.crt
+id_rsa*
+*.pfx
+
+# Testing & Coverage
+coverage/
+.nyc_output/
+
+# Build caches & hosting providers
+.turbo
+.vercel
+.netlify
+build/
+
+# OS specific
+Thumbs.db
+[Ee]xthumbs.db
+.directory
+

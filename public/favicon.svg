@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#18181b" />
+      <stop offset="100%" stop-color="#09090b" />
+    </linearGradient>
+
+    <!-- Gold Accent Gradient -->
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24" />
+      <stop offset="50%" stop-color="#d97706" />
+      <stop offset="100%" stop-color="#b45309" />
+    </linearGradient>
+
+    <!-- Filter for subtle drop shadow -->
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <!-- Dark Rounded App Icon Container with Gold Ring -->
+  <rect width="512" height="512" rx="128" fill="url(#bgGrad)" />
+  <rect width="496" height="496" x="8" y="8" rx="120" fill="none" stroke="url(#goldGrad)" stroke-width="6" opacity="0.85" />
+
+  <!-- Barber Illustration Group -->
+  <g filter="url(#glow)">
+    <!-- Face / Head Base Skin (Crisp White/Off-white for tab visibility) -->
+    <path d="M170 180 C170 140, 342 140, 342 180 C342 220, 345 280, 335 320 C325 350, 290 380, 256 390 C222 380, 187 350, 177 320 C167 280, 170 220, 170 180 Z" fill="#ffffff"/>
+
+    <!-- Ears -->
+    <path d="M152 205 C142 205, 142 245, 156 250 C162 252, 168 250, 172 242" fill="#ffffff" stroke="#18181b" stroke-width="4"/>
+    <path d="M360 205 C370 205, 370 245, 356 250 C350 252, 344 250, 340 242" fill="#ffffff" stroke="#18181b" stroke-width="4"/>
+
+    <!-- Hair (Black with Sleek Silhouette) -->
+    <path d="M165 190 
+             C155 130, 180 70, 245 60 
+             C290 53, 345 75, 355 125 
+             C362 160, 352 195, 346 200 
+             C340 175, 330 150, 305 130 
+             C275 105, 235 105, 205 140 
+             C185 163, 175 180, 165 190 Z" 
+          fill="#18181b"/>
+    
+    <!-- Hair Texture / Highlight Strands (Gold) -->
+    <path d="M220 78 C265 72, 320 95, 338 135" fill="none" stroke="url(#goldGrad)" stroke-width="4" stroke-linecap="round"/>
+    <path d="M200 100 C235 90, 280 105, 300 130" fill="none" stroke="url(#goldGrad)" stroke-width="3.5" stroke-linecap="round"/>
+
+    <!-- Eyebrows (Strong Masculine) -->
+    <path d="M190 178 Q218 165 236 178 Q218 172 190 178 Z" fill="#18181b"/>
+    <path d="M322 178 Q294 165 276 178 Q294 172 322 178 Z" fill="#18181b"/>
+
+    <!-- Eyes -->
+    <ellipse cx="214" cy="190" rx="12" ry="7" fill="#18181b"/>
+    <ellipse cx="298" cy="190" rx="12" ry="7" fill="#18181b"/>
+    <circle cx="216" cy="189" r="2.5" fill="#ffffff"/>
+    <circle cx="296" cy="189" r="2.5" fill="#ffffff"/>
+
+    <!-- Nose -->
+    <path d="M256 182 L256 220 M245 222 C252 226, 260 226, 267 222" fill="none" stroke="#18181b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- Full Beard (Dominant Black Shape) -->
+    <path d="M166 225 
+             C160 255, 160 300, 180 340 
+             C198 375, 230 405, 256 418 
+             C282 405, 314 375, 332 340 
+             C352 300, 352 255, 346 225 
+             C340 250, 330 270, 315 285 
+             C290 280, 275 270, 256 270 
+             C237 270, 222 280, 197 285 
+             C182 270, 172 250, 166 225 Z" 
+          fill="#18181b"/>
+
+    <!-- Handlebar Mustache -->
+    <path d="M256 242 
+             C242 228, 205 226, 185 240 
+             C178 245, 175 252, 180 254 
+             C195 258, 220 256, 256 268 
+             C292 256, 317 258, 332 254 
+             C337 252, 334 245, 327 240 
+             C307 226, 270 228, 256 242 Z" 
+          fill="#18181b" stroke="#ffffff" stroke-width="2"/>
+
+    <!-- Soul Patch / Mouth line -->
+    <path d="M246 276 Q256 288 266 276 Z" fill="#18181b"/>
+
+    <!-- Crossed Barber Scissors (Gold & Steel Theme) -->
+    <!-- Left Handle to Right Blade -->
+    <g stroke="url(#goldGrad)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+      <!-- Left scissor ring -->
+      <circle cx="135" cy="415" r="22" fill="#18181b" stroke="url(#goldGrad)" stroke-width="6"/>
+      <path d="M115 410 C108 402, 106 395, 110 392" stroke="url(#goldGrad)" stroke-width="4"/>
+      <!-- Left shaft crossing to upper right blade -->
+      <path d="M152 402 L244 358"/>
+      <path d="M268 346 L375 295" stroke="#ffffff" stroke-width="5"/>
+    </g>
+
+    <!-- Right Handle to Left Blade -->
+    <g stroke="url(#goldGrad)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+      <!-- Right scissor ring -->
+      <circle cx="377" cy="415" r="22" fill="#18181b" stroke="url(#goldGrad)" stroke-width="6"/>
+      <!-- Right shaft crossing to upper left blade -->
+      <path d="M360 402 L268 358"/>
+      <path d="M244 346 L137 295" stroke="#ffffff" stroke-width="5"/>
+    </g>
+
+    <!-- Scissor Pivot Screw -->
+    <circle cx="256" cy="352" r="7" fill="url(#goldGrad)" stroke="#18181b" stroke-width="2"/>
+    <circle cx="256" cy="352" r="2.5" fill="#18181b"/>
+  </g>
+</svg>

@@ -1,0 +1,257 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+}
+
+model Tenant {
+  id          String   @id @default(uuid())
+  name        String
+  slug        String   @unique
+  isActive              Boolean   @default(true)
+  workingDays           String    @default("1,2,3,4,5,6") // 0=Dom, 1=Seg...
+  subscriptionStatus    String    @default("trial") // trial, active, expired, blocked
+  trialEndsAt           DateTime?
+  planType              String?   @default("pro")
+  subscriptionExpiresAt DateTime?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  users        User[]
+  clients      Client[]
+  barbers      Barber[]
+  services     Service[]
+  appointments Appointment[]
+  products     Product[]
+  sales        Sale[]
+  expenses     Expense[]
+  plans        Plan[]
+  subscriptions Subscription[]
+  productReservations ProductReservation[]
+
+  @@map("tenants")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  tenantId  String
+  name      String
+  email     String   @unique
+  password  String
+  role               String   @default("ADMIN") // ADMIN, RECEPTIONIST, BARBER
+  mustChangePassword Boolean  @default(false)
+  createdAt          DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@map("users")
+}
+
+model Client {
+  id        String   @id @default(uuid())
+  tenantId  String
+  name      String
+  phone     String?
+  email     String?
+  password  String?
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant       Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  appointments Appointment[]
+  subscriptions Subscription[]
+  productReservations ProductReservation[]
+
+  @@unique([tenantId, phone])
+  @@map("clients")
+}
+
+model Barber {
+  id               String   @id @default(uuid())
+  tenantId         String
+  name             String
+  phone            String?
+  specialty        String?
+  compensationType String   @default("commission") // commission, fixed, both
+  commissionPct    Float    @default(40.0)
+  fixedSalary      Float?
+  isActive         Boolean  @default(true)
+  workStart        String   @default("09:00")
+  workEnd          String   @default("18:00")
+  lunchStart       String?  // e.g., "12:00"
+  lunchEnd         String?  // e.g., "13:00"
+  notes            String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  tenant       Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  appointments Appointment[]
+  sales        Sale[]
+
+  @@map("barbers")
+}
+
+model Service {
+  id              String   @id @default(uuid())
+  tenantId        String
+  name            String
+  description     String?
+  price           Float
+  durationMinutes Int      @default(30)
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  tenant       Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  appointments Appointment[]
+
+  @@map("services")
+}
+
+model Appointment {
+  id        String   @id @default(uuid())
+  tenantId  String
+  clientId  String
+  barberId  String
+  date      String   // YYYY-MM-DD
+  time      String   // HH:MM
+  price     Float
+  status    String   @default("agendado") // agendado, confirmado, concluido, cancelado
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant   Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  client   Client    @relation(fields: [clientId], references: [id])
+  barber   Barber    @relation(fields: [barberId], references: [id])
+  services Service[]
+
+  @@map("appointments")
+}
+
+model Product {
+  id        String   @id @default(uuid())
+  tenantId  String
+  name      String
+  category  String
+  price     Float
+  cost      Float
+  stock     Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  sales  Sale[]
+  productReservations ProductReservation[]
+
+  @@map("products")
+}
+
+model Sale {
+  id         String   @id @default(uuid())
+  tenantId   String
+  productId  String
+  barberId   String?
+  quantity   Int
+  unitPrice  Float
+  totalPrice Float
+  date       String   // YYYY-MM-DD
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  tenant  Tenant  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+  barber  Barber? @relation(fields: [barberId], references: [id])
+
+  @@map("sales")
+}
+
+model Expense {
+  id          String   @id @default(uuid())
+  tenantId    String
+  description String
+  category    String
+  amount      Float
+  date        String   // YYYY-MM-DD
+  isRecurring Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@map("expenses")
+}
+
+model Plan {
+  id              String   @id @default(uuid())
+  tenantId        String
+  name            String
+  description     String?
+  price           Float
+  intervalMonths  Int      @default(1)
+  serviceCount    Int      @default(5) // Quantidade de cortes liberados por mes
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  tenant        Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  subscriptions Subscription[]
+
+  @@map("plans")
+}
+
+model Subscription {
+  id              String   @id @default(uuid())
+  tenantId        String
+  clientId        String
+  planId          String
+  status          String   @default("active") // active, canceled, expired
+  startDate       DateTime @default(now())
+  endDate         DateTime
+  creditsLeft     Int
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  plan   Plan   @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@map("subscriptions")
+}
+
+model ProductReservation {
+  id        String   @id @default(uuid())
+  tenantId  String
+  clientId  String
+  productId String
+  quantity  Int      @default(1)
+  status    String   @default("pendente") // pendente, concluido, cancelado
+  price     Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant  Tenant  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  client  Client  @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_reservations")
+}
+
+model SaasCost {
+  id          String   @id @default(uuid())
+  name        String                         // Ex: "Supabase", "VPS EasyPanel", "Domínio"
+  category    String   @default("infra")     // infra, service, marketing, other
+  amount      Float                          // Valor mensal em R$
+  isRecurring Boolean  @default(true)        // Custo recorrente ou único?
+  isActive    Boolean  @default(true)        // Se deve contar no total
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("saas_costs")
+}

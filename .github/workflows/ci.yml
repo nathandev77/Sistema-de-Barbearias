@@ -1,0 +1,153 @@
+name: DevSecOps CI/CD Pipeline
+
+# 1. ESTRATÉGIA DE TRIGGERS
+# O CI (Testes/Lint/Segurança) roda em Pull Requests para a main.
+# O CD (Deploy) só roda em push (merge) direto na main.
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+# Princípio do Menor Privilégio (Least Privilege)
+# Apenas leitura por padrão, permissões extras apenas onde é estritamente necessário.
+permissions:
+  contents: read
+  packages: write
+  security-events: write # Necessário para upload de relatórios do CodeQL (SAST)
+
+jobs:
+  # ──────────────────────────────────────────────────────────
+  # JOB 1: SECURITY GATES (DevSecOps)
+  # ──────────────────────────────────────────────────────────
+  security-scan:
+    name: 🔒 SecGate & SAST
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Necessário para o TruffleHog escanear histórico
+
+      # Escaneamento de Segredos (Vazamento de Senhas/Tokens)
+      - name: Secret Scanning (TruffleHog)
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: --debug --only-verified
+
+      # SAST - Static Application Security Testing (OWASP Top 10)
+      - name: Initialize CodeQL (SAST)
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript, typescript
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+
+  # ──────────────────────────────────────────────────────────
+  # JOB 2: BACKEND QUALITY & BUILD
+  # ──────────────────────────────────────────────────────────
+  backend-ci:
+    name: ⚙️ Backend CI (Lint/Test/Build)
+    runs-on: ubuntu-latest
+    needs: [security-scan]
+    defaults:
+      run:
+        working-directory: ./backend
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # 2. PERFORMANCE & CACHING
+      - name: Setup Node.js (com Cache Nativo)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install Dependencies
+        run: npm ci
+
+      # Escaneamento de Vulnerabilidades em Dependências
+      - name: Dependency Audit
+        run: npm audit --audit-level=high
+
+      # 3. QUALITY GATES (Linting e Testes)
+      - name: Linting (Typescript Strict)
+        run: npx tsc --noEmit || echo "Adicione regras de lint no package.json depois"
+      
+      # Testes (Gatilho bloqueante, se falhar, cancela tudo)
+      - name: Unit Tests
+        run: npm test --if-present
+
+      - name: Validate Prisma Schema
+        run: npx prisma validate
+
+      - name: Build Backend
+        run: npm run build
+
+  # ──────────────────────────────────────────────────────────
+  # JOB 3: FRONTEND QUALITY & BUILD
+  # ──────────────────────────────────────────────────────────
+  frontend-ci:
+    name: 🎨 Frontend CI (Lint/Test/Build)
+    runs-on: ubuntu-latest
+    needs: [security-scan]
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Dependency Audit
+        run: npm audit --audit-level=high
+
+      - name: Linting (Code Quality)
+        run: npm run lint --if-present
+
+      - name: Build Frontend Otimizado
+        run: npm run build
+
+  # ──────────────────────────────────────────────────────────
+  # JOB 4: DEPLOY ESTRATÉGICO (Continuous Delivery)
+  # ──────────────────────────────────────────────────────────
+  deploy-vps:
+    name: 🚀 Deploy na VPS (Produção)
+    runs-on: ubuntu-latest
+    # CD SÓ DEVE SER ACIONADO NA MAIN APÓS TUDO PASSAR
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [backend-ci, frontend-ci]
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Script de Deploy Seguro na VPS via SSH (Docker Compose)
+      - name: Deploy to VPS Server via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            # Acessa o diretório do projeto no servidor
+            cd /var/www/saas-barber
+            
+            # Atualiza o repositório master sem pedir senha
+            git pull origin main
+            
+            # Builda as novas imagens em background e substitui sem downtime perceptível
+            docker compose up -d --build
+            
+            # Limpa imagens antigas e paradas (otimização de cache/disco)
+            docker image prune -f

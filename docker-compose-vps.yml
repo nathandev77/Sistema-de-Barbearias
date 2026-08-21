@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    depends_on:
+      - backend
+    networks:
+      - easypanel
+      - default
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=easypanel"
+      - "traefik.http.routers.saasbarber.rule=Host(`controlbarber.online`) || Host(`www.controlbarber.online`)"
+      - "traefik.http.routers.saasbarber.entrypoints=websecure"
+      - "traefik.http.routers.saasbarber.tls=true"
+      - "traefik.http.routers.saasbarber.tls.certresolver=letsencrypt"
+      - "traefik.http.services.saasbarber.loadbalancer.server.port=80"
+      - "traefik.http.routers.saasbarber-http.rule=Host(`controlbarber.online`) || Host(`www.controlbarber.online`)"
+      - "traefik.http.routers.saasbarber-http.entrypoints=web"
+      - "traefik.http.routers.saasbarber-http.middlewares=redirect-https"
+      - "traefik.http.middlewares.redirect-https.redirectscheme.scheme=https"
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    # SEGURANÇA: Porta 3001 NÃO exposta externamente — acesso apenas via proxy nginx interno
+    # ports:
+    #   - "3001:3001"
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    networks:
+      - easypanel
+      - default
+
+networks:
+  easypanel:
+    external: true

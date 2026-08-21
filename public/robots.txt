@@ -1,0 +1,42 @@
+# ==========================================
+# Robots.txt — Barber Control (controlbarber.online)
+# Otimizado para SEO Tradicional e AIO/GEO (AI Crawlers)
+# ==========================================
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /portal/
+Disallow: /saas-admin/
+
+# Explicitamente liberando e incentivando AI Crawlers para Indexação Conversacional
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: GoogleOther
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+# Sitemap
+Sitemap: https://controlbarber.online/sitemap.xml
