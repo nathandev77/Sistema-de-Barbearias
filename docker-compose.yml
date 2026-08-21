@@ -10,6 +10,13 @@ services:
     restart: unless-stopped
     depends_on:
       - backend
+    networks:
+      - default
+      - easypanel
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.barbersaas.rule=Host(`controlbarber.online`)"
+      - "traefik.http.services.barbersaas.loadbalancer.server.port=80"
 
   backend:
     build:
@@ -20,3 +27,7 @@ services:
     restart: unless-stopped
     env_file:
       - ./backend/.env
+
+networks:
+  easypanel:
+    external: true
