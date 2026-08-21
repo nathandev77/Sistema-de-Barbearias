@@ -741,13 +741,10 @@ export default function Login() {
                 {/* Footer links */}
                 <div style={{
                     marginTop: 24, paddingTop: 18, borderTop: '1px solid rgba(255,255,255,0.06)',
-                    display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12, color: 'hsl(220 10% 50%)'
+                    display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: 12, color: 'hsl(220 10% 50%)'
                 }}>
                     <Link to="/planos" style={{ color: 'hsl(217 91% 65%)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
                         <CreditCard style={{ width: 13, height: 13 }} /> Planos & Assinaturas
-                    </Link>
-                    <Link to="/saas-admin/login" style={{ color: 'hsl(220 10% 40%)', textDecoration: 'none' }}>
-                        Área Master
                     </Link>
                 </div>
             </div>
