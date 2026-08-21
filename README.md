@@ -1,120 +1,93 @@
-# 💈 Barber Control — Multi-Tenant SaaS Platform
+# Barber Control — SaaS Multi-Tenant
 
-Sistema completo de gestão, agendamento online e automação via WhatsApp para barbearias, salões e profissionais de estética.
+> Sistema de gestão de barbearias e agendamento online com arquitetura multi-tenant, integração com WhatsApp (Evolution API) e pipeline DevSecOps.
 
-[![CI/CD Pipeline](https://github.com/nathan/saas-barber/actions/workflows/ci.yml/badge.svg)](https://github.com/nathan/saas-barber/actions)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Security: OWASP Top 10 Audited](https://img.shields.io/badge/Security-OWASP%20Audited-emerald.svg)](#segurança--owasp-top-10)
+[![CI/CD Pipeline](https://github.com/nathandev77/Sistema-de-Barbearias/actions/workflows/ci.yml/badge.svg)](https://github.com/nathandev77/Sistema-de-Barbearias/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
----
+## Arquitetura
 
-## 📐 Arquitetura & Stack Tecnológica
+O projeto adota uma arquitetura modular baseada em microsserviços lógicos, com isolamento de dados por *tenantId* em nível de banco de dados.
 
-```
-┌────────────────────────────────────────────────────────┐
-│                   Frontend (React 18)                  │
-│   Vite + Tailwind CSS + Lucide Icons + Framer Motion   │
-└──────────────────────────┬─────────────────────────────┘
-                           │ HTTP / REST API (JWT)
-┌──────────────────────────▼─────────────────────────────┐
-│                 Backend (Node.js / Express)             │
-│   Helmet • CORS • Rate Limiting • Zod • Prisma ORM      │
-└──────────┬──────────────────────────┬──────────────────┘
-           │                          │
-┌──────────▼───────────────┐ ┌────────▼──────────────────┐
-│   PostgreSQL (Supabase)  │ │ Evolution API (WhatsApp)  │
-│   Multi-tenant Isolation │ │ N8N Flow Automations      │
-└──────────────────────────┘ └───────────────────────────┘
-```
+- **Frontend**: React 18 (Vite), React Router v6, Tailwind CSS, Shadcn UI / Radix.
+- **Backend**: Node.js 20, Express 5, TypeScript.
+- **Database**: PostgreSQL (Prisma ORM).
+- **Mensageria/Automação**: Evolution API, webhooks via N8N.
+- **Infraestrutura**: Docker Multi-stage, CI/CD via GitHub Actions.
 
-- **Frontend**: React 18, Vite, React Router 6, Tailwind CSS, Framer Motion, Lucide Icons.
-- **Backend**: Node.js, Express 5, TypeScript, Prisma 7, Zod Validation.
-- **Database**: PostgreSQL (Supabase / Neon) com suporte a Connection Pooling (`pgbouncer`).
-- **Automação**: Evolution API (WhatsApp) + N8N Webhooks.
+## Requisitos Prévios
 
----
+- [Node.js](https://nodejs.org/) v20+
+- [Docker](https://www.docker.com/) e Docker Compose (para ambiente local)
+- [PostgreSQL](https://www.postgresql.org/) v14+ (ou banco gerenciado como Supabase/Neon)
 
-## ⚡ Começando (Ambiente Local)
+## Configuração do Ambiente Local
 
-### Pré-requisitos
-- Node.js 20+
-- PostgreSQL ativo (local ou Supabase)
-- npm ou yarn
+### 1. Clonar repositório e instalar dependências
 
-### 1. Clonar o Repositório e Instalar Dependências
 ```bash
-# Frontend
+git clone https://github.com/nathandev77/Sistema-de-Barbearias.git
+cd Sistema-de-Barbearias
+
+# Instalar dependências da interface web
 npm install
 
-# Backend
+# Instalar dependências da API
 cd backend
 npm install
 ```
 
-### 2. Configurar Variáveis de Ambiente
-Copie o modelo de variáveis de ambiente no backend:
+### 2. Variáveis de Ambiente
+
+No diretório `/backend`, utilize o template fornecido para criar seu arquivo de ambiente:
+
 ```bash
 cd backend
 cp .env.example .env
 ```
-Edite o arquivo `backend/.env` com sua conexão do PostgreSQL, `JWT_SECRET` e `SUPER_ADMIN_KEYS`.
 
-> 💡 **Gerar Chaves Seguras**: Execute o utilitário incluído no repositório:
-> ```bash
-> node scripts/generate_keys.mjs
-> ```
+Edite o arquivo `.env` para incluir suas credenciais de banco de dados (`DATABASE_URL`).  
+Para gerar chaves criptográficas seguras para o sistema (`JWT_SECRET`, `SUPER_ADMIN_KEYS`), execute o utilitário nativo:
 
-### 3. Sincronizar o Banco de Dados
 ```bash
-cd backend
+node scripts/generate_keys.mjs
+```
+
+### 3. Migrações do Banco de Dados
+
+Com o `.env` configurado, sincronize o schema do Prisma:
+
+```bash
 npx prisma db push
 npx prisma generate
 ```
 
-### 4. Executar os Servidores de Desenvolvimento
+### 4. Execução
+
+Suba as duas aplicações paralelamente:
+
 ```bash
-# Terminal 1 - Backend (Porta 3001)
-cd backend
+# Terminal 1: Backend (Escuta na porta 3001)
+cd backend && npm run dev
+
+# Terminal 2: Frontend (Escuta na porta 5173)
 npm run dev
-
-# Terminal 2 - Frontend (Porta 5173)
-npm run dev
 ```
 
----
+Acesse a interface de administração do sistema em `http://localhost:5173/saas-admin/login`.
 
-## 🛡️ Segurança & OWASP Top 10
+## CI/CD & Deploy
 
-O sistema foi blindado seguindo as diretrizes da **OWASP Top 10**:
+Este repositório implementa um pipeline **DevSecOps** rigoroso no GitHub Actions (`.github/workflows/ci.yml`):
 
-- **A01: Broken Access Control**: Isolamento rígido por `tenantId` extraído exclusivamente do token JWT assinado, prevenindo ataques BOLA/IDOR.
-- **A02: Cryptographic Failures**: Hash de senhas via `bcryptjs` (salt 10), tokens JWT efêmeros e chaves mestras validadas com `crypto.timingSafeEqual` para proteção contra timing attacks.
-- **A03: Injection**: Validação e parsing rigorosos com schemas Zod + sanitização recursiva de inputs.
-- **A04: Insecure Design**: Limitação de taxa (Rate Limiting) em rotas críticas de autenticação e proteção contra força bruta de OTP.
-- **A05: Security Misconfiguration**: Headers HTTP seguros via `helmet`, `x-powered-by` desabilitado e CORS restrito a origens confiáveis.
+1. **Security Gates**: Escaneamento de secrets no histórico via *TruffleHog* e análise estática (SAST) via *CodeQL* contra vulnerabilidades da OWASP Top 10.
+2. **Quality Gates**: Checagem de dependências (`npm audit`), validação de lint e testes unitários.
+3. **Continuous Deployment**: Pushes na branch `main` ativam o deploy automatizado para a VPS, utilizando conexões seguras via SSH e orquestração por `docker-compose`.
 
----
+## Segurança Aplicada (OWASP)
 
-## 📊 Painel Master & Controle Geral (`/saas-admin`)
-
-Acesse `http://localhost:5173/saas-admin/login` para gerenciar toda a plataforma:
-
-1. **Visão Geral**: Métricas em tempo real (MRR, Lucro Líquido, Assinantes, Churn, Gráficos de Crescimento).
-2. **Financeiro**: Funil de conversão trial → pagante e distribuição de custos operacionais.
-3. **Barbearias**: Gestão de clientes, extensão de dias de teste (+7d), ativação imediata e bloqueio de acesso.
-4. **Custos Operacionais**: Cadastro e monitoramento de custos mensais da infraestrutura (VPS, banco, domínio, e-mails).
-
----
-
-## 🧪 Testes & Auditoria Automatizada
-
-Para executar a bateria completa de testes de segurança:
-```bash
-node scripts/security_audit.mjs
-```
-
-Para verificar integridade das dependências:
-```bash
-npm audit --audit-level=high
-cd backend && npm audit --audit-level=high
-```
+O backend possui proteções nativas contra vetores comuns:
+- **Rate Limiting**: Mitigação de brute-force em rotas de autenticação e recuperação de senha.
+- **Timing Attacks**: Verificação de chaves administrativas (Super Admin) utilizando `crypto.timingSafeEqual`.
+- **Injections**: Camada de validação estrita via `Zod`, rejeitando payloads malformados antes de alcançarem o ORM.
+- **Data Exposure**: Remoção de senhas em memória e hashes via `bcrypt` (salt 12). Logs mascarados em ambiente produtivo.
