@@ -28,7 +28,7 @@ function Modal({ title, onClose, children }) {
 const inputCls = "w-full px-3 py-2.5 rounded-lg border border-border bg-secondary text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-primary";
 
 export default function Sales() {
-    const [tab, setTab] = useState('vendas'); // 'vendas' | 'produtos'
+    const [tab, setTab] = useState('sales'); // 'sales' | 'products'
     const [products, setProducts] = useState([]);
     const [sales, setSales] = useState([]);
     const [barbers, setBarbers] = useState([]);
@@ -105,19 +105,19 @@ export default function Sales() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 {/* Tabs */}
                 <div className="flex bg-secondary rounded-xl p-1 gap-1">
-                    {[['vendas', 'Sales'], ['produtos', 'Products']].map(([val, lbl]) => (
+                    {[['sales', 'Sales'], ['products', 'Products']].map(([val, lbl]) => (
                         <button key={val} onClick={() => setTab(val)} className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all ${tab === val ? 'bg-primary text-primary-foreground shadow' : 'text-muted-foreground hover:text-foreground'}`}>{lbl}</button>
                     ))}
                 </div>
-                <button onClick={tab === 'vendas' ? openNewSale : openNewProduct} className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">
+                <button onClick={tab === 'sales' ? openNewSale : openNewProduct} className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
-                    {tab === 'vendas' ? 'New Sale' : 'New Product'}
+                    {tab === 'sales' ? 'New Sale' : 'New Product'}
                 </button>
             </div>
 
             {loading ? (
                 <div className="flex items-center justify-center h-48"><div className="w-8 h-8 border-2 border-primary/20 border-t-primary rounded-full animate-spin" /></div>
-            ) : tab === 'vendas' ? (
+            ) : tab === 'sales' ? (
                 <>
                     {/* Summary cards */}
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">

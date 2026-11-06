@@ -26,7 +26,7 @@ import { DatePicker } from "@/components/ui/DatePicker";
 import { formatBRL, formatDate, normalizeText } from "@/lib/formatters";
 import { Appointment, Barber } from "@/api/base44Client";
 
-export default function Historico() {
+export default function AppointmentHistory() {
   const [appointments, setAppointments] = useState([]);
   const [barbers, setBarbers] = useState([]);
   const [loading, setLoading] = useState(true);

@@ -16,11 +16,11 @@ const router = Router();
 router.get('/:tenantSlug/info', getBotInfo);
 
 // Returns available time slots for a date
-// e.g. GET /api/bot/minha-barbearia/horarios?date=2024-05-20&barberId=...
-router.get('/:tenantSlug/horarios', getAvailableSlots);
+// e.g. GET /api/bot/my-barbershop/slots?date=2024-05-20&barberId=...
+router.get('/:tenantSlug/slots', getAvailableSlots);
 
 // Creates an appointment (finds or creates the client by phone)
-router.post('/:tenantSlug/agendar', createBotAppointment);
+router.post('/:tenantSlug/book', createBotAppointment);
 
 // Creates a generic appointment passing the tenantId in the body
 router.post('/appointments/generic', createGenericBotAppointment);

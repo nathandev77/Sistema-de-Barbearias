@@ -312,7 +312,7 @@ export default function Agenda() {
         { key: 'agendado', label: 'Scheduled', count: statusCounts.agendado, icon: <CalendarCheckIcon />, color: 'text-blue-400', bg: 'bg-blue-400/10', border: 'border-blue-400/20' },
         { key: 'confirmado', label: 'Confirmed', count: statusCounts.confirmado, icon: <CheckCircleIcon />, color: 'text-green-400', bg: 'bg-green-400/10', border: 'border-green-400/20' },
         { key: 'cancelado', label: 'Cancelled', count: statusCounts.cancelado, icon: <XCircleIcon />, color: 'text-red-400', bg: 'bg-red-400/10', border: 'border-red-400/20' },
-        { key: 'concluido', label: 'History (Completed)', count: statusCounts.concluido, icon: <ClipboardCheckIcon />, color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/20', to: '/admin/historico' },
+        { key: 'concluido', label: 'History (Completed)', count: statusCounts.concluido, icon: <ClipboardCheckIcon />, color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/20', to: '/admin/history' },
     ];
 
     // ── Render table section ───────────────────────────────────────────────────
@@ -331,7 +331,7 @@ export default function Agenda() {
                     </div>
                     {title === 'Completed' && (
                         <Link
-                            to="/admin/historico"
+                            to="/admin/history"
                             className="text-xs text-primary hover:text-primary/80 font-medium inline-flex items-center gap-1 transition-colors"
                         >
                             View in Full History →
@@ -540,7 +540,7 @@ export default function Agenda() {
                             + New appointment
                         </button>
                         {completed.length > 0 && (
-                            <Link to="/admin/historico" className="text-xs text-emerald-400 hover:underline">
+                            <Link to="/admin/history" className="text-xs text-emerald-400 hover:underline">
                                 View {completed.length} cut(s) in History →
                             </Link>
                         )}

@@ -30,7 +30,7 @@ const NAV_ITEMS = [
         ),
     },
     {
-        to: '/admin/historico',
+        to: '/admin/history',
         label: 'History',
         icon: (
             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -39,7 +39,7 @@ const NAV_ITEMS = [
         ),
     },
     {
-        to: '/admin/clientes',
+        to: '/admin/clients',
         label: 'Clients',
         icon: (
             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -48,7 +48,7 @@ const NAV_ITEMS = [
         ),
     },
     {
-        to: '/admin/servicos',
+        to: '/admin/services',
         label: 'Services',
         icon: (
             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -57,7 +57,7 @@ const NAV_ITEMS = [
         ),
     },
     {
-        to: '/admin/pdv',
+        to: '/admin/pos',
         label: 'Store',
         icon: (
             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -66,7 +66,7 @@ const NAV_ITEMS = [
         ),
     },
     {
-        to: '/admin/produtos',
+        to: '/admin/products',
         label: 'Inventory',
         icon: (
             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -75,7 +75,7 @@ const NAV_ITEMS = [
         ),
     },
     {
-        to: '/admin/barbeiros',
+        to: '/admin/barbers',
         label: 'Barbers',
         group: 'financeiro',
         icon: (
@@ -85,7 +85,7 @@ const NAV_ITEMS = [
         ),
     },
     {
-        to: '/admin/planos',
+        to: '/admin/plans',
         label: 'Plans',
         icon: (
             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -94,7 +94,7 @@ const NAV_ITEMS = [
         ),
     },
     {
-        to: '/admin/vendas',
+        to: '/admin/sales',
         label: 'Sales',
         group: 'financeiro',
         icon: (
@@ -104,7 +104,7 @@ const NAV_ITEMS = [
         ),
     },
     {
-        to: '/admin/controle',
+        to: '/admin/finance',
         label: 'General Overview',
         group: 'financeiro',
         icon: (
@@ -114,7 +114,7 @@ const NAV_ITEMS = [
         ),
     },
     {
-        to: '/admin/configuracoes',
+        to: '/admin/settings',
         label: 'Settings',
         group: 'sistema',
         icon: (
@@ -559,7 +559,7 @@ export default function AppLayout() {
                                 </div>
                             </div>
                             <Link 
-                                to="/planos"
+                                to="/pricing"
                                 className="inline-flex items-center justify-center gap-1 px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-black font-bold rounded-xl transition-all shrink-0"
                             >
                                 Get a Full Plan →

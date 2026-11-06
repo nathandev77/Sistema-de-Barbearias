@@ -276,7 +276,7 @@ export default function PricingPlans() {
                         <button onClick={() => scrollToSection('calculadora')} className="hover:text-white transition-colors">
                             Profit Calculator
                         </button>
-                        <button onClick={() => scrollToSection('planos-section')} className="text-primary hover:text-primary/90 font-bold transition-colors">
+                        <button onClick={() => scrollToSection('plans-section')} className="text-primary hover:text-primary/90 font-bold transition-colors">
                             Plans and Pricing
                         </button>
                         <button onClick={() => scrollToSection('faq')} className="hover:text-white transition-colors">
@@ -329,7 +329,7 @@ export default function PricingPlans() {
                                 <button onClick={() => scrollToSection('calculadora')} className="text-left py-1 text-gray-300 hover:text-white">
                                     Profit Calculator
                                 </button>
-                                <button onClick={() => scrollToSection('planos-section')} className="text-left py-1 text-primary font-bold">
+                                <button onClick={() => scrollToSection('plans-section')} className="text-left py-1 text-primary font-bold">
                                     Plans and Pricing
                                 </button>
                                 <button onClick={() => scrollToSection('faq')} className="text-left py-1 text-gray-300 hover:text-white">
@@ -377,7 +377,7 @@ export default function PricingPlans() {
                                 </div>
                             </div>
                             <button
-                                onClick={() => scrollToSection('planos-section')}
+                                onClick={() => scrollToSection('plans-section')}
                                 className="w-full sm:w-auto px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs rounded-xl shadow-lg shadow-amber-500/20 shrink-0 transition-all text-center"
                             >
                                 View Plans to Reactivate →
@@ -784,7 +784,7 @@ export default function PricingPlans() {
                             </div>
 
                             <button
-                                onClick={() => scrollToSection('planos-section')}
+                                onClick={() => scrollToSection('plans-section')}
                                 className="w-full sm:w-auto px-8 py-3.5 bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-xs rounded-xl shadow-lg shadow-primary/20 transition-all"
                             >
                                 I Want These Results in My Barbershop →
@@ -794,7 +794,7 @@ export default function PricingPlans() {
                 </section>
 
                 {/* ── PLANS & PURCHASE SECTION ── */}
-                <section id="planos-section" className="py-16 sm:py-20 border-t border-white/10 relative">
+                <section id="plans-section" className="py-16 sm:py-20 border-t border-white/10 relative">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="text-center max-w-3xl mx-auto space-y-3 mb-12 sm:mb-16">
                             <div className="flex flex-wrap items-center justify-center gap-3">

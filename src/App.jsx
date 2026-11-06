@@ -9,13 +9,13 @@ import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import AppLayout from '@/components/layout/AppLayout';
 import Dashboard from '@/pages/Dashboard';
 import Agenda from '@/pages/Agenda';
-import Historico from '@/pages/Historico';
+import AppointmentHistory from '@/pages/AppointmentHistory';
 import Clients from '@/pages/Clients';
 import Services from '@/pages/Services';
 import Barbers from '@/pages/Barbers';
 import Sales from '@/pages/Sales';
-import Vendas from '@/pages/Vendas';
-import ControleGeral from '@/pages/ControleGeral';
+import SalesHistory from '@/pages/SalesHistory';
+import FinancialControl from '@/pages/FinancialControl';
 import ProductsStore from '@/pages/ProductsStore';
 import Products from '@/pages/Products';
 import Plans from '@/pages/Plans';
@@ -47,8 +47,8 @@ const AuthenticatedApp = () => {
     return (
         <Routes>
             {/* ── SAAS PUBLIC PRICING & CHECKOUT ── */}
-            <Route path="/planos" element={<PricingPlans />} />
-            <Route path="/assinar" element={<PricingPlans />} />
+            <Route path="/pricing" element={<PricingPlans />} />
+            <Route path="/subscribe" element={<PricingPlans />} />
 
             {/* ── ADMIN ROUTES ── */}
             <Route path="/admin/login" element={!adminUser ? <Login /> : <Navigate to="/admin" replace />} />
@@ -57,16 +57,16 @@ const AuthenticatedApp = () => {
                 <Route path="/admin" element={<AppLayout />}>
                     <Route index element={<Dashboard />} />
                     <Route path="agenda" element={<Agenda />} />
-                    <Route path="historico" element={<Historico />} />
-                    <Route path="clientes" element={<Clients />} />
-                    <Route path="servicos" element={<Services />} />
-                    <Route path="barbeiros" element={<Barbers />} />
-                    <Route path="vendas" element={<Vendas />} />
-                    <Route path="controle" element={<ControleGeral />} />
-                    <Route path="pdv" element={<ProductsStore />} />
-                    <Route path="produtos" element={<Products />} />
-                    <Route path="planos" element={<Plans />} />
-                    <Route path="configuracoes" element={<Settings />} />
+                    <Route path="history" element={<AppointmentHistory />} />
+                    <Route path="clients" element={<Clients />} />
+                    <Route path="services" element={<Services />} />
+                    <Route path="barbers" element={<Barbers />} />
+                    <Route path="sales" element={<SalesHistory />} />
+                    <Route path="finance" element={<FinancialControl />} />
+                    <Route path="pos" element={<ProductsStore />} />
+                    <Route path="products" element={<Products />} />
+                    <Route path="plans" element={<Plans />} />
+                    <Route path="settings" element={<Settings />} />
                 </Route>
             ) : (
                 <Route path="/admin/*" element={<Navigate to="/admin/login" replace />} />

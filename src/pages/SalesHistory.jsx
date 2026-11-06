@@ -23,7 +23,7 @@ import { Product, Sale, Barber } from "@/api/base44Client";
 
 const EMPTY_SALE = { productId: "", barberId: "", quantity: 1 };
 
-export default function VendasPage() {
+export default function SalesHistory() {
   const [sales, setSales] = useState([]);
   const [products, setProducts] = useState([]);
   const [barbers, setBarbers] = useState([]);

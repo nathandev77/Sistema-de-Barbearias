@@ -387,7 +387,7 @@ export default function Login() {
                                 </div>
                                 {isTrialExpiredError && (
                                     <Link
-                                        to="/planos?reason=expired"
+                                        to="/pricing?reason=expired"
                                         style={{
                                             display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6,
                                             marginTop: 4, padding: '8px 12px', background: 'hsl(45 93% 47%)',
@@ -743,7 +743,7 @@ export default function Login() {
                     marginTop: 24, paddingTop: 18, borderTop: '1px solid rgba(255,255,255,0.06)',
                     display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: 12, color: 'hsl(220 10% 50%)'
                 }}>
-                    <Link to="/planos" style={{ color: 'hsl(217 91% 65%)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
+                    <Link to="/pricing" style={{ color: 'hsl(217 91% 65%)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
                         <CreditCard style={{ width: 13, height: 13 }} /> Plans & Subscriptions
                     </Link>
                 </div>

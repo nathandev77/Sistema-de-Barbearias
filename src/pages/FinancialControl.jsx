@@ -65,7 +65,7 @@ function periodoRange(p) {
     return { start, end };
 }
 
-export default function ControlePage() {
+export default function FinancialControl() {
   const [appointments, setAppointments] = useState([]);
   const [sales, setSales] = useState([]);
   const [expenses, setExpenses] = useState([]);
