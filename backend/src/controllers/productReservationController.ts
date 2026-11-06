@@ -21,34 +21,34 @@ export const createReservation = async (req: Request, res: Response, next: NextF
     const data = createSchema.parse(req.body);
     const tenantId = req.user!.tenantId;
 
-    // Apenas garante que o produto e cliente pertencem a este tenant
+    // Just ensures that the product and client belong to this tenant
     const [client, product] = await Promise.all([
       prisma.client.findFirst({ where: { id: data.client_id, tenantId } }),
       prisma.product.findFirst({ where: { id: data.product_id, tenantId } })
     ]);
 
     if (!client || !product) {
-      return res.status(403).json({ error: 'Referência inválida de cliente ou produto.' });
+      return res.status(403).json({ error: 'Invalid client or product reference.' });
     }
 
     if (product.stock < data.quantity) {
-      return res.status(400).json({ error: 'Estoque insuficiente.' });
+      return res.status(400).json({ error: 'Insufficient stock.' });
     }
 
     const reservation = await prisma.$transaction(async (tx) => {
-      // Cria a reserva
+      // Create the reservation
       const resv = await tx.productReservation.create({
         data: {
           tenantId,
           clientId: data.client_id,
           productId: data.product_id,
           status: data.status,
-          price: product.price * data.quantity, // Calcula o preco total usando o preco base * qty
+          price: product.price * data.quantity, // Computes the total price using base price * qty
           quantity: data.quantity
         }
       });
 
-      // Diminui o estoque
+      // Decrease stock
       await tx.product.update({
         where: { id: product.id },
         data: { stock: { decrement: data.quantity } }
@@ -80,7 +80,7 @@ export const listReservations = async (req: Request, res: Response, next: NextFu
       orderBy: { createdAt: 'desc' }
     });
 
-    // Mapeia para o formato que o frontend espera (snake_case properties compatibilidade)
+    // Map to the format the frontend expects (snake_case properties for compatibility)
     const formatted = reservations.map(r => ({
       id: r.id,
       client_id: r.clientId,
@@ -107,7 +107,7 @@ export const updateReservation = async (req: Request, res: Response, next: NextF
 
     const reservation = await prisma.productReservation.findFirst({ where: { id, tenantId } });
     if (!reservation) {
-      return res.status(404).json({ error: 'Reserva não encontrada' });
+      return res.status(404).json({ error: 'Reservation not found' });
     }
 
     const updated = await prisma.$transaction(async (tx) => {
@@ -116,7 +116,7 @@ export const updateReservation = async (req: Request, res: Response, next: NextF
         data: { status: data.status }
       });
 
-      // Se for cancelado, devolve o estoque
+      // If canceled, restore the stock
       if (data.status === 'cancelado' && reservation.status === 'pendente') {
         await tx.product.update({
           where: { id: reservation.productId },

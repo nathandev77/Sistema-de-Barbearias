@@ -66,7 +66,7 @@ export const getAvailableSlots = async (req: Request, res: Response, next: NextF
   try {
     const { barberId, date } = req.query;
     if (!barberId || typeof barberId !== 'string' || !date || typeof date !== 'string') {
-      return res.status(400).json({ error: 'barberId e date são obrigatórios.' });
+      return res.status(400).json({ error: 'barberId and date are required.' });
     }
     
     const tenantId = req.user!.tenantId;

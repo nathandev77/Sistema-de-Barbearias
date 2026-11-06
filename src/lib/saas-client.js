@@ -14,9 +14,9 @@ export async function fetchSaas(endpoint, options = {}) {
     if (!response.ok) {
         if (response.status === 401) {
             localStorage.removeItem('saas_master_key');
-            throw new Error('Não autorizado. Chave Mestra inválida.');
+            throw new Error('Unauthorized. Invalid master key.');
         }
-        let errorMsg = 'Erro na requisição da API SaaS';
+        let errorMsg = 'SaaS API request error';
         try {
             const errorData = await response.json();
             errorMsg = errorData.error || errorMsg;

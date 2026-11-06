@@ -49,7 +49,7 @@ import {
 import { formatBRL, formatDate, formatSmart, normalizeText } from "@/lib/formatters";
 import { Client, fetchApi } from "@/api/base44Client";
 
-// ── Helpers para integrar com o banco real em vez de mock ──
+// ── Helpers to integrate with the real database instead of mocks ──
 
 export default function ClientsPage() {
   const [clients, setClients] = useState([]);
@@ -86,16 +86,16 @@ export default function ClientsPage() {
     load();
   }, [load]);
 
-  // Adaptações para o front lovable
-  // O backend atual do saas-barber não traz o "plano" no Client.list() por padrão
-  // Se trouxer, estaria em c.plan. Vamos assumir que os dados básicos vêm no Client.list().
-  // Para mockar a visão perfeita, vamos usar a estrutura de UI do Lovable.
+  // Adaptations for the Lovable front end
+  // The current saas-barber backend does not return the "plan" in Client.list() by default
+  // If it does, it would be in c.plan. We assume the basic data comes from Client.list().
+  // To mock the ideal view, we use Lovable's UI structure.
 
   const rows = useMemo(() => {
     const q = normalizeText(search).trim();
     return clients
       .filter((c) => {
-        const plano = c.plan || null; // Supondo que backend traga, senao ficara null
+        const plano = c.plan || null; // Assuming the backend returns it, otherwise it will be null
         if (filtro === "com" && !plano) return false;
         if (filtro === "sem" && plano) return false;
         if (!q) return true;
@@ -108,26 +108,26 @@ export default function ClientsPage() {
 
   return (
     <PageShell>
-      <PageHeader title="Clientes" subtitle="Cadastro, planos e histórico de cada cliente." />
+      <PageHeader title="Clients" subtitle="Registration, plans and history for each client." />
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 px-8 pb-6">
-        <StatCard label="Clientes cadastrados" value={clients.length} icon={Users} tone="sky" />
-        <StatCard label="Com plano ativo" value={comPlano} icon={Star} tone="amber" />
-        <StatCard label="Sem plano" value={clients.length - comPlano} icon={Users} tone="slate" />
-        <StatCard label="Planos disponíveis" value={plans.length} icon={Star} tone="violet" />
+        <StatCard label="Registered clients" value={clients.length} icon={Users} tone="sky" />
+        <StatCard label="With active plan" value={comPlano} icon={Star} tone="amber" />
+        <StatCard label="Without plan" value={clients.length - comPlano} icon={Users} tone="slate" />
+        <StatCard label="Available plans" value={plans.length} icon={Star} tone="violet" />
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-3 px-8 pb-6">
         <div className="flex flex-wrap items-center gap-3 flex-1 min-w-0">
-          <SearchInput value={search} onChange={setSearch} placeholder="Pesquisar por nome ou telefone" />
+          <SearchInput value={search} onChange={setSearch} placeholder="Search by name or phone" />
           <Select value={filtro} onValueChange={setFiltro}>
             <SelectTrigger className="h-10 w-[170px] rounded-full bg-card/70 border-border">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="todos">Todos os clientes</SelectItem>
-              <SelectItem value="com">Com plano</SelectItem>
-              <SelectItem value="sem">Sem plano</SelectItem>
+              <SelectItem value="todos">All clients</SelectItem>
+              <SelectItem value="com">With plan</SelectItem>
+              <SelectItem value="sem">Without plan</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -139,35 +139,35 @@ export default function ClientsPage() {
           className="rounded-full h-10 px-5 gap-2 bg-primary hover:bg-primary/90"
         >
           <Plus className="h-4 w-4" />
-          Novo cliente
+          New client
         </Button>
       </div>
 
       <div className="px-8 pb-16">
         <SectionCard>
-          <SectionHeader title="Clientes" count={rows.length} />
+          <SectionHeader title="Clients" count={rows.length} />
           <DataTable
             widths={["20%", "14%", "14%", "16%", "10%", "12%", "14%"]}
             head={
               <>
-                <Th>Cliente</Th>
-                <Th>Telefone</Th>
-                <Th>Última visita</Th>
-                <Th>Plano</Th>
-                <Th>Créditos</Th>
-                <Th>Vencimento</Th>
-                <Th className="text-right">Ações</Th>
+                <Th>Client</Th>
+                <Th>Phone</Th>
+                <Th>Last visit</Th>
+                <Th>Plan</Th>
+                <Th>Credits</Th>
+                <Th>Expires</Th>
+                <Th className="text-right">Actions</Th>
               </>
             }
           >
             {loading ? (
-              <EmptyRow colSpan={7} title="Carregando clientes..." />
+              <EmptyRow colSpan={7} title="Loading clients..." />
             ) : rows.length === 0 ? (
-              <EmptyRow colSpan={7} title="Nenhum cliente encontrado." hint="Ajuste a pesquisa ou cadastre um novo cliente." />
+              <EmptyRow colSpan={7} title="No clients found." hint="Adjust your search or register a new client." />
             ) : (
               rows.map((c) => {
                 const plano = c.plan || null;
-                // Simulando historico se nao tiver do backend ainda
+                // Simulating history if the backend does not provide it yet
                 const stats = { ultimaVisita: null };
                 
                 return (
@@ -184,11 +184,11 @@ export default function ClientsPage() {
                     <Td className="text-muted-foreground">{plano ? formatDate(plano.expiresAt) : "—"}</Td>
                     <Td>
                       <div className="flex items-center justify-end gap-1" onClick={e => e.stopPropagation()}>
-                        <IconBtn label="Vender plano" onClick={() => setPlanClient(c)}>
+                        <IconBtn label="Sell plan" onClick={() => setPlanClient(c)}>
                           <Star className="h-4 w-4" />
                         </IconBtn>
                         <IconBtn
-                          label="Editar"
+                          label="Edit"
                           onClick={() => {
                             setEditing(c);
                             setFormOpen(true);
@@ -196,7 +196,7 @@ export default function ClientsPage() {
                         >
                           <Pencil className="h-4 w-4" />
                         </IconBtn>
-                        <IconBtn label="Excluir" danger onClick={() => setDeleteId(c.id)}>
+                        <IconBtn label="Delete" danger onClick={() => setDeleteId(c.id)}>
                           <Trash2 className="h-4 w-4" />
                         </IconBtn>
                       </div>
@@ -223,13 +223,13 @@ export default function ClientsPage() {
       <AlertDialog open={!!deleteId} onOpenChange={(o) => !o && setDeleteId(null)}>
         <AlertDialogContent className="bg-card border-border">
           <AlertDialogHeader>
-            <AlertDialogTitle>Excluir este cliente?</AlertDialogTitle>
+            <AlertDialogTitle>Delete this client?</AlertDialogTitle>
             <AlertDialogDescription>
-              O cliente será excluído do sistema permanentemente.
+              The client will be permanently deleted from the system.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Voltar</AlertDialogCancel>
+            <AlertDialogCancel>Back</AlertDialogCancel>
             <AlertDialogAction
               onClick={async () => {
                 if (deleteId) {
@@ -241,7 +241,7 @@ export default function ClientsPage() {
               className="bg-destructive text-white hover:bg-destructive/90"
             >
               <Trash2 className="h-4 w-4" />
-              Excluir
+              Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -277,7 +277,7 @@ function ClientFormDialog({ open, onOpenChange, client, onSave }) {
         onOpenChange(false);
         onSave();
     } catch(err) {
-        alert("Erro ao salvar: " + err.message);
+        alert("Error saving: " + err.message);
     }
   };
 
@@ -286,23 +286,23 @@ function ClientFormDialog({ open, onOpenChange, client, onSave }) {
       <DialogContent className="bg-card border-border max-w-lg p-0 gap-0 overflow-hidden">
         <DialogHeader className="px-6 py-5 border-b border-border/60 space-y-1">
           <DialogTitle className="text-lg font-semibold tracking-tight">
-            {client ? "Editar cliente" : "Novo cliente"}
+            {client ? "Edit client" : "New client"}
           </DialogTitle>
           <DialogDescription className="text-sm text-muted-foreground">
-            Preencha os dados do cliente.
+            Fill in the client's details.
           </DialogDescription>
         </DialogHeader>
         <div className="px-6 py-5 space-y-4">
-          <FormField label="Nome" required>
+          <FormField label="Name" required>
             <Input value={name} onChange={(e) => setName(e.target.value)} className="h-10 bg-background border-border" />
           </FormField>
-          <FormField label="Telefone">
+          <FormField label="Phone">
             <Input value={phone} onChange={(e) => setPhone(e.target.value)} className="h-10 bg-background border-border" />
           </FormField>
           <FormField label="E-mail">
             <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="h-10 bg-background border-border" />
           </FormField>
-          <FormField label="Observações">
+          <FormField label="Notes">
             <Textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
@@ -313,10 +313,10 @@ function ClientFormDialog({ open, onOpenChange, client, onSave }) {
         </div>
         <div className="flex items-center justify-end gap-2 px-6 py-4 border-t border-border/60 bg-card/60">
           <Button variant="ghost" onClick={() => onOpenChange(false)}>
-            Voltar
+            Back
           </Button>
           <Button onClick={save} className="bg-primary hover:bg-primary/90">
-            Salvar
+            Save
           </Button>
         </div>
       </DialogContent>
@@ -335,11 +335,11 @@ function SellPlanDialog({ client, plans, onOpenChange, onSave }) {
             method: 'POST',
             body: JSON.stringify({ clientId: client.id, planId: planId })
         });
-        alert('Plano vinculado com sucesso!');
+        alert('Plan linked successfully!');
         onOpenChange(false);
         onSave();
     } catch (error) {
-        alert('Erro ao vincular plano: ' + error.message);
+        alert('Error linking plan: ' + error.message);
     }
   };
 
@@ -348,23 +348,23 @@ function SellPlanDialog({ client, plans, onOpenChange, onSave }) {
       <DialogContent className="bg-card border-border max-w-lg p-0 gap-0 overflow-hidden">
         <DialogHeader className="px-6 py-5 border-b border-border/60 space-y-1">
           <DialogTitle className="text-lg font-semibold tracking-tight">
-            Vender / renovar plano
+            Sell / renew plan
           </DialogTitle>
           <DialogDescription className="text-sm text-muted-foreground">
-            {client?.name} — a venda gera Receita de Plano e recarrega os créditos.
+            {client?.name} — the sale generates Plan Revenue and reloads the credits.
           </DialogDescription>
         </DialogHeader>
         <div className="px-6 py-5 space-y-4">
           {atual && (
             <div className="rounded-lg border border-amber-400/30 bg-amber-500/5 px-4 py-3 text-sm">
-              Plano atual: <span className="font-medium">{atual.name}</span> •{" "}
-              {atual.credits} crédito(s) • vence {formatDate(atual.expiresAt)}
+              Current plan: <span className="font-medium">{atual.name}</span> •{" "}
+              {atual.credits} credit(s) • expires {formatDate(atual.expiresAt)}
             </div>
           )}
-          <FormField label="Plano" required>
+          <FormField label="Plan" required>
             <Select value={planId} onValueChange={setPlanId}>
               <SelectTrigger className="h-10 bg-background border-border">
-                <SelectValue placeholder="Selecione o plano" />
+                <SelectValue placeholder="Select a plan" />
               </SelectTrigger>
               <SelectContent>
                 {plans
@@ -379,14 +379,14 @@ function SellPlanDialog({ client, plans, onOpenChange, onSave }) {
         </div>
         <div className="flex items-center justify-end gap-2 px-6 py-4 border-t border-border/60 bg-card/60">
           <Button variant="ghost" onClick={() => onOpenChange(false)}>
-            Voltar
+            Back
           </Button>
           <Button
             disabled={!planId}
             onClick={handleSubscribe}
             className="bg-emerald-500 hover:bg-emerald-400 text-white"
           >
-            Confirmar venda
+            Confirm sale
           </Button>
         </div>
       </DialogContent>
@@ -398,7 +398,7 @@ function ClientDetailDialog({ client, onOpenChange }) {
   if (!client) return null;
   const plano = client.plan || null;
   
-  // O backend ainda não provê todo o histórico assim, mas deixaremos a interface pronta:
+  // The backend does not yet provide the full history this way, but we leave the UI ready:
   const stats = {
       totalGasto: 0,
       atendimentos: [],
@@ -413,21 +413,21 @@ function ClientDetailDialog({ client, onOpenChange }) {
         <DialogHeader className="px-6 py-5 border-b border-border/60 space-y-1">
           <DialogTitle className="text-lg font-semibold tracking-tight">{client.name}</DialogTitle>
           <DialogDescription className="text-sm text-muted-foreground">
-            Perfil do cliente e histórico de atendimentos.
+            Client profile and service history.
           </DialogDescription>
         </DialogHeader>
         <div className="px-6 py-5 space-y-5 max-h-[70vh] overflow-y-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="rounded-lg border border-border/60 bg-background/40 p-4 space-y-2">
-              <KV label="Telefone" value={client.phone ?? "—"} />
+              <KV label="Phone" value={client.phone ?? "—"} />
               <KV label="E-mail" value={client.email ?? "—"} />
-              <KV label="Total gasto" value={formatBRL(stats.totalGasto)} />
-              <KV label="Atendimentos" value={stats.atendimentos.length} />
+              <KV label="Total spent" value={formatBRL(stats.totalGasto)} />
+              <KV label="Services" value={stats.atendimentos.length} />
             </div>
             <div className="rounded-lg border border-border/60 bg-background/40 p-4 space-y-2">
-              <KV label="Plano" value={plano ? plano.name : "Sem plano"} />
-              <KV label="Créditos restantes" value={plano ? plano.credits : "—"} />
-              <KV label="Barbeiros" value={stats.barbeiros.join(", ") || "—"} />
+              <KV label="Plan" value={plano ? plano.name : "No plan"} />
+              <KV label="Remaining credits" value={plano ? plano.credits : "—"} />
+              <KV label="Barbers" value={stats.barbeiros.join(", ") || "—"} />
             </div>
           </div>
 
@@ -439,20 +439,20 @@ function ClientDetailDialog({ client, onOpenChange }) {
 
           <div className="rounded-lg border border-border/60 overflow-hidden">
             <div className="px-4 py-2.5 text-[11px] uppercase tracking-wider text-muted-foreground border-b border-border/60">
-              Histórico de atendimentos
+              Service history
             </div>
             <DataTable
               head={
                 <>
-                  <Th>Data</Th>
-                  <Th>Serviços</Th>
-                  <Th>Barbeiro</Th>
-                  <Th className="text-right">Valor</Th>
+                  <Th>Date</Th>
+                  <Th>Services</Th>
+                  <Th>Barber</Th>
+                  <Th className="text-right">Price</Th>
                 </>
               }
             >
               {stats.atendimentos.length === 0 ? (
-                <EmptyRow colSpan={4} title="Nenhum atendimento registrado." />
+                <EmptyRow colSpan={4} title="No services recorded." />
               ) : (
                 stats.atendimentos.map((a) => (
                   <Row key={a.id}>
@@ -460,7 +460,7 @@ function ClientDetailDialog({ client, onOpenChange }) {
                     <Td className="truncate">{a.servicos.join(", ")}</Td>
                     <Td>{a.barbeiro}</Td>
                     <Td className="text-right tabular-nums">
-                      {a.plano ? <Pill tone="amber">Plano</Pill> : formatBRL(a.valor)}
+                      {a.plano ? <Pill tone="amber">Plan</Pill> : formatBRL(a.valor)}
                     </Td>
                   </Row>
                 ))

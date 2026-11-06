@@ -29,7 +29,7 @@ export const getDashboardData = async (req: Request, res: Response, next: NextFu
     const expiredTenants = tenants.filter(t => (t.subscriptionStatus === 'trial' && t.trialEndsAt && new Date(t.trialEndsAt) < now) || t.subscriptionStatus === 'expired').length;
     const blockedTenants = tenants.filter(t => !t.isActive || t.subscriptionStatus === 'blocked').length;
 
-    // Métricas agregadas
+    // Aggregate metrics
     const totalBarbers = tenants.reduce((acc, t) => acc + (t._count.barbers || 0), 0);
     const totalClients = tenants.reduce((acc, t) => acc + (t._count.clients || 0), 0);
     const totalAppointments = tenants.reduce((acc, t) => acc + (t._count.appointments || 0), 0);
@@ -97,7 +97,7 @@ export const updateTenantStatus = async (req: Request, res: Response, next: Next
       }
     });
 
-    res.json({ success: true, message: 'Status da barbearia atualizado.', tenant });
+    res.json({ success: true, message: 'Barbershop status updated.', tenant });
   } catch (error) {
     next(error);
   }
@@ -110,7 +110,7 @@ export const extendTenantTrial = async (req: Request, res: Response, next: NextF
 
     const currentTenant = await prisma.tenant.findUnique({ where: { id: id as string } });
     if (!currentTenant) {
-      res.status(404).json({ error: 'Barbearia não encontrada.' });
+      res.status(404).json({ error: 'Barbershop not found.' });
       return;
     }
 
@@ -131,7 +131,7 @@ export const extendTenantTrial = async (req: Request, res: Response, next: NextF
 
     res.json({
       success: true,
-      message: `Teste estendido com sucesso em +${days} dias.`,
+      message: `Trial successfully extended by +${days} days.`,
       trialEndsAt: updated.trialEndsAt
     });
   } catch (error) {
@@ -159,7 +159,7 @@ export const activateTenantPlan = async (req: Request, res: Response, next: Next
 
     res.json({
       success: true,
-      message: `Plano ${planType.toUpperCase()} ativado com sucesso!`,
+      message: `${planType.toUpperCase()} plan activated successfully!`,
       tenant: updated
     });
   } catch (error) {
@@ -175,7 +175,7 @@ export const deleteTenant = async (req: Request, res: Response, next: NextFuncti
       where: { id: id as string }
     });
 
-    res.json({ success: true, message: 'Barbearia excluída com sucesso.' });
+    res.json({ success: true, message: 'Barbershop deleted successfully.' });
   } catch (error) {
     next(error);
   }

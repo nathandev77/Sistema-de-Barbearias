@@ -30,7 +30,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    # SEGURANÇA: Porta 3001 NÃO exposta externamente — acesso apenas via proxy nginx interno
+    # SECURITY: Port 3001 NOT exposed externally — access only via the internal nginx proxy
     # ports:
     #   - "3001:3001"
     restart: unless-stopped

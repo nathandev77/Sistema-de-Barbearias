@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
-/* Kit visual compartilhado — mesma identidade da Agenda e do Histórico. */
+/* Shared visual kit — same look and feel as the Schedule and History pages. */
 
 export function PageShell({ children }: { children: React.ReactNode }) {
   return (

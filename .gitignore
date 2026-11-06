@@ -13,7 +13,7 @@ dist
 dist-ssr
 *.local
 
-# Environment variables & secrets (NÃO subir para o GitHub!)
+# Environment variables & secrets (DO NOT push to GitHub!)
 .env
 .env.*
 !.env.example

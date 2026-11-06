@@ -1,4 +1,4 @@
-# ── Estágio 1: Build do Frontend (Vite) ──────────────────────
+# ── Stage 1: Frontend Build (Vite) ───────────────────────────
 FROM node:20-alpine AS builder
 WORKDIR /app
 
@@ -8,18 +8,18 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-# ── Estágio 2: Runtime Nginx Ultra-leve ───────────────────────
+# ── Stage 2: Ultra-light Nginx Runtime ────────────────────────
 FROM nginx:alpine
 
-# Copia o bundle gerado no estágio anterior
+# Copy the bundle generated in the previous stage
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Configuração do Nginx para SPA (React Router) e Proxy Reverso /api
+# Nginx configuration for the SPA (React Router) and /api reverse proxy
 RUN echo 'server { \
     listen 80; \
     server_name localhost; \
     \
-    # DNS interno do Docker — resolve hostname "backend" dinamicamente \
+    # Docker internal DNS — resolves the "backend" hostname dynamically \
     resolver 127.0.0.11 valid=10s ipv6=off; \
     \
     location / { \

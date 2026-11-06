@@ -15,16 +15,16 @@ export const createSale = async (req: Request, res: Response, next: NextFunction
     const data = saleSchema.parse(req.body);
     const tenantId = req.user!.tenantId;
 
-    // Verificar se o produto pertence ao tenant
+    // Check that the product belongs to the tenant
     const product = await prisma.product.findFirst({ where: { id: data.productId, tenantId } });
-    if (!product) return res.status(403).json({ error: 'Produto inválido.' });
+    if (!product) return res.status(403).json({ error: 'Invalid product.' });
     
-    // Validar Estoque
-    if (product.stock < data.quantity) return res.status(400).json({ error: 'Estoque insuficiente.' });
+    // Validate Stock
+    if (product.stock < data.quantity) return res.status(400).json({ error: 'Insufficient stock.' });
 
     const totalPrice = data.quantity * data.unitPrice;
 
-    // Transação Atômica: Registrar Venda E Baixar Estoque simultaneamente
+    // Atomic Transaction: Record the Sale AND Decrease Stock simultaneously
     const result = await prisma.$transaction(async (tx) => {
       const sale = await tx.sale.create({
         data: {
@@ -60,7 +60,7 @@ export const listSales = async (req: Request, res: Response, next: NextFunction)
     
     const formatted = sales.map(s => ({
       ...s,
-      product_name: s.product?.name || 'Produto Removido',
+      product_name: s.product?.name || 'Removed Product',
       barber_name: s.barber?.name || '',
       total: s.totalPrice
     }));
@@ -97,7 +97,7 @@ export const deleteSale = async (req: Request, res: Response, next: NextFunction
     const tenantId = req.user!.tenantId;
 
     const sale = await prisma.sale.findFirst({ where: { id, tenantId } });
-    if (!sale) return res.status(404).json({ error: 'Venda não encontrada' });
+    if (!sale) return res.status(404).json({ error: 'Sale not found' });
 
     // Restore stock and delete sale in transaction
     await prisma.$transaction(async (tx) => {

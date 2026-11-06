@@ -3,10 +3,10 @@ import { getPlans, processCheckout } from '../controllers/subscriptionCheckoutCo
 
 const router = Router();
 
-// Rota pública para listar os planos de assinatura do Barber Control
+// Public route to list Barber Control subscription plans
 router.get('/plans', getPlans);
 
-// Rota para processar o checkout (PIX / Cartão)
+// Route to process checkout (PIX / Card)
 router.post('/process', processCheckout);
 
 export default router;

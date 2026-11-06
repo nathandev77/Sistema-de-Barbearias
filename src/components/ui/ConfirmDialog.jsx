@@ -12,7 +12,7 @@ import {
   AlertDialogAction,
 } from '@/components/animate-ui/primitives/radix/alert-dialog';
 
-export function ConfirmDialog({ open, onOpenChange, title, description, onConfirm, confirmText = "Confirmar", cancelText = "Cancelar", isDestructive = true }) {
+export function ConfirmDialog({ open, onOpenChange, title, description, onConfirm, confirmText = "Confirm", cancelText = "Cancel", isDestructive = true }) {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogPortal>

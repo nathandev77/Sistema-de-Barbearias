@@ -4,7 +4,7 @@ import { prisma } from '../prisma';
 export const getPlans = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const tenantId = req.user?.tenantId;
-    if (!tenantId) throw new Error('Tenant não encontrado');
+    if (!tenantId) throw new Error('Tenant not found');
 
     const plans = await prisma.plan.findMany({
       where: { tenantId }
@@ -18,7 +18,7 @@ export const getPlans = async (req: Request, res: Response, next: NextFunction):
 export const createPlan = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const tenantId = req.user?.tenantId;
-    if (!tenantId) throw new Error('Tenant não encontrado');
+    if (!tenantId) throw new Error('Tenant not found');
 
     const { name, description, price, serviceCount } = req.body;
 
@@ -29,7 +29,7 @@ export const createPlan = async (req: Request, res: Response, next: NextFunction
         description,
         price: Number(price),
         serviceCount: Number(serviceCount),
-        intervalMonths: 1, // Fixo 1 mes por enquanto
+        intervalMonths: 1, // Fixed at 1 month for now
         isActive: true
       }
     });
@@ -55,14 +55,14 @@ export const deletePlan = async (req: Request, res: Response, next: NextFunction
   }
 };
 
-// Funções para lidar com as assinaturas (vincular cliente)
+// Functions to handle subscriptions (link client)
 export const subscribeClient = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const tenantId = req.user?.tenantId;
     const { clientId, planId, status = 'active' } = req.body;
 
     const plan = await prisma.plan.findUnique({ where: { id: planId, tenantId } });
-    if (!plan) throw new Error('Plano não encontrado');
+    if (!plan) throw new Error('Plan not found');
 
     const startDate = new Date();
     const endDate = new Date();
@@ -81,7 +81,7 @@ export const subscribeClient = async (req: Request, res: Response, next: NextFun
     });
 
     if (status === 'active') {
-      // Registrar a venda do plano como Receita (Sale) em vez de Despesa
+      // Record the plan sale as Revenue (Sale) instead of an Expense
       let planProduct = await prisma.product.findFirst({
         where: { tenantId: tenantId!, name: 'Assinatura de Plano' }
       });
@@ -156,7 +156,7 @@ export const updateSubscriptionStatus = async (req: Request, res: Response, next
     const { status } = req.body;
 
     const sub = await prisma.subscription.findUnique({ where: { id, tenantId }, include: { plan: true } });
-    if (!sub) throw new Error('Assinatura não encontrada');
+    if (!sub) throw new Error('Subscription not found');
 
     // If activating a pending subscription, we can reset the start and end dates
     const data: any = { status };

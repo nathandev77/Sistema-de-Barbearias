@@ -2,10 +2,10 @@ import { Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
 import { prisma } from '../prisma';
 
-// Esquema de Validação Zod (Zero Trust)
-// Tudo que vem do Frontend passa por este funil implacável.
+// Zod Validation Schema (Zero Trust)
+// Everything coming from the Frontend goes through this relentless funnel.
 const createBarberSchema = z.object({
-  name: z.string().min(3, "O nome deve ter pelo menos 3 caracteres."),
+  name: z.string().min(3, "The name must be at least 3 characters."),
   phone: z.string().optional(),
   specialty: z.string().optional(),
   compensationType: z.enum(['commission', 'fixed', 'both']),
@@ -21,20 +21,20 @@ const createBarberSchema = z.object({
 
 export const createBarber = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    // 1. Zod filtra e recusa qualquer lixo ou dado perigoso enviado pelo frontend
+    // 1. Zod filters and rejects any garbage or dangerous data sent by the frontend
     const validatedData = createBarberSchema.parse(req.body);
 
-    // 2. Extrai o tenantId com base EXCLUSIVA no token JWT (req.user), 
-    // ignorando totalmente se o frontend tentar enviar um tenantId falso.
+    // 2. Extract the tenantId based EXCLUSIVELY on the JWT token (req.user), 
+    // completely ignoring any fake tenantId the frontend may try to send.
     const tenantId = req.user!.tenantId;
 
-    // 3. Regra de Negócio Segura no Backend: 
-    // Garante coerência entre comissão e salário fixo.
+    // 3. Secure Business Rule on the Backend: 
+    // Ensures consistency between commission and fixed salary.
     let { commissionPct, fixedSalary, compensationType } = validatedData;
     if (compensationType === 'fixed') commissionPct = 0;
     if (compensationType === 'commission') fixedSalary = null;
 
-    // 4. Salva no banco de dados com segurança
+    // 4. Save to the database securely
     const newBarber = await prisma.barber.create({
       data: {
         tenantId,
@@ -55,7 +55,7 @@ export const createBarber = async (req: Request, res: Response, next: NextFuncti
 
     res.status(201).json(newBarber);
   } catch (error) {
-    next(error); // Repassa para o errorHandler global
+    next(error); // Forward to the global errorHandler
   }
 };
 
@@ -63,8 +63,8 @@ export const listBarbers = async (req: Request, res: Response, next: NextFunctio
   try {
     const tenantId = req.user!.tenantId;
 
-    // Busca apenas os barbeiros pertencentes a ESTE tenant.
-    // Previne vulnerabilidade IDOR (Insecure Direct Object Reference).
+    // Fetch only the barbers belonging to THIS tenant.
+    // Prevents IDOR (Insecure Direct Object Reference) vulnerability.
     const barbers = await prisma.barber.findMany({
       where: { tenantId },
       orderBy: { name: 'asc' }
@@ -98,7 +98,7 @@ export const updateBarber = async (req: Request, res: Response, next: NextFuncti
       }
     });
 
-    if (updated.count === 0) return res.status(404).json({ error: 'Barbeiro não encontrado.' });
+    if (updated.count === 0) return res.status(404).json({ error: 'Barber not found.' });
     res.json({ success: true });
   } catch (error) { next(error); }
 };
@@ -108,11 +108,11 @@ export const deleteBarber = async (req: Request, res: Response, next: NextFuncti
     const id = req.params.id as string;
     const tenantId = req.user!.tenantId;
     
-    // Verifica se existe
+    // Check that it exists
     const barber = await prisma.barber.findFirst({ where: { id, tenantId } });
-    if (!barber) return res.status(404).json({ error: 'Barbeiro não encontrado.' });
+    if (!barber) return res.status(404).json({ error: 'Barber not found.' });
 
-    // Exclui agendamentos relacionados para evitar erro de Foreign Key
+    // Delete related appointments to avoid a Foreign Key error
     await prisma.appointment.deleteMany({ where: { barberId: id } });
 
     await prisma.barber.delete({ where: { id } });

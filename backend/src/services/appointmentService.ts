@@ -9,7 +9,7 @@ export class AppointmentService {
     ]);
 
     if (!client || !barber || services.length !== data.serviceIds.length) {
-      throw new Error('Violação de Segurança: Referência inválida ou pertencente a outra barbearia.');
+      throw new Error('Security Violation: Invalid reference or one belonging to another barbershop.');
     }
 
     const dailyAppointments = await prisma.appointment.count({
@@ -22,7 +22,7 @@ export class AppointmentService {
     });
 
     if (dailyAppointments >= 1) {
-      throw new Error('Este cliente já possui um agendamento marcado para este dia.');
+      throw new Error('This client already has an appointment booked for this day.');
     }
 
     const activeSubscription = await prisma.subscription.findFirst({
@@ -41,7 +41,7 @@ export class AppointmentService {
 
     if (activeSubscription) {
       finalPrice = 0;
-      notes += notes ? ' (Pago via Plano)' : 'Pago via Plano';
+      notes += notes ? ' (Paid via Plan)' : 'Paid via Plan';
       
       await prisma.subscription.update({
         where: { id: activeSubscription.id },
@@ -60,7 +60,7 @@ export class AppointmentService {
     });
 
     if (existingAppointment) {
-      throw new Error('Este horário já está reservado para este barbeiro.');
+      throw new Error('This time slot is already booked for this barber.');
     }
 
     const { serviceIds, ...appointmentData } = data;
@@ -88,9 +88,9 @@ export class AppointmentService {
     
     return appointments.map(a => ({
       ...a,
-      client_name: a.client?.name || 'Cliente Removido',
-      barber_name: a.barber?.name || 'Barbeiro Removido',
-      service_name: a.services?.map(s => s.name).join(', ') || 'Serviço Removido',
+      client_name: a.client?.name || 'Removed Client',
+      barber_name: a.barber?.name || 'Removed Barber',
+      service_name: a.services?.map(s => s.name).join(', ') || 'Removed Service',
     }));
   }
 
@@ -101,7 +101,7 @@ export class AppointmentService {
     });
 
     if (!existing) {
-      throw new Error('Agendamento não encontrado');
+      throw new Error('Appointment not found');
     }
 
     if (data.clientId || data.barberId || data.serviceIds) {
@@ -112,7 +112,7 @@ export class AppointmentService {
       ]);
 
       if (!client || !barber || (data.serviceIds && Array.isArray(services) && services.length !== data.serviceIds.length)) {
-        throw new Error('Violação de Segurança: Referência inválida ou pertencente a outra barbearia.');
+        throw new Error('Security Violation: Invalid reference or one belonging to another barbershop.');
       }
     }
 
@@ -132,7 +132,7 @@ export class AppointmentService {
         }
       });
       if (duplicate && data.status !== 'cancelado') {
-        throw new Error('Este horário já está reservado.');
+        throw new Error('This time slot is already booked.');
       }
     }
 
@@ -161,7 +161,7 @@ export class AppointmentService {
     });
 
     if (!barber) {
-      throw new Error('Barbeiro não encontrado.');
+      throw new Error('Barber not found.');
     }
 
     const startStr = barber.workStart || "09:00";

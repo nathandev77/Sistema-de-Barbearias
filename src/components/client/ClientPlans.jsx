@@ -4,8 +4,8 @@ import { useToast } from '@/components/ui/toaster';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { Loader2, Star, CheckCircle2 } from 'lucide-react';
 import { motion } from 'framer-motion';
-// Se fetchApi nao funcionar direto para cliente, precisariamos de rotas publicas ou portal.
-// Mas o ClientPortal já tem o cliente logado? Sim, no localStorage ou auth context.
+// If fetchApi doesn't work directly for the client, we'd need public or portal routes.
+// But does ClientPortal already have the client logged in? Yes, in localStorage or the auth context.
 import { fetchApi } from '@/api/base44Client';
 
 export default function ClientPlans() {
@@ -21,7 +21,7 @@ export default function ClientPlans() {
     useEffect(() => {
         const load = async () => {
             try {
-                // Na rota publica ou do portal, o tenant é resolvido pelo Header ou Auth
+                // On the public or portal route, the tenant is resolved via Header or Auth
                 const [plansData, subsData] = await Promise.all([
                     fetchApi('/plans'),
                     clientUser?.id ? fetchApi(`/plans/client/${clientUser.id}`) : Promise.resolve([])
@@ -53,16 +53,16 @@ export default function ClientPlans() {
                 body: JSON.stringify({ clientId: clientUser.id, planId: selectedPlan.id, status: 'pendente' })
             });
             toast({
-                title: 'Solicitação Enviada',
-                description: 'Alerte o barbeiro para confirmar seu pagamento e ativar a assinatura.',
+                title: 'Request Sent',
+                description: 'Let the barber know so they can confirm your payment and activate the subscription.',
             });
-            // Recarrega localmente
+            // Reload locally
             const subsData = await fetchApi(`/plans/client/${clientUser.id}`);
             const pending = subsData.find(s => s.status === 'pendente');
             setMyPendingSub(pending || null);
         } catch (e) {
             toast({
-                title: 'Erro ao assinar',
+                title: 'Error subscribing',
                 description: e.message,
                 variant: 'destructive',
             });
@@ -85,20 +85,20 @@ export default function ClientPlans() {
                     </div>
                     <div className="relative z-10">
                         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/20 text-primary text-xs font-bold uppercase tracking-widest mb-4">
-                            Assinatura Ativa
+                            Active Subscription
                         </span>
                         <h3 className="text-2xl font-black text-foreground mb-1">{mySub.plan.name}</h3>
                         <p className="text-muted-foreground text-sm max-w-md">
-                            Você possui <strong className="text-foreground">{mySub.creditsLeft} cortes</strong> restantes este mês! 
-                            Eles serão descontados automaticamente nos seus próximos agendamentos.
+                            You have <strong className="text-foreground">{mySub.creditsLeft} haircuts</strong> left this month! 
+                            They will be deducted automatically from your upcoming appointments.
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 mt-4 text-xs font-mono">
                             <div>
-                                <span className="text-muted-foreground block mb-0.5">Assinada em:</span>
+                                <span className="text-muted-foreground block mb-0.5">Subscribed on:</span>
                                 <span className="text-foreground font-semibold">{new Date(mySub.startDate).toLocaleDateString('pt-BR')}</span>
                             </div>
                             <div>
-                                <span className="text-muted-foreground block mb-0.5">Válida até:</span>
+                                <span className="text-muted-foreground block mb-0.5">Valid until:</span>
                                 <span className="text-foreground font-semibold">{new Date(mySub.endDate).toLocaleDateString('pt-BR')}</span>
                             </div>
                         </div>
@@ -110,11 +110,11 @@ export default function ClientPlans() {
                 <div className="bg-gradient-to-r from-yellow-500/20 to-yellow-500/5 border border-yellow-500/30 rounded-3xl p-6 shadow-xl relative overflow-hidden">
                     <div className="relative z-10">
                         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-yellow-500/20 text-yellow-500 text-xs font-bold uppercase tracking-widest mb-4">
-                            Assinatura Pendente
+                            Pending Subscription
                         </span>
                         <h3 className="text-2xl font-black text-foreground mb-1">{myPendingSub.plan.name}</h3>
                         <p className="text-muted-foreground text-sm max-w-md">
-                            Sua solicitação foi enviada! O pagamento deve ser acertado no balcão da barbearia para que o barbeiro libere sua assinatura.
+                            Your request has been sent! Payment must be settled at the barbershop front desk so the barber can activate your subscription.
                         </p>
                     </div>
                 </div>
@@ -122,10 +122,10 @@ export default function ClientPlans() {
 
             <div>
                 <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
-                    <Star className="w-5 h-5 text-primary" /> Planos Disponíveis
+                    <Star className="w-5 h-5 text-primary" /> Available Plans
                 </h3>
                 {plans.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">Nenhum plano disponível no momento.</p>
+                    <p className="text-sm text-muted-foreground">No plans available at the moment.</p>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {plans.map(plan => (
@@ -135,13 +135,13 @@ export default function ClientPlans() {
                                 
                                 <div className="mt-4 mb-5">
                                     <span className="text-2xl font-black text-foreground">R$ {Number(plan.price).toFixed(2)}</span>
-                                    <span className="text-xs text-muted-foreground"> /mês</span>
+                                    <span className="text-xs text-muted-foreground"> /month</span>
                                 </div>
 
                                 <ul className="space-y-2 mb-6">
                                     <li className="flex items-center gap-2 text-sm text-muted-foreground">
                                         <CheckCircle2 className="w-4 h-4 text-primary" />
-                                        <span className="font-semibold text-foreground">{plan.serviceCount} cortes</span> por mês
+                                        <span className="font-semibold text-foreground">{plan.serviceCount} haircuts</span> per month
                                     </li>
                                 </ul>
 
@@ -149,7 +149,7 @@ export default function ClientPlans() {
                                     onClick={() => setSelectedPlan(plan)}
                                     className="w-full py-2.5 rounded-xl bg-primary/10 text-primary text-sm font-bold hover:bg-primary hover:text-primary-foreground transition-all"
                                 >
-                                    Quero Assinar
+                                    Subscribe
                                 </button>
                             </motion.div>
                         ))}
@@ -160,11 +160,11 @@ export default function ClientPlans() {
             <ConfirmDialog
                 open={!!selectedPlan}
                 onOpenChange={(v) => !subscribing && setSelectedPlan(null)}
-                title="Assinar Plano"
-                description={`Você deseja solicitar a assinatura do plano "${selectedPlan?.name}" por R$ ${Number(selectedPlan?.price).toFixed(2)} ao mês? O pagamento deve ser realizado na barbearia.`}
+                title="Subscribe to Plan"
+                description={`Do you want to request a subscription to the "${selectedPlan?.name}" plan for R$ ${Number(selectedPlan?.price).toFixed(2)} per month? Payment must be made at the barbershop.`}
                 onConfirm={handleConfirmSubscribe}
-                confirmText={subscribing ? 'Enviando...' : 'Solicitar Assinatura'}
-                cancelText="Cancelar"
+                confirmText={subscribing ? 'Sending...' : 'Request Subscription'}
+                cancelText="Cancel"
             />
         </div>
     );

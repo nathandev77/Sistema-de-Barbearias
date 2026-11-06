@@ -8,35 +8,35 @@ import { passwordValidator } from '../utils/validators';
 const router = Router();
 
 const registerSchema = z.object({
-  name: z.string().min(2, 'Nome muito curto').max(100),
-  email: z.string().email('Email inválido'),
+  name: z.string().min(2, 'Name is too short').max(100),
+  email: z.string().email('Invalid email'),
   phone: z.string().optional(),
-  password: passwordValidator, // Política centralizada: 8+ chars, maiúsc, minúsc, número, especial
+  password: passwordValidator, // Centralized policy: 8+ chars, uppercase, lowercase, number, special
 });
 
 const loginSchema = z.object({
-  email: z.string().email('Email inválido'),
-  password: z.string().min(1, 'Senha obrigatória'),
+  email: z.string().email('Invalid email'),
+  password: z.string().min(1, 'Password is required'),
 });
 
-// POST /api/portal/:slug/register — Registro de cliente no portal
+// POST /api/portal/:slug/register — Client registration on the portal
 router.post('/:slug/register', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const slug = req.params.slug as string;
     const data = registerSchema.parse(req.body);
 
-    // Busca o tenant pelo slug
+    // Find the tenant by slug
     const tenant = await prisma.tenant.findUnique({ where: { slug } });
-    if (!tenant) return res.status(404).json({ error: 'Barbearia não encontrada.' });
-    if (!tenant.isActive) return res.status(403).json({ error: 'Barbearia inativa.' });
+    if (!tenant) return res.status(404).json({ error: 'Barbershop not found.' });
+    if (!tenant.isActive) return res.status(403).json({ error: 'Barbershop inactive.' });
 
-    // Verifica se email já está cadastrado nesta barbearia
+    // Check whether the email is already registered at this barbershop
     const existing = await prisma.client.findFirst({
       where: { tenantId: tenant.id, email: data.email }
     });
-    if (existing) return res.status(409).json({ error: 'Este email já está cadastrado.' });
+    if (existing) return res.status(409).json({ error: 'This email is already registered.' });
 
-    // Fator 12, consistente com o hash do admin (authController)
+    // Cost factor 12, consistent with the admin hash (authController)
     const hashedPassword = await bcrypt.hash(data.password, 12);
 
     const client = await prisma.client.create({
@@ -49,7 +49,7 @@ router.post('/:slug/register', async (req: Request, res: Response, next: NextFun
       }
     });
 
-    // Gera token JWT — 24h (reduzido de 7d por segurança)
+    // Generate JWT token — 24h (reduced from 7d for security)
     const secret = process.env.JWT_SECRET!;
     const token = jwt.sign(
       { clientId: client.id, tenantId: tenant.id, slug: tenant.slug },
@@ -69,30 +69,30 @@ router.post('/:slug/register', async (req: Request, res: Response, next: NextFun
   }
 });
 
-// POST /api/portal/:slug/login — Login de cliente no portal
+// POST /api/portal/:slug/login — Client login on the portal
 router.post('/:slug/login', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const slug = req.params.slug as string;
     const data = loginSchema.parse(req.body);
 
     const tenant = await prisma.tenant.findUnique({ where: { slug } });
-    if (!tenant) return res.status(404).json({ error: 'Barbearia não encontrada.' });
+    if (!tenant) return res.status(404).json({ error: 'Barbershop not found.' });
 
     const client = await prisma.client.findFirst({
       where: { tenantId: tenant.id, email: data.email }
     });
 
-    // Anti-enumeração: mesma mensagem para email inválido ou senha errada
+    // Anti-enumeration: same message for invalid email or wrong password
     if (!client || !client.password) {
-      return res.status(401).json({ error: 'Credenciais inválidas.' });
+      return res.status(401).json({ error: 'Invalid credentials.' });
     }
 
     const isValid = await bcrypt.compare(data.password, client.password);
     if (!isValid) {
-      return res.status(401).json({ error: 'Credenciais inválidas.' });
+      return res.status(401).json({ error: 'Invalid credentials.' });
     }
 
-    // 24h de expiração para sessão do portal do cliente
+    // 24h expiration for the client portal session
     const secret = process.env.JWT_SECRET!;
     const token = jwt.sign(
       { clientId: client.id, tenantId: tenant.id, slug: tenant.slug },

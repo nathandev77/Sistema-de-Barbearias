@@ -20,17 +20,17 @@ export default function UserNotRegisteredError() {
                 </svg>
             </div>
             <div className="text-center space-y-2 max-w-sm">
-                <h1 className="text-xl font-semibold text-foreground">Acesso não autorizado</h1>
+                <h1 className="text-xl font-semibold text-foreground">Unauthorized access</h1>
                 <p className="text-muted-foreground text-sm leading-relaxed">
-                    Sua conta ainda não está cadastrada neste sistema. Entre em contato com o
-                    administrador para liberar o seu acesso.
+                    Your account is not yet registered in this system. Please contact the
+                    administrator to grant you access.
                 </p>
             </div>
             <button
                 onClick={() => window.location.reload()}
                 className="px-6 py-2.5 rounded-lg border border-border text-sm text-muted-foreground hover:bg-secondary transition-colors"
             >
-                Tentar novamente
+                Try again
             </button>
         </div>
     );

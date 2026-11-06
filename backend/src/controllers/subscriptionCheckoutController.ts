@@ -5,56 +5,56 @@ import { z } from 'zod';
 export const SAAS_PLANS = [
   {
     id: 'monthly',
-    name: 'Plano Mensal',
+    name: 'Monthly Plan',
     price: 59.90,
-    interval: 'mês',
+    interval: 'month',
     durationMonths: 1,
-    description: 'Acesso completo ao sistema, agendamentos ilimitados, IA e relatórios.',
+    description: 'Full access to the system, unlimited appointments, AI and reports.',
     features: [
-      'Agendamentos Ilimitados',
-      'Painel Completo de Finanças e Vendas',
-      'Cadastro Ilimitado de Barbeiros e Serviços',
-      'Link Personalizado para Clientes',
-      'Robô WhatsApp / N8N Integrado',
-      'Suporte Prioritário'
+      'Unlimited Appointments',
+      'Complete Finance and Sales Dashboard',
+      'Unlimited Barbers and Services',
+      'Custom Link for Clients',
+      'Integrated WhatsApp / N8N Bot',
+      'Priority Support'
     ]
   },
   {
     id: 'quarterly',
-    name: 'Plano Trimestral',
+    name: 'Quarterly Plan',
     price: 149.90,
-    interval: 'trimestre',
+    interval: 'quarter',
     durationMonths: 3,
-    badge: 'Mais Popular',
-    description: 'Economize 16% pagando a cada 3 meses com todas as ferramentas liberadas.',
+    badge: 'Most Popular',
+    description: 'Save 16% by paying every 3 months with all tools unlocked.',
     features: [
-      'Tudo do Plano Mensal',
-      'Economia de 16%',
-      'Relatórios Avançados de Faturamento',
-      'Treinamento e Setup Rápido',
-      'Backup Automático em Nuvem'
+      'Everything in the Monthly Plan',
+      '16% Savings',
+      'Advanced Revenue Reports',
+      'Training and Quick Setup',
+      'Automatic Cloud Backup'
     ]
   },
   {
     id: 'annual',
-    name: 'Plano Anual VIP',
+    name: 'Annual VIP Plan',
     price: 499.00,
-    interval: 'ano',
+    interval: 'year',
     durationMonths: 12,
-    badge: 'Maior Economia (2 meses grátis)',
-    description: 'Melhor custo-benefício para barbearias profissionais consolidarem sua gestão.',
+    badge: 'Best Value (2 months free)',
+    description: 'Best value for professional barbershops to consolidate their management.',
     features: [
-      'Tudo do Plano Trimestral',
-      'Equivalente a R$ 41,58/mês',
-      '2 Meses Grátis',
-      'Consultoria de Crescimento para Barbearia',
-      'Ativação Imediata e Acesso VIP'
+      'Everything in the Quarterly Plan',
+      'Equivalent to R$ 41.58/month',
+      '2 Months Free',
+      'Barbershop Growth Consulting',
+      'Immediate Activation and VIP Access'
     ]
   }
 ];
 
 const checkoutSchema = z.object({
-  tenantId: z.string().min(1, 'ID da barbearia obrigatório'),
+  tenantId: z.string().min(1, 'Barbershop ID is required'),
   planId: z.enum(['monthly', 'quarterly', 'annual']),
   paymentMethod: z.enum(['pix', 'credit_card']),
   cardDetails: z.object({
@@ -65,7 +65,7 @@ const checkoutSchema = z.object({
   }).optional()
 });
 
-// Listar planos públicos do SaaS
+// List public SaaS plans
 export const getPlans = async (_req: Request, res: Response) => {
   res.json({
     trialDays: 4,
@@ -73,14 +73,14 @@ export const getPlans = async (_req: Request, res: Response) => {
   });
 };
 
-// Processar pagamento e ativação da barbearia
+// Process payment and barbershop activation
 export const processCheckout = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const data = checkoutSchema.parse(req.body);
     const plan = SAAS_PLANS.find(p => p.id === data.planId);
 
     if (!plan) {
-      return res.status(400).json({ error: 'Plano inválido selecionado.' });
+      return res.status(400).json({ error: 'Invalid plan selected.' });
     }
 
     const tenant = await prisma.tenant.findUnique({
@@ -88,19 +88,19 @@ export const processCheckout = async (req: Request, res: Response, next: NextFun
     });
 
     if (!tenant) {
-      return res.status(404).json({ error: 'Barbearia não encontrada.' });
+      return res.status(404).json({ error: 'Barbershop not found.' });
     }
 
-    // Se o pagamento for PIX
+    // If the payment is PIX
     if (data.paymentMethod === 'pix') {
-      // Gera código copia e cola e QR Code simulado/formatado padrão EMV
+      // Generates a simulated/formatted EMV-standard copy-and-paste code and QR Code
       const randomPixCode = `00020126580014BR.GOV.BCB.PIX0136${tenant.id.replace(/-/g, '')}520400005303986540${plan.price.toFixed(2)}5802BR5925BARBER CONTROL SAAS6009SAO PAULO62070503***6304`;
       
-      // Data de expiração calculada
+      // Computed expiration date
       const expiresAt = new Date();
       expiresAt.setMonth(expiresAt.getMonth() + plan.durationMonths);
 
-      // Ativa o tenant automaticamente
+      // Automatically activates the tenant
       const updatedTenant = await prisma.tenant.update({
         where: { id: tenant.id },
         data: {
@@ -113,7 +113,7 @@ export const processCheckout = async (req: Request, res: Response, next: NextFun
 
       return res.json({
         success: true,
-        message: 'Pagamento PIX gerado e processado com sucesso!',
+        message: 'PIX payment generated and processed successfully!',
         paymentMethod: 'pix',
         pixCode: randomPixCode,
         amount: plan.price,
@@ -130,7 +130,7 @@ export const processCheckout = async (req: Request, res: Response, next: NextFun
       });
     }
 
-    // Se o pagamento for Cartão de Crédito
+    // If the payment is by Credit Card
     if (data.paymentMethod === 'credit_card') {
       const expiresAt = new Date();
       expiresAt.setMonth(expiresAt.getMonth() + plan.durationMonths);
@@ -147,7 +147,7 @@ export const processCheckout = async (req: Request, res: Response, next: NextFun
 
       return res.json({
         success: true,
-        message: `Assinatura do ${plan.name} ativada com sucesso!`,
+        message: `${plan.name} subscription activated successfully!`,
         paymentMethod: 'credit_card',
         amount: plan.price,
         plan: plan.name,

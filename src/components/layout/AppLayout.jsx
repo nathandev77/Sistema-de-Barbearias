@@ -22,7 +22,7 @@ const NAV_ITEMS = [
     },
     {
         to: '/admin/agenda',
-        label: 'Agenda',
+        label: 'Schedule',
         icon: (
             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -31,7 +31,7 @@ const NAV_ITEMS = [
     },
     {
         to: '/admin/historico',
-        label: 'Histórico',
+        label: 'History',
         icon: (
             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -40,7 +40,7 @@ const NAV_ITEMS = [
     },
     {
         to: '/admin/clientes',
-        label: 'Clientes',
+        label: 'Clients',
         icon: (
             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -49,7 +49,7 @@ const NAV_ITEMS = [
     },
     {
         to: '/admin/servicos',
-        label: 'Serviços',
+        label: 'Services',
         icon: (
             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
@@ -58,7 +58,7 @@ const NAV_ITEMS = [
     },
     {
         to: '/admin/pdv',
-        label: 'Loja',
+        label: 'Store',
         icon: (
             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -67,7 +67,7 @@ const NAV_ITEMS = [
     },
     {
         to: '/admin/produtos',
-        label: 'Estoque',
+        label: 'Inventory',
         icon: (
             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
@@ -76,7 +76,7 @@ const NAV_ITEMS = [
     },
     {
         to: '/admin/barbeiros',
-        label: 'Barbeiros',
+        label: 'Barbers',
         group: 'financeiro',
         icon: (
             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -86,7 +86,7 @@ const NAV_ITEMS = [
     },
     {
         to: '/admin/planos',
-        label: 'Planos',
+        label: 'Plans',
         icon: (
             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
@@ -95,7 +95,7 @@ const NAV_ITEMS = [
     },
     {
         to: '/admin/vendas',
-        label: 'Vendas',
+        label: 'Sales',
         group: 'financeiro',
         icon: (
             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -105,7 +105,7 @@ const NAV_ITEMS = [
     },
     {
         to: '/admin/controle',
-        label: 'Controle Geral',
+        label: 'General Overview',
         group: 'financeiro',
         icon: (
             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -115,7 +115,7 @@ const NAV_ITEMS = [
     },
     {
         to: '/admin/configuracoes',
-        label: 'Configurações',
+        label: 'Settings',
         group: 'sistema',
         icon: (
             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -132,7 +132,7 @@ export default function AppLayout() {
     const navigate = useNavigate();
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
-    // ── Notificações em Tempo Real ──────────────────────────────────────────
+    // ── Real-Time Notifications ─────────────────────────────────────────────
     const [soundEnabled, setSoundEnabled] = useState(() => {
         return localStorage.getItem('barber_sound_enabled') !== 'false';
     });
@@ -153,22 +153,22 @@ export default function AppLayout() {
     const handleEnableDesktop = async () => {
         const granted = await requestNotificationPermission();
         if (granted) {
-            showDesktopNotification('Notificações Ativadas! 🔔', {
-                body: 'Você receberá alertas aqui sempre que um novo corte for agendado.'
+            showDesktopNotification('Notifications Enabled! 🔔', {
+                body: 'You will receive alerts here whenever a new haircut is booked.'
             });
         }
     };
 
     const testAlert = () => {
         playNotificationSound();
-        showDesktopNotification('✂️ Teste de Notificação!', {
-            body: 'Som e alerta de agendamento funcionando perfeitamente!'
+        showDesktopNotification('✂️ Notification Test!', {
+            body: 'Appointment sound and alert working perfectly!'
         });
         setActiveBanner({
             id: 'test',
-            client_name: 'Cliente Teste',
+            client_name: 'Test Client',
             barber_name: 'Lucas Silva',
-            service_name: 'Corte + Barba',
+            service_name: 'Haircut + Beard',
             date: new Date().toISOString().split('T')[0],
             time: '15:30',
             price: 55.00
@@ -176,7 +176,7 @@ export default function AppLayout() {
         setTimeout(() => setActiveBanner(null), 7000);
     };
 
-    // Polling contínuo a cada 8 segundos
+    // Continuous polling every 8 seconds
     useEffect(() => {
         let isMounted = true;
 
@@ -191,7 +191,7 @@ export default function AppLayout() {
                     return;
                 }
 
-                // Identifica novos agendamentos criados
+                // Detect newly created appointments
                 const newIncoming = appts.filter(a => 
                     !knownApptIdsRef.current.has(a.id) && 
                     (a.status === 'agendado' || a.status === 'confirmado')
@@ -200,25 +200,25 @@ export default function AppLayout() {
                 if (newIncoming.length > 0) {
                     newIncoming.forEach(a => knownApptIdsRef.current.add(a.id));
 
-                    // Toca o sino de notificação
+                    // Ring the notification bell
                     if (soundEnabled) {
                         playNotificationSound();
                     }
 
                     const latest = newIncoming[0];
 
-                    // Notificação Desktop / Sistema Operacional
-                    showDesktopNotification(`✂️ Novo Agendamento (${latest.barber_name})!`, {
-                        body: `${latest.client_name} agendou para ${formatDate(latest.date)} às ${latest.time} (${formatBRL(latest.price)})`
+                    // Desktop / Operating System notification
+                    showDesktopNotification(`✂️ New Appointment (${latest.barber_name})!`, {
+                        body: `${latest.client_name} booked for ${formatDate(latest.date)} at ${latest.time} (${formatBRL(latest.price)})`
                     });
 
-                    // Banner Flutuante no Topo
+                    // Floating Banner at the Top
                     setActiveBanner(latest);
                     setTimeout(() => {
                         if (isMounted) setActiveBanner(null);
                     }, 8000);
 
-                    // Adiciona à lista da central de notificações
+                    // Add to the notification center list
                     setNotifications(prev => [
                         ...newIncoming.map(a => ({
                             ...a,
@@ -230,7 +230,7 @@ export default function AppLayout() {
                     setUnreadCount(prev => prev + newIncoming.length);
                 }
             } catch (err) {
-                // Silencioso para não poluir console em perda de conexão momentânea
+                // Silent to avoid cluttering the console on momentary connection loss
             }
         };
 
@@ -262,7 +262,7 @@ export default function AppLayout() {
         setUnreadCount(prev => Math.max(0, prev - 1));
     };
 
-    // Quando o usuário entra na Agenda, zera o contador de notificações automaticamente
+    // When the user opens the Schedule, automatically reset the notification counter
     useEffect(() => {
         if (location.pathname === '/admin/agenda' || location.pathname === '/admin/agenda/') {
             setUnreadCount(0);
@@ -300,8 +300,8 @@ export default function AppLayout() {
                         </svg>
                     </div>
                     <div>
-                        <p className="text-sm font-bold text-sidebar-foreground font-heading tracking-wide">Controle Gestão</p>
-                        <p className="text-xs text-muted-foreground">Gestão Profissional</p>
+                        <p className="text-sm font-bold text-sidebar-foreground font-heading tracking-wide">Management Control</p>
+                        <p className="text-xs text-muted-foreground">Professional Management</p>
                     </div>
                 </div>
 
@@ -326,7 +326,7 @@ export default function AppLayout() {
                             {item.label}
                         </NavLink>
                     ))}
-                    <p className="px-3 mb-2 mt-5 text-[10px] uppercase tracking-widest text-muted-foreground/60 font-medium">Financeiro</p>
+                    <p className="px-3 mb-2 mt-5 text-[10px] uppercase tracking-widest text-muted-foreground/60 font-medium">Finance</p>
                     {NAV_ITEMS.filter(i => i.group === 'financeiro').map(item => (
                         <NavLink
                             key={item.to}
@@ -356,13 +356,13 @@ export default function AppLayout() {
                         </div>
                         <div className="flex-1 min-w-0">
                             <p className="text-xs font-medium text-sidebar-foreground truncate">
-                                {adminUser?.full_name ?? 'Administrador'}
+                                {adminUser?.full_name ?? 'Administrator'}
                             </p>
                             <p className="text-[10px] text-muted-foreground truncate">{adminUser?.email ?? ''}</p>
                         </div>
                         <button
                             onClick={logoutAdmin}
-                            title="Sair"
+                            title="Log out"
                             className="text-muted-foreground hover:text-foreground transition-colors p-1"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -387,19 +387,19 @@ export default function AppLayout() {
                             </svg>
                         </button>
                         <h1 className="text-base font-semibold text-foreground">
-                            {currentPage?.label ?? 'Página'}
+                            {currentPage?.label ?? 'Page'}
                         </h1>
                     </div>
 
                     <div className="flex items-center gap-3">
-                        {/* Central de Notificações com Sino */}
+                        {/* Notification Center with Bell */}
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <button
                                     type="button"
                                     onClick={markAllAsRead}
                                     className="relative p-2 rounded-xl border border-border/80 bg-secondary/40 text-muted-foreground hover:text-foreground hover:bg-secondary transition-all cursor-pointer outline-none select-none group"
-                                    title="Notificações de Agendamentos"
+                                    title="Appointment Notifications"
                                 >
                                     <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 transition-transform group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
@@ -414,10 +414,10 @@ export default function AppLayout() {
                             </DropdownMenuTrigger>
 
                             <DropdownMenuContent align="end" className="w-80 sm:w-96 p-0 bg-card/98 backdrop-blur-xl border border-border shadow-2xl z-50 rounded-2xl overflow-hidden">
-                                {/* Cabeçalho da Central */}
+                                {/* Center Header */}
                                 <div className="flex items-center justify-between px-4 py-3 border-b border-border/80 bg-secondary/30">
                                     <div className="flex items-center gap-2">
-                                        <span className="text-sm font-semibold text-foreground">Central de Alertas</span>
+                                        <span className="text-sm font-semibold text-foreground">Alert Center</span>
                                         {notifications.length > 0 && (
                                             <span className="text-[10px] font-bold bg-primary/20 text-primary px-2 py-0.5 rounded-full">
                                                 {notifications.length}
@@ -425,7 +425,7 @@ export default function AppLayout() {
                                         )}
                                     </div>
                                     <div className="flex items-center gap-1.5">
-                                        {/* Botão de Ligar/Desligar Som */}
+                                        {/* Sound On/Off Button */}
                                         <button
                                             type="button"
                                             onClick={toggleSound}
@@ -434,32 +434,32 @@ export default function AppLayout() {
                                                     ? 'bg-primary/10 border-primary/30 text-primary hover:bg-primary/20' 
                                                     : 'bg-secondary border-border text-muted-foreground hover:bg-secondary/80'
                                             }`}
-                                            title={soundEnabled ? 'Som ativado (Clique para silenciar)' : 'Som mudo (Clique para ativar)'}
+                                            title={soundEnabled ? 'Sound on (Click to mute)' : 'Sound muted (Click to enable)'}
                                         >
-                                            {soundEnabled ? '🔊 Som Ativo' : '🔇 Mudo'}
+                                            {soundEnabled ? '🔊 Sound On' : '🔇 Muted'}
                                         </button>
                                     </div>
                                 </div>
 
-                                {/* Ações rápidas */}
+                                {/* Quick actions */}
                                 <div className="grid grid-cols-2 gap-1.5 p-2 bg-secondary/15 border-b border-border/60 text-xs">
                                     <button
                                         type="button"
                                         onClick={testAlert}
                                         className="py-1.5 px-2 rounded-lg bg-secondary/60 hover:bg-secondary text-foreground text-center font-medium transition-colors border border-border/50 flex items-center justify-center gap-1.5"
                                     >
-                                        <span>🔔 Testar Alerta</span>
+                                        <span>🔔 Test Alert</span>
                                     </button>
                                     <button
                                         type="button"
                                         onClick={handleEnableDesktop}
                                         className="py-1.5 px-2 rounded-lg bg-secondary/60 hover:bg-secondary text-foreground text-center font-medium transition-colors border border-border/50 flex items-center justify-center gap-1.5"
                                     >
-                                        <span>🖥️ Notif. Desktop</span>
+                                        <span>🖥️ Desktop Notif.</span>
                                     </button>
                                 </div>
 
-                                {/* Lista de Notificações */}
+                                {/* Notification List */}
                                 <div className="max-h-72 overflow-y-auto divide-y divide-border/40">
                                     {notifications.length === 0 ? (
                                         <div className="p-6 text-center text-muted-foreground">
@@ -468,8 +468,8 @@ export default function AppLayout() {
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                                                 </svg>
                                             </div>
-                                            <p className="text-xs font-medium">Nenhum novo agendamento pendente</p>
-                                            <p className="text-[11px] text-muted-foreground/70 mt-0.5">Tudo limpo! O sistema avisará com som e alerta assim que um cliente agendar.</p>
+                                            <p className="text-xs font-medium">No new pending appointments</p>
+                                            <p className="text-[11px] text-muted-foreground/70 mt-0.5">All clear! The system will notify you with a sound and alert as soon as a client books.</p>
                                         </div>
                                     ) : (
                                         notifications.map((n, idx) => (
@@ -487,17 +487,17 @@ export default function AppLayout() {
                                                         <span className="text-[10px] font-semibold text-primary">{formatBRL(n.price)}</span>
                                                     </div>
                                                     <p className="text-[11px] text-muted-foreground truncate">
-                                                        Barbeiro: <strong className="text-foreground">{n.barber_name}</strong>
+                                                        Barber: <strong className="text-foreground">{n.barber_name}</strong>
                                                     </p>
                                                     <div className="flex items-center justify-between mt-1 text-[10px] text-muted-foreground/80">
-                                                        <span>📅 {formatDate(n.date)} às {n.time}</span>
-                                                        <span className="text-primary font-medium group-hover:underline">Ver na Agenda →</span>
+                                                        <span>📅 {formatDate(n.date)} at {n.time}</span>
+                                                        <span className="text-primary font-medium group-hover:underline">View in Schedule →</span>
                                                     </div>
                                                 </div>
-                                                {/* Botão de marcar individual como lida / dispensar */}
+                                                {/* Button to mark a single item as read / dismiss */}
                                                 <button
                                                     type="button"
-                                                    title="Marcar como lida"
+                                                    title="Mark as read"
                                                     onClick={(e) => handleDismissNotification(e, idx)}
                                                     className="absolute top-2.5 right-2.5 p-1 rounded-md text-muted-foreground/50 hover:text-foreground hover:bg-secondary transition-all"
                                                 >
@@ -517,7 +517,7 @@ export default function AppLayout() {
                                             onClick={markAllAsRead}
                                             className="text-muted-foreground hover:text-foreground text-[11px] font-medium hover:underline"
                                         >
-                                            Marcar todas como lidas
+                                            Mark all as read
                                         </button>
                                         <button
                                             type="button"
@@ -527,14 +527,14 @@ export default function AppLayout() {
                                             }}
                                             className="font-semibold text-primary hover:underline text-[11px] flex items-center gap-1"
                                         >
-                                            Ir para Agenda completa <span>→</span>
+                                            Go to full Schedule <span>→</span>
                                         </button>
                                     </div>
                                 )}
                             </DropdownMenuContent>
                         </DropdownMenu>
 
-                        {/* Indicador Online */}
+                        {/* Online Indicator */}
                         <div className="flex items-center gap-2 pl-2 border-l border-border/80">
                             <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
                             <span className="text-xs text-muted-foreground hidden sm:inline">Online</span>
@@ -544,16 +544,16 @@ export default function AppLayout() {
 
                 {/* Page content */}
                 <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
-                    {/* Banner de Teste Grátis (Trial) */}
+                    {/* Free Trial Banner */}
                     {adminUser?.barbershop?.subscriptionStatus === 'trial' && (
                         <div className="mb-6 p-3.5 bg-amber-500/10 border border-amber-500/30 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-amber-200">
                             <div className="flex items-center gap-2.5">
                                 <span className="text-base">⏳</span>
                                 <div>
-                                    <strong className="text-amber-300 font-bold">Você está utilizando o período de teste grátis (4 dias)!</strong>
+                                    <strong className="text-amber-300 font-bold">You are using the free trial period (4 days)!</strong>
                                     {adminUser?.barbershop?.trialDaysRemaining !== null && (
                                         <span className="text-amber-200/80 ml-1">
-                                            ({adminUser.barbershop.trialDaysRemaining} {adminUser.barbershop.trialDaysRemaining === 1 ? 'dia restante' : 'dias restantes'})
+                                            ({adminUser.barbershop.trialDaysRemaining} {adminUser.barbershop.trialDaysRemaining === 1 ? 'day left' : 'days left'})
                                         </span>
                                     )}
                                 </div>
@@ -562,7 +562,7 @@ export default function AppLayout() {
                                 to="/planos"
                                 className="inline-flex items-center justify-center gap-1 px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-black font-bold rounded-xl transition-all shrink-0"
                             >
-                                Contratar Plano Definitivo →
+                                Get a Full Plan →
                             </Link>
                         </div>
                     )}
@@ -571,7 +571,7 @@ export default function AppLayout() {
                 </main>
             </div>
 
-            {/* Banner Flutuante de Notificação em Tempo Real (Global Fixed / Top Layer) */}
+            {/* Floating Real-Time Notification Banner (Global Fixed / Top Layer) */}
             {activeBanner && (
                 <div 
                     onClick={() => { navigate('/admin/agenda'); setActiveBanner(null); }}
@@ -583,7 +583,7 @@ export default function AppLayout() {
                         </div>
                         <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between">
-                                <span className="text-[11px] font-bold uppercase tracking-wider text-primary">Novo Agendamento!</span>
+                                <span className="text-[11px] font-bold uppercase tracking-wider text-primary">New Appointment!</span>
                                 <button 
                                     onClick={(e) => { e.stopPropagation(); setActiveBanner(null); }}
                                     className="text-muted-foreground hover:text-foreground text-sm p-1 hover:bg-secondary/60 rounded-lg transition-colors"
@@ -593,12 +593,12 @@ export default function AppLayout() {
                             </div>
                             <p className="text-sm font-bold text-foreground mt-0.5 truncate">{activeBanner.client_name}</p>
                             <p className="text-xs text-muted-foreground mt-0.5">
-                                com <strong className="text-foreground">{activeBanner.barber_name}</strong> • {formatDate(activeBanner.date)} às <strong>{activeBanner.time}</strong>
+                                with <strong className="text-foreground">{activeBanner.barber_name}</strong> • {formatDate(activeBanner.date)} at <strong>{activeBanner.time}</strong>
                             </p>
                             <div className="flex items-center justify-between mt-2.5 pt-2.5 border-t border-border/80 text-xs">
                                 <span className="font-bold text-primary text-sm">{formatBRL(activeBanner.price)}</span>
                                 <span className="text-primary font-semibold hover:underline flex items-center gap-1">
-                                    Abrir Agenda <span>→</span>
+                                    Open Schedule <span>→</span>
                                 </span>
                             </div>
                         </div>

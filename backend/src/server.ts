@@ -26,26 +26,26 @@ import subscriptionCheckoutRoutes from './routes/subscriptionCheckoutRoutes';
 const app = express();
 app.set('trust proxy', 1);
 
-// ── Segurança ──────────────────────────────────────────────
+// ── Security ──────────────────────────────────────────────
 app.use(helmet());
 app.use(sanitizeMiddleware); // Global input sanitization — Zero Trust
 
-// CORS: Em produção, define FRONTEND_URL no .env para restringir a origem
+// CORS: In production, set FRONTEND_URL in .env to restrict the origin
 const allowedOrigin = process.env.FRONTEND_URL ? [process.env.FRONTEND_URL, 'http://localhost:5173'] : 'http://localhost:5173';
 app.use(cors({ origin: allowedOrigin }));
 
-// Rate limiting: apenas em rotas de auth para evitar brute-force.
-// Rotas do bot (/api/bot/*) são isentas — N8N faz múltiplas chamadas legítimas.
+// Rate limiting: only on auth routes to prevent brute-force.
+// Bot routes (/api/bot/*) are exempt — N8N makes multiple legitimate calls.
 const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 50,                   // 50 tentativas por IP a cada 15 min
-  message: { error: 'Muitas tentativas. Por favor, tente novamente mais tarde.' },
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 50,                   // 50 attempts per IP every 15 min
+  message: { error: 'Too many attempts. Please try again later.' },
   standardHeaders: true,
   legacyHeaders: false,
 });
 app.use('/api/auth', authLimiter);
 
-// ── Middlewares básicos ────────────────────────────────────
+// ── Basic middlewares ────────────────────────────────────
 app.use(express.json());
 app.use(morgan('dev'));
 
@@ -53,17 +53,17 @@ app.use(morgan('dev'));
 app.get('/', (_req, res) => {
   res.status(200).json({
     status: 'online',
-    message: 'Backend SaaS Barber API ativa',
+    message: 'SaaS Barber API Backend is up',
     frontend: 'http://localhost:5173',
     health: '/health'
   });
 });
 
 app.get('/health', (_req, res) => {
-  res.status(200).json({ status: 'OK', message: 'API SaaS Barber operante e segura.' });
+  res.status(200).json({ status: 'OK', message: 'SaaS Barber API operational and secure.' });
 });
 
-// ── Rotas ──────────────────────────────────────────────────
+// ── Routes ──────────────────────────────────────────────────
 app.use('/api/auth', authRoutes);
 app.use('/api/portal', portalRoutes);
 app.use('/api/clients', clientRoutes);
@@ -81,12 +81,12 @@ app.use('/api/bot', botRoutes);
 app.use('/api/tenant', tenantRoutes);
 app.use('/api/otp', otpRoutes);
 
-// ── Tratamento global de erros (deve ser o último middleware) ──
+// ── Global error handling (must be the last middleware) ──
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 3001;
 
 app.listen(PORT, () => {
-  console.log(`[🚀] Backend rodando na porta ${PORT}`);
+  console.log(`[🚀] Backend running on port ${PORT}`);
   console.log(`[🔒] Security: Helmet, CORS (${allowedOrigin}), Rate-Limit ENABLED.`);
 });// 1

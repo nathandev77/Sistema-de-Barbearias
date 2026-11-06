@@ -4,7 +4,7 @@ import { prisma } from '../prisma';
 import { sendTrialWelcomeEmail } from '../utils/mailer';
 
 // ==========================================
-// HELPERS Internos
+// Internal HELPERS
 // ==========================================
 function generateSlug(text: string): string {
   return text
@@ -30,16 +30,16 @@ function generateTempPassword(): string {
 // ==========================================
 export class AuthService {
   /**
-   * Registra um Trial Grátis Rápido
+   * Registers a Quick Free Trial
    */
   static async registerTrial(data: any, origin: string) {
-    // 1. Verificar se o e-mail já existe
+    // 1. Check whether the email already exists
     const existingUser = await prisma.user.findUnique({ where: { email: data.email } });
     if (existingUser) {
-      throw new Error('Este e-mail já possui uma conta cadastrada. Faça login para acessar sua barbearia.');
+      throw new Error('This email already has a registered account. Log in to access your barbershop.');
     }
 
-    // 2. Gerar Slug Único para a Barbearia
+    // 2. Generate a Unique Slug for the Barbershop
     let baseSlug = generateSlug(data.barbershopName);
     if (!baseSlug || baseSlug.length < 2) baseSlug = 'barbearia';
     let uniqueSlug = baseSlug;
@@ -49,16 +49,16 @@ export class AuthService {
       uniqueSlug = `${baseSlug}-${counter++}`;
     }
 
-    // 3. Gerar Senha Temporária e Hashear
+    // 3. Generate and Hash a Temporary Password
     const tempPassword = generateTempPassword();
     const saltRounds = 12;
     const hashedPassword = await bcrypt.hash(tempPassword, saltRounds);
 
-    // 4. Calcular período de Trial (4 dias)
+    // 4. Compute the Trial period (4 days)
     const fourDaysInMs = 4 * 24 * 60 * 60 * 1000;
     const trialEndsAt = new Date(Date.now() + fourDaysInMs);
 
-    // 5. Transação Atômica para Criar Tenant + Usuário Admin
+    // 5. Atomic Transaction to Create Tenant + Admin User
     const result = await prisma.$transaction(async (tx: any) => {
       const newTenant = await tx.tenant.create({
         data: {
@@ -85,7 +85,7 @@ export class AuthService {
       return { tenant: newTenant, user: newUser };
     });
 
-    // 6. Enviar E-mail com Credenciais
+    // 6. Send Email with Credentials
     const loginUrl = `${origin}/admin/login`;
 
     await sendTrialWelcomeEmail({
@@ -99,7 +99,7 @@ export class AuthService {
     const { password: _, ...userWithoutPassword } = result.user;
 
     return {
-      message: 'Cadastro de teste grátis criado com sucesso! Enviamos seus dados de acesso por e-mail.',
+      message: 'Free trial account created successfully! We have sent your login details by email.',
       email: data.email,
       barbershopName: data.barbershopName,
       slug: uniqueSlug,
@@ -109,7 +109,7 @@ export class AuthService {
   }
 
   /**
-   * Troca Obrigatória de Senha no Primeiro Acesso
+   * Mandatory Password Change on First Access
    */
   static async firstAccessChangePassword(data: any) {
     const user = await prisma.user.findUnique({
@@ -118,12 +118,12 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new Error('Credenciais inválidas.');
+      throw new Error('Invalid credentials.');
     }
 
     const isTempValid = await bcrypt.compare(data.tempPassword, user.password);
     if (!isTempValid) {
-      throw new Error('A senha temporária digitada está incorreta.');
+      throw new Error('The temporary password entered is incorrect.');
     }
 
     const saltRounds = 12;
@@ -139,7 +139,7 @@ export class AuthService {
     });
 
     const secret = process.env.JWT_SECRET;
-    if (!secret) throw new Error('JWT_SECRET não configurado.');
+    if (!secret) throw new Error('JWT_SECRET is not configured.');
 
     const payload = {
       id: updatedUser.id,
@@ -160,7 +160,7 @@ export class AuthService {
     const { password: _, ...userWithoutPassword } = updatedUser;
 
     return {
-      message: 'Senha alterada com sucesso! Bem-vindo ao seu painel.',
+      message: 'Password changed successfully! Welcome to your dashboard.',
       token,
       user: userWithoutPassword,
       barbershop: {
@@ -171,19 +171,19 @@ export class AuthService {
   }
 
   /**
-   * Registra um Tenant Completo (SaaS Admin ou Painel de Vendas)
+   * Registers a Full Tenant (SaaS Admin or Sales Panel)
    */
   static async registerTenant(data: any, origin: string) {
     const barbershopSlug = data.barbershopSlug || generateSlug(data.barbershopName);
 
     const existingTenant = await prisma.tenant.findUnique({ where: { slug: barbershopSlug } });
     if (existingTenant) {
-      throw new Error('Este link/slug já está sendo usado por outra barbearia.');
+      throw new Error('This link/slug is already in use by another barbershop.');
     }
 
     const existingUser = await prisma.user.findUnique({ where: { email: data.email } });
     if (existingUser) {
-      throw new Error('Este email já está cadastrado.');
+      throw new Error('This email is already registered.');
     }
 
     const passwordToUse = data.password || generateTempPassword();
@@ -234,7 +234,7 @@ export class AuthService {
     const { password: _, ...userWithoutPassword } = result.user;
 
     return {
-      message: 'Barbearia e Conta criadas com sucesso! Você tem 4 dias de teste grátis.',
+      message: 'Barbershop and Account created successfully! You have a 4-day free trial.',
       tenant: result.tenant,
       user: userWithoutPassword,
       trialEndsAt,
@@ -243,7 +243,7 @@ export class AuthService {
   }
 
   /**
-   * Lógica de Autenticação Centralizada
+   * Centralized Authentication Logic
    */
   static async login(data: any) {
     const user = await prisma.user.findUnique({ 
@@ -252,25 +252,25 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new Error('Credenciais inválidas.');
+      throw new Error('Invalid credentials.');
     }
 
     const isPasswordValid = await bcrypt.compare(data.password, user.password);
     
     if (!isPasswordValid) {
-      throw new Error('Credenciais inválidas.');
+      throw new Error('Invalid credentials.');
     }
 
     if (user.mustChangePassword) {
       return {
         mustChangePassword: true,
         email: user.email,
-        message: 'Primeiro acesso detectado. É obrigatório criar sua senha definitiva antes de prosseguir.'
+        message: 'First access detected. You must create your permanent password before continuing.'
       };
     }
 
     if (!user.tenant.isActive || user.tenant.subscriptionStatus === 'blocked') {
-      throw new Error('Acesso bloqueado. A barbearia encontra-se suspensa pelo administrador.');
+      throw new Error('Access blocked. The barbershop has been suspended by the administrator.');
     }
 
     const now = new Date();
@@ -278,11 +278,11 @@ export class AuthService {
     const trialEnded = user.tenant.trialEndsAt ? new Date(user.tenant.trialEndsAt) < now : false;
 
     if (isTrial && trialEnded) {
-      throw new Error('Seu período de teste de 4 dias expirou. Escolha um plano para continuar utilizando o Barber Control.');
+      throw new Error('Your 4-day trial period has expired. Choose a plan to keep using Barber Control.');
     }
 
     const secret = process.env.JWT_SECRET;
-    if (!secret) throw new Error('JWT_SECRET não configurado.');
+    if (!secret) throw new Error('JWT_SECRET is not configured.');
 
     const payload = {
       id: user.id,

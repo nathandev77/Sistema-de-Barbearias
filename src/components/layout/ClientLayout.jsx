@@ -16,7 +16,7 @@ export default function ClientLayout() {
         if (!token || !user) {
             navigate(`/${slug}/login`, { replace: true });
         } else {
-            // Busca o nome da barbearia pela rota real
+            // Fetch the barbershop name from the real route
             const API_URL = import.meta.env.PROD ? '/api' : 'http://localhost:3001/api';
             fetch(`${API_URL}/auth/tenant/${slug}`)
                 .then(res => res.json())
@@ -26,7 +26,7 @@ export default function ClientLayout() {
     }, [slug, navigate, clientUser]);
 
     if (!clientUser || clientUser.barbershopSlug !== slug) {
-        return null; // previne renderização antes do redirecionamento
+        return null; // prevent rendering before the redirect
     }
 
     const etherBackground = useMemo(() => (
@@ -88,14 +88,14 @@ export default function ClientLayout() {
                     </div>
                     <div>
                         <p style={{ fontSize: 16, fontWeight: 700, color: 'hsl(210 20% 95%)', lineHeight: 1.2 }}>
-                            {barbershopName || 'Barbearia'}
+                            {barbershopName || 'Barbershop'}
                         </p>
-                        <p style={{ fontSize: 11, color: 'hsl(220 10% 60%)' }}>Área do Cliente</p>
+                        <p style={{ fontSize: 11, color: 'hsl(220 10% 60%)' }}>Client Area</p>
                     </div>
                 </div>
                 
                 <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                    <span style={{ fontSize: 13, color: 'hsl(210 20% 95%)' }}>Olá, {clientUser?.full_name?.split(' ')[0] || 'Cliente'}</span>
+                    <span style={{ fontSize: 13, color: 'hsl(210 20% 95%)' }}>Hello, {clientUser?.full_name?.split(' ')[0] || 'Client'}</span>
                     <button
                         onClick={logoutClient}
                         style={{
@@ -104,7 +104,7 @@ export default function ClientLayout() {
                             color: '#fff', fontSize: 12, padding: '6px 12px', borderRadius: 8, cursor: 'pointer',
                         }}
                     >
-                        Sair
+                        Log out
                     </button>
                 </div>
             </header>

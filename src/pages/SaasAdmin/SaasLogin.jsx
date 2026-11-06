@@ -16,16 +16,16 @@ export default function SaasLogin() {
         setError('');
 
         try {
-            // Temporariamente salvamos a chave para fazer o teste
+            // Temporarily save the key so we can test it
             localStorage.setItem('saas_master_key', key);
             
-            // Fazemos uma chamada rápida para testar a chave
+            // Make a quick call to test the key
             await fetchSaas('/saas/dashboard');
             
             navigate('/saas-admin');
         } catch (err) {
             localStorage.removeItem('saas_master_key');
-            setError('Acesso Negado: Chave Mestra inválida ou ocorreu um erro.');
+            setError('Access Denied: Invalid Master Key or an error occurred.');
         } finally {
             setLoading(false);
         }
@@ -53,7 +53,7 @@ export default function SaasLogin() {
                             <Shield className="w-8 h-8 text-primary" />
                         </div>
                         <h1 className="text-2xl font-bold text-white tracking-tight">Barber Control</h1>
-                        <p className="text-xs font-semibold tracking-wider uppercase text-primary/80 mt-1">Painel Master & Gestão Global</p>
+                        <p className="text-xs font-semibold tracking-wider uppercase text-primary/80 mt-1">Master Panel & Global Management</p>
                     </div>
 
                     <form onSubmit={handleLogin} className="space-y-6">
@@ -63,7 +63,7 @@ export default function SaasLogin() {
                             </label>
                             <input
                                 type="password"
-                                placeholder="Insira a chave de acesso..."
+                                placeholder="Enter the access key..."
                                 value={key}
                                 onChange={(e) => setKey(e.target.value)}
                                 className="w-full bg-black/50 border border-white/10 text-white placeholder:text-gray-500 h-12 rounded-xl focus:border-primary/50 focus:ring-primary/50 px-4"
@@ -86,10 +86,10 @@ export default function SaasLogin() {
                             {loading ? (
                                 <>
                                     <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                                    Autenticando...
+                                    Authenticating...
                                 </>
                             ) : (
-                                "Acessar Painel"
+                                "Access Panel"
                             )}
                         </button>
                     </form>

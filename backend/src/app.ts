@@ -25,13 +25,13 @@ app.set('trust proxy', 1);
 
 // ── Security Middlewares ────────────────────────────────────────────────────
 app.use(helmet());
-app.use(cors({ origin: '*' })); // Ajustar para o domínio do frontend em produção
+app.use(cors({ origin: '*' })); // Adjust to the frontend domain in production
 app.use(sanitizeMiddleware); // Global input sanitization — Zero Trust
 
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 100, // Limite de 100 requisições por IP
-  message: 'Muitas requisições deste IP, por favor tente novamente mais tarde.',
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit of 100 requests per IP
+  message: 'Too many requests from this IP, please try again later.',
   skip: (req) => req.originalUrl.startsWith('/api/bot/'),
 });
 app.use('/api/', limiter);
@@ -42,7 +42,7 @@ app.use(morgan('dev'));
 
 // ── Health Check ────────────────────────────────────────────────────────────
 app.get('/health', (_req, res) => {
-  res.status(200).json({ status: 'OK', message: 'API SaaS Barber operante e segura.' });
+  res.status(200).json({ status: 'OK', message: 'SaaS Barber API operational and secure.' });
 });
 
 // ── API Routes ──────────────────────────────────────────────────────────────

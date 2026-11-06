@@ -15,110 +15,110 @@ import TrialModal from '@/components/TrialModal';
 const PLANS = [
     {
         id: 'monthly',
-        name: 'Plano Mensal',
+        name: 'Monthly Plan',
         price: '59,90',
-        period: '/mês',
-        description: 'Ideal para barbeiros autônomos e barbearias que desejam começar a organizar sua gestão.',
+        period: '/month',
+        description: 'Ideal for independent barbers and barbershops that want to start organizing their management.',
         highlight: false,
         features: [
-            'Agendamentos Ilimitados 24 horas',
-            'Link Próprio com o Nome da sua Barbearia',
-            'Painel Financeiro Completo e Fechamento de Caixa',
-            'Cálculo Automático de Comissões de Barbeiros',
-            'Cadastro Ilimitado de Clientes e Serviços',
-            'Histórico de Cortes e Preferências do Cliente',
-            'Integração com Robô de WhatsApp',
-            'Suporte Técnico Direto'
+            'Unlimited 24-hour Bookings',
+            'Custom Link with Your Barbershop Name',
+            'Complete Financial Dashboard and Cash Closing',
+            'Automatic Barber Commission Calculation',
+            'Unlimited Client and Service Records',
+            'Client Haircut History and Preferences',
+            'WhatsApp Bot Integration',
+            'Direct Technical Support'
         ]
     },
     {
         id: 'quarterly',
-        name: 'Plano Trimestral',
+        name: 'Quarterly Plan',
         price: '149,90',
-        period: '/trimestre',
-        badge: 'Mais Escolhido 🔥',
-        savings: 'Economia de 16%',
-        description: 'A melhor escolha para barbearias consolidadas que buscam alta produtividade e estabilidade.',
+        period: '/quarter',
+        badge: 'Most Popular 🔥',
+        savings: 'Save 16%',
+        description: 'The best choice for established barbershops seeking high productivity and stability.',
         highlight: true,
         features: [
-            'Tudo o que está incluso no Plano Mensal',
-            'Economia real de 16% na assinatura',
-            'Módulo de PDV e Controle de Estoque de Produtos',
-            'Relatórios Avançados de Faturamento e Ticket Médio',
-            'Gestão de Múltiplos Barbeiros com Acesso Próprio',
-            'Backup Automático em Nuvem em Tempo Real',
-            'Treinamento e Setup Rápido do Sistema',
-            'Suporte Prioritário via WhatsApp'
+            'Everything included in the Monthly Plan',
+            'Real 16% savings on your subscription',
+            'POS Module and Product Inventory Control',
+            'Advanced Revenue and Average Ticket Reports',
+            'Multiple Barber Management with Individual Access',
+            'Real-time Automatic Cloud Backup',
+            'Training and Quick System Setup',
+            'Priority Support via WhatsApp'
         ]
     },
     {
         id: 'annual',
-        name: 'Plano Anual VIP',
+        name: 'VIP Annual Plan',
         price: '499,00',
-        period: '/ano',
-        badge: '2 Meses Grátis 🎁',
-        savings: 'Equivale a R$ 41,58/mês',
-        description: 'Máximo custo-benefício para barbearias de alto padrão que querem dominar a região.',
+        period: '/year',
+        badge: '2 Months Free 🎁',
+        savings: 'Equivalent to R$ 41,58/month',
+        description: 'Maximum value for high-end barbershops that want to dominate their area.',
         highlight: false,
         features: [
-            'Tudo o que está incluso no Plano Trimestral',
-            '2 Meses 100% Grátis (Maior economia do mercado)',
-            'Multi-profissionais com relatórios individuais detalhados',
-            'Taxa Zero de Implantação e Consultoria de Configuração',
-            'Consultoria de Boas Práticas para Barbearias',
-            'Prioridade Máxima e Canal Direto com a Diretoria'
+            'Everything included in the Quarterly Plan',
+            '2 Months 100% Free (Biggest savings on the market)',
+            'Multiple professionals with detailed individual reports',
+            'Zero Setup Fee and Configuration Consulting',
+            'Best Practices Consulting for Barbershops',
+            'Top Priority and Direct Channel to Management'
         ]
     }
 ];
 
 const COMPARISON_ITEMS = [
     {
-        feature: 'Agendamentos fora do horário',
-        manual: 'Perde o cliente que manda mensagem à noite ou de madrugada',
-        system: 'O cliente agenda sozinho 24h por dia pelo link da barbearia'
+        feature: 'After-hours bookings',
+        manual: 'Lose clients who message at night or early morning',
+        system: 'Clients book on their own 24/7 through the barbershop link'
     },
     {
-        feature: 'Faltas e Esquecimentos',
-        manual: 'Barbeiro fica de braços cruzados perdendo faturamento',
-        system: 'Lembretes e confirmações reduzem faltas em até 80%'
+        feature: 'No-shows and Forgotten Appointments',
+        manual: 'Barbers sit idle, losing revenue',
+        system: 'Reminders and confirmations reduce no-shows by up to 80%'
     },
     {
-        feature: 'Cálculo de Comissões',
-        manual: 'Horas somando fichas de papel, sujeito a erros e atritos',
-        system: 'Relatório 100% automático por barbeiro em 1 clique'
+        feature: 'Commission Calculation',
+        manual: 'Hours adding up paper slips, prone to errors and disputes',
+        system: '100% automatic per-barber report in 1 click'
     },
     {
-        feature: 'Controle de Caixa e Lucro',
-        manual: 'Não sabe quanto realmente faturou ou gastou no mês',
-        system: 'Gráficos em tempo real de entradas, saídas e lucro líquido'
+        feature: 'Cash and Profit Control',
+        manual: 'No idea how much you actually earned or spent in the month',
+        system: 'Real-time charts of income, expenses and net profit'
     },
     {
-        feature: 'Venda de Produtos (PDV)',
-        manual: 'Falta de controle de estoque e vendas esquecidas',
-        system: 'PDV integrado com baixa automática no estoque'
+        feature: 'Product Sales (POS)',
+        manual: 'No inventory control and forgotten sales',
+        system: 'Integrated POS with automatic inventory deduction'
     }
 ];
 
 const FAQS = [
     {
-        q: 'Preciso cadastrar cartão de crédito para usar os 4 dias grátis?',
-        a: 'Não! Você pode criar sua barbearia agora e testar 100% das ferramentas por 4 dias sem precisar informar nenhum dado de pagamento. Só assina se gostar do sistema.'
+        q: 'Do I need to register a credit card to use the 4 free days?',
+        a: 'No! You can create your barbershop now and test 100% of the tools for 4 days without providing any payment details. You only subscribe if you like the system.'
     },
     {
-        q: 'Meus clientes precisam baixar algum aplicativo para agendar?',
-        a: 'Não! Seus clientes acessam um link direto e ultra rápido pelo navegador do celular ou WhatsApp (ex: controlbarber.online/sua-barbearia), escolhem o profissional, o serviço, a data e confirmam em segundos.'
+        q: 'Do my clients need to download an app to book?',
+        a: 'No! Your clients open a direct, ultra-fast link in their phone browser or WhatsApp (e.g. controlbarber.online/your-barbershop), choose the professional, service and date, and confirm in seconds.'
     },
     {
-        q: 'Como funciona o pagamento? É liberado na hora?',
-        a: 'Sim! Pagando por PIX ou Cartão de Crédito, a liberação e ativação do seu sistema é instantânea e automática.'
+        q: 'How does payment work? Is access granted immediately?',
+        a: 'Yes! When you pay by PIX or Credit Card, your system is unlocked and activated instantly and automatically.'
     },
     {
-        q: 'Existe algum contrato de fidelidade ou multa por cancelamento?',
-        a: 'Nenhum! Você tem total liberdade para cancelar ou alterar seu plano quando quiser, sem nenhuma taxa ou complicação.'
+        q: 'Is there a lock-in contract or cancellation fee?',
+        a: 'None! You are completely free to cancel or change your plan whenever you want, with no fees or hassle.'
     },
     {
-        q: 'Consigo usar no celular, tablet e computador?',
-        a: 'Sim! O Barber Control funciona perfeitamente em qualquer dispositivo (celular Android/iPhone, tablet, notebook ou computador de balcão).'
+        q: 'Can I use it on my phone, tablet and computer?',
+        a: 'Yes! Barber Control works perfectly on any device (Android/iPhone, tablet, laptop or front-desk computer).'
     }
 ];
 
@@ -138,7 +138,7 @@ export default function PricingPlans() {
 
     // Interactive Demo State in Smartphone Mockup
     const [demoBarber, setDemoBarber] = useState('Lucas Silva');
-    const [demoService, setDemoService] = useState('Corte Degradê');
+    const [demoService, setDemoService] = useState('Fade Haircut');
     const [demoPrice, setDemoPrice] = useState('R$ 45,00');
     const [demoTime, setDemoTime] = useState('15:00');
     const [demoBooked, setDemoBooked] = useState(false);
@@ -187,11 +187,11 @@ export default function PricingPlans() {
 
             if (!tenantId) {
                 if (!barbershopSlug.trim()) {
-                    throw new Error('Informe o link/slug da sua barbearia para ativar o sistema.');
+                    throw new Error('Please enter your barbershop link/slug to activate the system.');
                 }
                 const tRes = await fetch(`${API_URL}/auth/tenant/${barbershopSlug.trim().toLowerCase()}`);
                 if (!tRes.ok) {
-                    throw new Error('Barbearia não encontrada. Verifique o link/slug digitado ou crie sua conta primeiro.');
+                    throw new Error('Barbershop not found. Check the link/slug you entered or create your account first.');
                 }
                 const tData = await tRes.json();
                 tenantId = tData.id;
@@ -211,7 +211,7 @@ export default function PricingPlans() {
             const result = await response.json();
 
             if (!response.ok) {
-                throw new Error(result.error || 'Erro ao processar pagamento.');
+                throw new Error(result.error || 'Error processing payment.');
             }
 
             setCheckoutSuccess(result);
@@ -224,7 +224,7 @@ export default function PricingPlans() {
 
     const copyToClipboard = (text) => {
         navigator.clipboard.writeText(text);
-        alert('Código PIX copiado com sucesso!');
+        alert('PIX code copied successfully!');
     };
 
     const scrollToSection = (id) => {
@@ -243,12 +243,12 @@ export default function PricingPlans() {
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
                 </span>
-                <span>🔥 <strong>Oferta Especial:</strong> Teste o Sistema Barber Control por 4 dias grátis!</span>
+                <span>🔥 <strong>Special Offer:</strong> Try Barber Control free for 4 days!</span>
                 <button 
                     onClick={() => setTrialModalOpen(true)}
                     className="ml-1 underline text-primary-foreground font-bold hover:text-white transition-colors"
                 >
-                    Aproveitar →
+                    Claim Offer →
                 </button>
             </div>
 
@@ -261,26 +261,26 @@ export default function PricingPlans() {
                         </div>
                         <div>
                             <span className="font-bold text-base sm:text-xl tracking-tight text-white block">Barber Control</span>
-                            <span className="text-[9px] sm:text-[10px] text-primary font-semibold tracking-wider uppercase block -mt-1">Sistema Profissional</span>
+                            <span className="text-[9px] sm:text-[10px] text-primary font-semibold tracking-wider uppercase block -mt-1">Professional System</span>
                         </div>
                     </Link>
 
                     {/* Desktop Nav Links */}
                     <div className="hidden lg:flex items-center gap-7 text-xs font-semibold text-gray-300">
                         <button onClick={() => scrollToSection('diferenciais')} className="hover:text-white transition-colors">
-                            Por Que Escolher
+                            Why Choose Us
                         </button>
                         <button onClick={() => scrollToSection('comparativo')} className="hover:text-white transition-colors">
-                            Comparativo
+                            Comparison
                         </button>
                         <button onClick={() => scrollToSection('calculadora')} className="hover:text-white transition-colors">
-                            Calculadora de Lucro
+                            Profit Calculator
                         </button>
                         <button onClick={() => scrollToSection('planos-section')} className="text-primary hover:text-primary/90 font-bold transition-colors">
-                            Planos e Preços
+                            Plans and Pricing
                         </button>
                         <button onClick={() => scrollToSection('faq')} className="hover:text-white transition-colors">
-                            Dúvidas
+                            FAQ
                         </button>
                     </div>
 
@@ -290,13 +290,13 @@ export default function PricingPlans() {
                             to="/admin/login"
                             className="px-3.5 py-2 text-xs font-semibold text-gray-300 hover:text-white transition-colors"
                         >
-                            Entrar no Sistema
+                            Sign In
                         </Link>
                         <button 
                             onClick={() => setTrialModalOpen(true)}
                             className="px-4 sm:px-5 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-bold rounded-xl shadow-lg shadow-primary/25 transition-all transform hover:-translate-y-0.5"
                         >
-                            Criar Conta Grátis (4d)
+                            Create Free Account (4d)
                         </button>
                     </div>
 
@@ -304,7 +304,7 @@ export default function PricingPlans() {
                     <button 
                         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                         className="lg:hidden p-2 rounded-xl bg-white/5 border border-white/10 text-gray-300 hover:text-white"
-                        aria-label="Abrir Menu"
+                        aria-label="Open Menu"
                     >
                         {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
                     </button>
@@ -321,19 +321,19 @@ export default function PricingPlans() {
                         >
                             <div className="flex flex-col space-y-3 text-sm font-semibold">
                                 <button onClick={() => scrollToSection('diferenciais')} className="text-left py-1 text-gray-300 hover:text-white">
-                                    Por Que Escolher
+                                    Why Choose Us
                                 </button>
                                 <button onClick={() => scrollToSection('comparativo')} className="text-left py-1 text-gray-300 hover:text-white">
-                                    Comparativo
+                                    Comparison
                                 </button>
                                 <button onClick={() => scrollToSection('calculadora')} className="text-left py-1 text-gray-300 hover:text-white">
-                                    Calculadora de Lucro
+                                    Profit Calculator
                                 </button>
                                 <button onClick={() => scrollToSection('planos-section')} className="text-left py-1 text-primary font-bold">
-                                    Planos e Preços
+                                    Plans and Pricing
                                 </button>
                                 <button onClick={() => scrollToSection('faq')} className="text-left py-1 text-gray-300 hover:text-white">
-                                    Dúvidas Frequentes
+                                    Frequently Asked Questions
                                 </button>
                             </div>
                             <div className="pt-4 border-t border-white/10 flex flex-col gap-2.5">
@@ -341,13 +341,13 @@ export default function PricingPlans() {
                                     onClick={() => { setMobileMenuOpen(false); setTrialModalOpen(true); }}
                                     className="w-full py-3 text-center bg-primary text-primary-foreground font-bold text-xs rounded-xl shadow-lg"
                                 >
-                                    Criar Conta Grátis (4 Dias)
+                                    Create Free Account (4 Days)
                                 </button>
                                 <Link 
                                     to="/admin/login"
                                     className="w-full py-2.5 text-center text-xs text-gray-400 hover:text-white"
                                 >
-                                    Já sou cadastrado / Entrar
+                                    Already registered / Sign In
                                 </Link>
                             </div>
                         </motion.div>
@@ -370,9 +370,9 @@ export default function PricingPlans() {
                                     ⏳
                                 </div>
                                 <div>
-                                    <h4 className="font-bold text-sm sm:text-base text-amber-300">Seu período de teste de 4 dias encerrou!</h4>
+                                    <h4 className="font-bold text-sm sm:text-base text-amber-300">Your 4-day trial period has ended!</h4>
                                     <p className="text-xs text-amber-200/90 mt-0.5">
-                                        Seus dados estão 100% salvos. Escolha um plano abaixo para reativar seu acesso instantaneamente.
+                                        Your data is 100% saved. Choose a plan below to reactivate your access instantly.
                                     </p>
                                 </div>
                             </div>
@@ -380,13 +380,13 @@ export default function PricingPlans() {
                                 onClick={() => scrollToSection('planos-section')}
                                 className="w-full sm:w-auto px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs rounded-xl shadow-lg shadow-amber-500/20 shrink-0 transition-all text-center"
                             >
-                                Ver Planos para Reativar →
+                                View Plans to Reactivate →
                             </button>
                         </motion.div>
                     </div>
                 )}
 
-                {/* ── HERO SECTION COM SMARTPHONE MOCKUP ── */}
+                {/* ── HERO SECTION WITH SMARTPHONE MOCKUP ── */}
                 <section className="relative pt-8 sm:pt-16 lg:pt-20 pb-16 sm:pb-24 overflow-hidden">
                     {/* Glow Backgrounds */}
                     <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[350px] sm:w-[600px] h-[350px] bg-primary/15 blur-[120px] rounded-full pointer-events-none -z-10" />
@@ -398,15 +398,15 @@ export default function PricingPlans() {
                             {/* Left Column: Value Prop & CTAs */}
                             <div className="lg:col-span-7 space-y-5 sm:space-y-6 text-center lg:text-left">
                                 <div className="inline-flex items-center gap-2 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-primary/10 border border-primary/25 text-primary text-[11px] sm:text-xs font-bold uppercase tracking-wider shadow-inner">
-                                    <Sparkles className="w-3.5 h-3.5" /> Sistema Completo para Barbearias
+                                    <Sparkles className="w-3.5 h-3.5" /> Complete System for Barbershops
                                 </div>
 
                                 <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.12] bg-gradient-to-r from-white via-gray-100 to-gray-400 bg-clip-text text-transparent">
-                                    Dobre os Agendamentos da sua Barbearia e <span className="text-primary">Elimine a Desorganização</span>
+                                    Double Your Barbershop Bookings and <span className="text-primary">Eliminate the Chaos</span>
                                 </h1>
 
                                 <p className="text-muted-foreground text-sm sm:text-base lg:text-lg leading-relaxed max-w-2xl mx-auto lg:mx-0">
-                                    Dê adeus ao caderno e às mensagens perdidas no WhatsApp. Tenha um link exclusivo para seus clientes agendarem direto pelo celular 24h por dia, comissões calculadas na hora e controle total do seu caixa.
+                                    Say goodbye to the paper notebook and lost WhatsApp messages. Get an exclusive link for your clients to book straight from their phones 24/7, commissions calculated instantly and full control of your cash flow.
                                 </p>
 
                                 {/* Action Buttons */}
@@ -416,7 +416,7 @@ export default function PricingPlans() {
                                         className="w-full sm:w-auto px-8 py-4 bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-sm rounded-2xl shadow-xl shadow-primary/30 transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2 group"
                                     >
                                         <Zap className="w-4 h-4 fill-current group-hover:scale-110 transition-transform" />
-                                        Começar 4 Dias Grátis Agora
+                                        Start 4 Free Days Now
                                         <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                                     </button>
 
@@ -424,7 +424,7 @@ export default function PricingPlans() {
                                         to="/admin/login"
                                         className="w-full sm:w-auto px-6 py-4 bg-white/5 hover:bg-white/10 text-gray-300 font-semibold text-sm rounded-2xl border border-white/10 transition-colors text-center"
                                     >
-                                        Já Sou Cliente / Entrar
+                                        Already a Customer / Sign In
                                     </Link>
                                 </div>
 
@@ -432,25 +432,25 @@ export default function PricingPlans() {
                                 <div className="pt-5 sm:pt-6 border-t border-white/10 flex flex-wrap items-center justify-center lg:justify-start gap-4 sm:gap-6 text-xs text-gray-400">
                                     <div className="flex items-center gap-1.5 font-medium">
                                         <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                                        <span>4 Dias Grátis sem Cartão</span>
+                                        <span>4 Free Days, No Card Required</span>
                                     </div>
                                     <div className="flex items-center gap-1.5 font-medium">
                                         <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                                        <span>Ativação Instantânea (PIX/Cartão)</span>
+                                        <span>Instant Activation (PIX/Card)</span>
                                     </div>
                                     <div className="flex items-center gap-1.5 font-medium">
                                         <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                                        <span>Sem Multas ou Fidelidade</span>
+                                        <span>No Fees or Lock-in</span>
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Right Column: SMARTPHONE MOCKUP (Perfeito para Celulares e Desktop) */}
+                            {/* Right Column: SMARTPHONE MOCKUP (Works on Mobile and Desktop) */}
                             <div className="lg:col-span-5 flex flex-col items-center justify-center relative">
                                 
-                                {/* Label Indicativo do Mockup */}
+                                {/* Mockup Indicator Label */}
                                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[11px] font-semibold text-gray-300 mb-3 shadow-sm">
-                                    <Smartphone className="w-3.5 h-3.5 text-primary" /> Como seu cliente agenda no celular:
+                                    <Smartphone className="w-3.5 h-3.5 text-primary" /> How your client books on their phone:
                                 </div>
 
                                 {/* SMARTPHONE FRAME MOCKUP */}
@@ -478,32 +478,32 @@ export default function PricingPlans() {
                                         {/* Mobile Browser URL Bar */}
                                         <div className="mx-3 mt-1 mb-2.5 px-3 py-1.5 bg-black/60 rounded-xl border border-white/10 flex items-center gap-1.5 text-[10px] text-gray-300">
                                             <span className="text-emerald-400 font-bold">🔒</span>
-                                            <span className="truncate font-mono text-primary font-medium">controlbarber.online/sua-barbearia</span>
+                                            <span className="truncate font-mono text-primary font-medium">controlbarber.online/your-barbershop</span>
                                         </div>
 
                                         {/* Screen Content - Interactive Booking Flow */}
                                         <div className="px-3.5 pt-1 pb-4 space-y-2.5 text-white text-xs">
                                             
-                                            {/* Barbearia Header */}
+                                            {/* Barbershop Header */}
                                             <div className="flex items-center justify-between bg-white/[0.03] p-2.5 rounded-xl border border-white/5">
                                                 <div className="flex items-center gap-2">
                                                     <div className="w-8 h-8 rounded-xl bg-primary flex items-center justify-center font-bold text-xs shadow-md">
                                                         ✂️
                                                     </div>
                                                     <div>
-                                                        <h4 className="font-bold text-xs leading-none">Barbearia Elite</h4>
-                                                        <span className="text-[10px] text-muted-foreground">Toque para testar o agendamento</span>
+                                                        <h4 className="font-bold text-xs leading-none">Elite Barbershop</h4>
+                                                        <span className="text-[10px] text-muted-foreground">Tap to try booking</span>
                                                     </div>
                                                 </div>
                                                 <span className="px-2 py-0.5 bg-emerald-500/15 text-emerald-400 text-[9px] font-bold rounded-md border border-emerald-500/20">
-                                                    ● Aberto
+                                                    ● Open
                                                 </span>
                                             </div>
 
-                                            {/* Step 1: Barbeiro */}
+                                            {/* Step 1: Barber */}
                                             <div>
                                                 <label className="text-[9px] uppercase font-bold text-gray-400 tracking-wider block mb-1">
-                                                    1. Selecione o Barbeiro
+                                                    1. Select the Barber
                                                 </label>
                                                 <div className="grid grid-cols-2 gap-1.5">
                                                     {['Lucas Silva', 'Rafael Santos'].map((b) => (
@@ -526,15 +526,15 @@ export default function PricingPlans() {
                                                 </div>
                                             </div>
 
-                                            {/* Step 2: Serviço */}
+                                            {/* Step 2: Service */}
                                             <div>
                                                 <label className="text-[9px] uppercase font-bold text-gray-400 tracking-wider block mb-1">
-                                                    2. Selecione o Serviço
+                                                    2. Select the Service
                                                 </label>
                                                 <div className="grid grid-cols-2 gap-1.5">
                                                     {[
-                                                        { name: 'Corte Degradê', price: 'R$ 45,00' },
-                                                        { name: 'Barba & Toalha', price: 'R$ 35,00' }
+                                                        { name: 'Fade Haircut', price: 'R$ 45,00' },
+                                                        { name: 'Beard & Hot Towel', price: 'R$ 35,00' }
                                                     ].map((s) => (
                                                         <button
                                                             key={s.name}
@@ -553,10 +553,10 @@ export default function PricingPlans() {
                                                 </div>
                                             </div>
 
-                                            {/* Step 3: Horário */}
+                                            {/* Step 3: Time */}
                                             <div>
                                                 <label className="text-[9px] uppercase font-bold text-gray-400 tracking-wider block mb-1">
-                                                    3. Horários Livres Hoje
+                                                    3. Available Times Today
                                                 </label>
                                                 <div className="grid grid-cols-3 gap-1">
                                                     {['14:30', '15:00', '16:15'].map((time) => (
@@ -582,7 +582,7 @@ export default function PricingPlans() {
                                                 onClick={() => setDemoBooked(true)}
                                                 className="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-1 mt-1 cursor-pointer"
                                             >
-                                                {demoBooked ? '✓ Agendado no Sistema!' : 'Confirmar Agendamento'}
+                                                {demoBooked ? '✓ Booked in the System!' : 'Confirm Booking'}
                                             </button>
 
                                             {/* Instant Simulated Toast */}
@@ -594,7 +594,7 @@ export default function PricingPlans() {
                                                 >
                                                     <span>🔔</span>
                                                     <div>
-                                                        <strong>Agendamento Confirmado!</strong><br />
+                                                        <strong>Booking Confirmed!</strong><br />
                                                         {demoBarber} • {demoService} ({demoTime})
                                                     </div>
                                                 </motion.div>
@@ -606,14 +606,14 @@ export default function PricingPlans() {
                                     </div>
                                 </div>
 
-                                {/* Floating Stat Badge - Posicionado elegantemente sem sobrepor botões */}
+                                {/* Floating Stat Badge - Positioned so it does not overlap buttons */}
                                 <div className="mt-2 sm:mt-0 sm:absolute sm:-bottom-8 sm:-left-6 lg:-left-12 z-30 bg-[#0d0e13]/95 backdrop-blur-2xl border border-emerald-500/30 p-3 sm:p-3.5 rounded-2xl shadow-2xl shadow-black/90 flex items-center gap-3 w-fit max-w-[92vw] whitespace-nowrap">
                                     <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold shrink-0 shadow-inner">
                                         <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5" />
                                     </div>
                                     <div className="text-left">
-                                        <p className="text-xs sm:text-sm font-extrabold text-white leading-tight">+35% de Faturamento</p>
-                                        <p className="text-[10px] sm:text-[11px] text-gray-400 font-medium">ao evitar faltas e esquecimentos</p>
+                                        <p className="text-xs sm:text-sm font-extrabold text-white leading-tight">+35% Revenue</p>
+                                        <p className="text-[10px] sm:text-[11px] text-gray-400 font-medium">by preventing no-shows and forgotten appointments</p>
                                     </div>
                                 </div>
                             </div>
@@ -622,67 +622,67 @@ export default function PricingPlans() {
                     </div>
                 </section>
 
-                {/* ── 4 PILARES / POR QUE ESCOLHER ── */}
+                {/* ── 4 PILLARS / WHY CHOOSE US ── */}
                 <section id="diferenciais" className="py-16 sm:py-20 border-t border-white/10 bg-black/40">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="text-center max-w-3xl mx-auto space-y-3 mb-12 sm:mb-16">
-                            <h2 className="text-xs font-bold uppercase tracking-widest text-primary">Diferenciais do Sistema</h2>
+                            <h2 className="text-xs font-bold uppercase tracking-widest text-primary">What Sets Us Apart</h2>
                             <h3 className="text-2xl sm:text-4xl font-extrabold tracking-tight">
-                                Por Que Escolher o Sistema Barber Control?
+                                Why Choose Barber Control?
                             </h3>
                             <p className="text-muted-foreground text-xs sm:text-sm">
-                                Desenvolvido exclusivamente para a realidade das barbearias, unindo rapidez no celular para o cliente e controle total no computador ou celular para o dono.
+                                Built exclusively for the reality of barbershops, combining speed on mobile for clients with full control on computer or phone for owners.
                             </p>
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
                             <FeatureCard 
                                 icon={<Smartphone className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />}
-                                title="Link Próprio da sua Barbearia"
-                                desc="Seus clientes agendam direto pelo celular em 30 segundos, sem precisar baixar aplicativo ou criar cadastros demorados."
+                                title="Your Barbershop's Own Link"
+                                desc="Your clients book straight from their phones in 30 seconds, without downloading an app or filling out lengthy sign-up forms."
                             />
                             <FeatureCard 
                                 icon={<MessageSquare className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-400" />}
-                                title="Redução de Faltas Automática"
-                                desc="Lembretes e confirmações automáticas mantêm seus clientes pontuais, evitando cadeira vazia e perda de dinheiro."
+                                title="Automatic No-show Reduction"
+                                desc="Automatic reminders and confirmations keep your clients on time, avoiding empty chairs and lost money."
                             />
                             <FeatureCard 
                                 icon={<DollarSign className="w-5 h-5 sm:w-6 sm:h-6 text-amber-400" />}
-                                title="Divisão de Comissões Sem Estresse"
-                                desc="Fim das contas manuais e discussões no fim do mês. O sistema calcula a comissão exata de cada barbeiro na hora."
+                                title="Stress-free Commission Splits"
+                                desc="No more manual math and end-of-month arguments. The system calculates each barber's exact commission instantly."
                             />
                             <FeatureCard 
                                 icon={<Award className="w-5 h-5 sm:w-6 sm:h-6 text-purple-400" />}
-                                title="Gestão de Caixa & PDV Integrado"
-                                desc="Venda pomadas, tônicos e bebidas no balcão com baixa automática no estoque e relatórios de faturamento diário."
+                                title="Cash Management & Integrated POS"
+                                desc="Sell pomades, tonics and drinks at the counter with automatic inventory deduction and daily revenue reports."
                             />
                         </div>
                     </div>
                 </section>
 
-                {/* ── TABELA COMPARATIVA: CADERNO vs BARBER CONTROL ── */}
+                {/* ── COMPARISON TABLE: NOTEBOOK vs BARBER CONTROL ── */}
                 <section id="comparativo" className="py-16 sm:py-20 border-t border-white/10">
                     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="text-center max-w-2xl mx-auto space-y-3 mb-10 sm:mb-14">
-                            <h2 className="text-xs font-bold uppercase tracking-widest text-primary">Comparativo Direto</h2>
+                            <h2 className="text-xs font-bold uppercase tracking-widest text-primary">Head-to-Head Comparison</h2>
                             <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-                                Sem o Sistema vs Com o Barber Control
+                                Without the System vs With Barber Control
                             </h3>
                             <p className="text-muted-foreground text-xs sm:text-sm">
-                                Veja o que muda na rotina da sua barbearia:
+                                See what changes in your barbershop's routine:
                             </p>
                         </div>
 
                         <div className="bg-card/20 border border-white/10 rounded-2xl sm:rounded-3xl overflow-hidden backdrop-blur-md">
                             <div className="hidden md:grid md:grid-cols-12 divide-x divide-white/10">
                                 <div className="md:col-span-4 p-4 bg-black/60 font-bold text-xs uppercase text-gray-400">
-                                    Situação do Dia a Dia
+                                    Day-to-Day Situation
                                 </div>
                                 <div className="md:col-span-4 p-4 bg-red-950/20 font-bold text-xs uppercase text-red-400 flex items-center gap-1.5">
-                                    <span>❌</span> No Caderno / WhatsApp Manual
+                                    <span>❌</span> Paper Notebook / Manual WhatsApp
                                 </div>
                                 <div className="md:col-span-4 p-4 bg-emerald-950/20 font-bold text-xs uppercase text-emerald-400 flex items-center gap-1.5">
-                                    <span>✅</span> Com o Sistema Barber Control
+                                    <span>✅</span> With Barber Control
                                 </div>
                             </div>
 
@@ -705,26 +705,26 @@ export default function PricingPlans() {
                     </div>
                 </section>
 
-                {/* ── CALCULADORA DE GANHO ESTIMADO ── */}
+                {/* ── ESTIMATED GAIN CALCULATOR ── */}
                 <section id="calculadora" className="py-16 sm:py-20 border-t border-white/10 bg-gradient-to-b from-black/60 to-transparent">
                     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                         <div className="space-y-3 mb-10 sm:mb-12">
-                            <h2 className="text-xs font-bold uppercase tracking-widest text-primary">Simulador de Faturamento</h2>
+                            <h2 className="text-xs font-bold uppercase tracking-widest text-primary">Revenue Simulator</h2>
                             <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-                                Quanto a Mais Sua Barbearia Pode Faturar?
+                                How Much More Could Your Barbershop Earn?
                             </h3>
                             <p className="text-muted-foreground text-xs sm:text-sm max-w-xl mx-auto">
-                                Arraste os controles abaixo e veja a estimativa de receita recuperada ao evitar faltas e organizar seu fluxo.
+                                Drag the sliders below to see the estimated revenue recovered by preventing no-shows and organizing your workflow.
                             </p>
                         </div>
 
                         <div className="bg-[#101217] border border-white/10 rounded-2xl sm:rounded-3xl p-5 sm:p-10 shadow-2xl space-y-6 sm:space-y-8">
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 text-left">
-                                {/* Slider 1: Cortes por dia */}
+                                {/* Slider 1: Haircuts per day */}
                                 <div>
                                     <div className="flex justify-between text-xs font-bold mb-2">
-                                        <span className="text-gray-300">Cortes realizados por dia:</span>
-                                        <span className="text-primary text-base font-extrabold">{cutsPerDay} cortes</span>
+                                        <span className="text-gray-300">Haircuts per day:</span>
+                                        <span className="text-primary text-base font-extrabold">{cutsPerDay} haircuts</span>
                                     </div>
                                     <input 
                                         type="range" 
@@ -735,15 +735,15 @@ export default function PricingPlans() {
                                         className="w-full h-2.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-primary"
                                     />
                                     <div className="flex justify-between text-[10px] text-gray-500 mt-1">
-                                        <span>5 cortes/dia</span>
-                                        <span>60 cortes/dia</span>
+                                        <span>5 haircuts/day</span>
+                                        <span>60 haircuts/day</span>
                                     </div>
                                 </div>
 
-                                {/* Slider 2: Valor médio do corte */}
+                                {/* Slider 2: Average haircut price */}
                                 <div>
                                     <div className="flex justify-between text-xs font-bold mb-2">
-                                        <span className="text-gray-300">Valor médio do serviço:</span>
+                                        <span className="text-gray-300">Average service price:</span>
                                         <span className="text-emerald-400 text-base font-extrabold">R$ {avgCutPrice},00</span>
                                     </div>
                                     <input 
@@ -762,23 +762,23 @@ export default function PricingPlans() {
                                 </div>
                             </div>
 
-                            {/* Resultado Calculado */}
+                            {/* Calculated Result */}
                             <div className="p-5 sm:p-6 bg-black/60 border border-white/10 rounded-2xl grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6 items-center">
                                 <div className="text-left space-y-1">
-                                    <p className="text-xs text-gray-400 font-medium">Faturamento Estimado com o Sistema:</p>
+                                    <p className="text-xs text-gray-400 font-medium">Estimated Revenue with the System:</p>
                                     <p className="text-2xl sm:text-3xl font-extrabold text-white">
-                                        R$ {estimatedMonthlyRevenue.toLocaleString('pt-BR')},00 <span className="text-xs font-normal text-gray-500">/mês</span>
+                                        R$ {estimatedMonthlyRevenue.toLocaleString('pt-BR')},00 <span className="text-xs font-normal text-gray-500">/month</span>
                                     </p>
                                 </div>
                                 <div className="sm:border-l sm:border-white/10 sm:pl-6 text-left space-y-1">
                                     <p className="text-xs text-emerald-400 font-bold uppercase tracking-wider">
-                                        Ganho Extra Estimado / Mês:
+                                        Estimated Extra Gain / Month:
                                     </p>
                                     <p className="text-2xl sm:text-4xl font-extrabold text-emerald-400">
                                         + R$ {totalExtraGain.toLocaleString('pt-BR')},00
                                     </p>
                                     <p className="text-[10px] text-gray-400">
-                                        (Eliminando faltas e vendendo produtos no balcão)
+                                        (By eliminating no-shows and selling products at the counter)
                                     </p>
                                 </div>
                             </div>
@@ -787,13 +787,13 @@ export default function PricingPlans() {
                                 onClick={() => scrollToSection('planos-section')}
                                 className="w-full sm:w-auto px-8 py-3.5 bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-xs rounded-xl shadow-lg shadow-primary/20 transition-all"
                             >
-                                Quero Esse Resultado na Minha Barbearia →
+                                I Want These Results in My Barbershop →
                             </button>
                         </div>
                     </div>
                 </section>
 
-                {/* ── SEÇÃO DE PLANOS & COMPRA ── */}
+                {/* ── PLANS & PURCHASE SECTION ── */}
                 <section id="planos-section" className="py-16 sm:py-20 border-t border-white/10 relative">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="text-center max-w-3xl mx-auto space-y-3 mb-12 sm:mb-16">
@@ -802,18 +802,18 @@ export default function PricingPlans() {
                                     onClick={() => setTrialModalOpen(true)}
                                     className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-400 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer shadow-md"
                                 >
-                                    <Sparkles className="w-3.5 h-3.5" /> Iniciar Teste de 4 Dias Grátis Sem Cartão →
+                                    <Sparkles className="w-3.5 h-3.5" /> Start 4-Day Free Trial, No Card Required →
                                 </button>
                             </div>
                             <h2 className="text-2xl sm:text-5xl font-extrabold tracking-tight">
-                                Escolha o Plano Para Sua Barbearia
+                                Choose the Plan for Your Barbershop
                             </h2>
                             <p className="text-muted-foreground text-xs sm:text-base">
-                                Tenha acesso completo a todas as ferramentas. Ativação imediata via PIX ou Cartão de Crédito.
+                                Get full access to all tools. Immediate activation via PIX or Credit Card.
                             </p>
                         </div>
 
-                        {/* Cards de Planos */}
+                        {/* Plan Cards */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 items-stretch mb-16">
                             {PLANS.map((plan, index) => (
                                 <motion.div
@@ -852,7 +852,7 @@ export default function PricingPlans() {
                                         </div>
 
                                         <div className="space-y-3 pt-6 border-t border-white/5 mb-8">
-                                            <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Incluso no plano:</p>
+                                            <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Included in the plan:</p>
                                             {plan.features.map((feat, idx) => (
                                                 <div key={idx} className="flex items-start gap-2.5 text-xs text-gray-300">
                                                     <Check className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
@@ -870,7 +870,7 @@ export default function PricingPlans() {
                                                 : 'bg-white/10 hover:bg-white/20 text-white'
                                         }`}
                                     >
-                                        Contratar {plan.name} <ChevronRight className="w-4 h-4" />
+                                        Subscribe to {plan.name} <ChevronRight className="w-4 h-4" />
                                     </button>
                                 </motion.div>
                             ))}
@@ -878,12 +878,12 @@ export default function PricingPlans() {
                     </div>
                 </section>
 
-                {/* ── FAQ (PERGUNTAS FREQUENTES) ── */}
+                {/* ── FAQ (FREQUENTLY ASKED QUESTIONS) ── */}
                 <section id="faq" className="py-16 sm:py-20 border-t border-white/10 bg-black/40">
                     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="text-center space-y-3 mb-10 sm:mb-14">
-                            <h2 className="text-xs font-bold uppercase tracking-widest text-primary">Tire Suas Dúvidas</h2>
-                            <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Perguntas Frequentes</h3>
+                            <h2 className="text-xs font-bold uppercase tracking-widest text-primary">Get Your Questions Answered</h2>
+                            <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Frequently Asked Questions</h3>
                         </div>
 
                         <div className="space-y-3.5">
@@ -917,13 +917,13 @@ export default function PricingPlans() {
                     <div className="flex items-center justify-center gap-2">
                         <Scissors className="w-4 h-4 text-primary" />
                         <span className="font-bold text-white">Barber Control</span>
-                        <span>• O Sistema Completo para Barbearias</span>
+                        <span>• The Complete System for Barbershops</span>
                     </div>
-                    <p>© {new Date().getFullYear()} Barber Control. Todos os direitos reservados.</p>
+                    <p>© {new Date().getFullYear()} Barber Control. All rights reserved.</p>
                 </div>
             </footer>
 
-            {/* ── MODAL DE CHECKOUT (PIX / CARTÃO) ── */}
+            {/* ── CHECKOUT MODAL (PIX / CARD) ── */}
             <AnimatePresence>
                 {checkoutModalOpen && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
@@ -947,18 +947,18 @@ export default function PricingPlans() {
                                     <div className="w-14 h-14 sm:w-16 sm:h-16 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-500/30">
                                         <CheckCircle2 className="w-7 h-7 sm:w-8 sm:h-8 text-emerald-400" />
                                     </div>
-                                    <h3 className="text-xl sm:text-2xl font-bold text-white mb-1">Acesso Confirmado!</h3>
+                                    <h3 className="text-xl sm:text-2xl font-bold text-white mb-1">Access Confirmed!</h3>
                                     <p className="text-xs text-muted-foreground mb-6">
                                         {paymentMethod === 'pix'
-                                            ? 'Seu acesso ao sistema foi liberado. Efetue o pagamento usando o código PIX abaixo:'
-                                            : 'Seu pagamento com cartão foi aprovado e o sistema da sua barbearia está 100% ativo!'}
+                                            ? 'Your system access has been granted. Complete the payment using the PIX code below:'
+                                            : 'Your card payment was approved and your barbershop system is 100% active!'}
                                     </p>
 
                                     {paymentMethod === 'pix' && checkoutSuccess.pixCode && (
                                         <div className="mb-6 space-y-3">
                                             <div className="p-4 bg-black/60 rounded-2xl border border-white/10 flex flex-col items-center justify-center">
                                                 <QrCode className="w-24 h-24 sm:w-28 sm:h-28 text-primary mb-2" />
-                                                <span className="text-[11px] text-gray-400">Escaneie o QR Code no app do seu banco</span>
+                                                <span className="text-[11px] text-gray-400">Scan the QR Code in your banking app</span>
                                             </div>
 
                                             <div className="flex items-center gap-2 bg-black/40 p-3 rounded-xl border border-white/10">
@@ -971,7 +971,7 @@ export default function PricingPlans() {
                                                     onClick={() => copyToClipboard(checkoutSuccess.pixCode)} 
                                                     className="px-3 py-1.5 bg-primary text-primary-foreground text-xs font-bold rounded-lg flex items-center gap-1 hover:bg-primary/90 shrink-0"
                                                 >
-                                                    <Copy className="w-3 h-3" /> Copiar PIX
+                                                    <Copy className="w-3 h-3" /> Copy PIX
                                                 </button>
                                             </div>
                                         </div>
@@ -981,7 +981,7 @@ export default function PricingPlans() {
                                         onClick={() => navigate('/admin')}
                                         className="w-full py-3.5 bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-sm rounded-xl transition-all shadow-lg shadow-primary/20"
                                     >
-                                        Acessar Painel da Minha Barbearia
+                                        Go to My Barbershop Dashboard
                                     </button>
                                 </div>
                             ) : (
@@ -989,8 +989,8 @@ export default function PricingPlans() {
                                 <form onSubmit={handleProcessPayment} className="p-5 sm:p-8 space-y-5">
                                     <div className="flex items-center justify-between border-b border-white/10 pb-4">
                                         <div>
-                                            <h3 className="text-base sm:text-lg font-bold text-white">Contratar {selectedPlan.name}</h3>
-                                            <p className="text-xs text-primary font-semibold">Valor: R$ {selectedPlan.price} {selectedPlan.period}</p>
+                                            <h3 className="text-base sm:text-lg font-bold text-white">Subscribe to {selectedPlan.name}</h3>
+                                            <p className="text-xs text-primary font-semibold">Price: R$ {selectedPlan.price} {selectedPlan.period}</p>
                                         </div>
                                         <button 
                                             type="button" 
@@ -1001,29 +1001,29 @@ export default function PricingPlans() {
                                         </button>
                                     </div>
 
-                                    {/* Identificação da Barbearia */}
+                                    {/* Barbershop Identification */}
                                     {!adminUser && (
                                         <div className="space-y-1.5">
                                             <label className="text-xs font-semibold text-gray-300">
-                                                Link / Slug da sua Barbearia
+                                                Your Barbershop Link / Slug
                                             </label>
                                             <input
                                                 required
                                                 type="text"
-                                                placeholder="ex: barbearia-do-ze"
+                                                placeholder="e.g. joes-barbershop"
                                                 value={barbershopSlug}
                                                 onChange={e => setBarbershopSlug(e.target.value)}
                                                 className="w-full bg-black/50 border border-white/10 text-white rounded-xl h-11 px-4 text-xs focus:border-primary/50 outline-none"
                                             />
                                             <p className="text-[10px] text-muted-foreground">
-                                                Não tem conta ainda? <Link to="/admin/login" className="text-primary underline">Cadastre sua barbearia aqui em 1 minuto</Link>.
+                                                Don't have an account yet? <Link to="/admin/login" className="text-primary underline">Register your barbershop here in 1 minute</Link>.
                                             </p>
                                         </div>
                                     )}
 
-                                    {/* Forma de Pagamento */}
+                                    {/* Payment Method */}
                                     <div className="space-y-2">
-                                        <label className="text-xs font-semibold text-gray-300">Forma de Pagamento</label>
+                                        <label className="text-xs font-semibold text-gray-300">Payment Method</label>
                                         <div className="grid grid-cols-2 gap-3">
                                             <button
                                                 type="button"
@@ -1034,7 +1034,7 @@ export default function PricingPlans() {
                                                         : 'bg-black/30 border-white/10 text-gray-400 hover:text-white'
                                                 }`}
                                             >
-                                                <QrCode className="w-4 h-4" /> PIX Instantâneo
+                                                <QrCode className="w-4 h-4" /> Instant PIX
                                             </button>
                                             <button
                                                 type="button"
@@ -1045,16 +1045,16 @@ export default function PricingPlans() {
                                                         : 'bg-black/30 border-white/10 text-gray-400 hover:text-white'
                                                 }`}
                                             >
-                                                <CreditCard className="w-4 h-4" /> Cartão de Crédito
+                                                <CreditCard className="w-4 h-4" /> Credit Card
                                             </button>
                                         </div>
                                     </div>
 
-                                    {/* Cartão de Crédito Form */}
+                                    {/* Credit Card Form */}
                                     {paymentMethod === 'credit_card' && (
                                         <div className="space-y-3 pt-2">
                                             <div>
-                                                <label className="text-[11px] font-semibold text-gray-400 mb-1 block">Nome Impresso no Cartão</label>
+                                                <label className="text-[11px] font-semibold text-gray-400 mb-1 block">Name on Card</label>
                                                 <input 
                                                     required 
                                                     type="text" 
@@ -1065,7 +1065,7 @@ export default function PricingPlans() {
                                                 />
                                             </div>
                                             <div>
-                                                <label className="text-[11px] font-semibold text-gray-400 mb-1 block">Número do Cartão</label>
+                                                <label className="text-[11px] font-semibold text-gray-400 mb-1 block">Card Number</label>
                                                 <input 
                                                     required 
                                                     type="text" 
@@ -1078,7 +1078,7 @@ export default function PricingPlans() {
                                             </div>
                                             <div className="grid grid-cols-2 gap-3">
                                                 <div>
-                                                    <label className="text-[11px] font-semibold text-gray-400 mb-1 block">Validade (MM/AA)</label>
+                                                    <label className="text-[11px] font-semibold text-gray-400 mb-1 block">Expiry (MM/YY)</label>
                                                     <input 
                                                         required 
                                                         type="text" 
@@ -1090,7 +1090,7 @@ export default function PricingPlans() {
                                                     />
                                                 </div>
                                                 <div>
-                                                    <label className="text-[11px] font-semibold text-gray-400 mb-1 block">Código CVV</label>
+                                                    <label className="text-[11px] font-semibold text-gray-400 mb-1 block">CVV Code</label>
                                                     <input 
                                                         required 
                                                         type="password" 
@@ -1119,10 +1119,10 @@ export default function PricingPlans() {
                                         {loading ? (
                                             <>
                                                 <Loader2 className="w-4 h-4 animate-spin" />
-                                                Processando Pagamento...
+                                                Processing Payment...
                                             </>
                                         ) : (
-                                            `Confirmar e Ativar Sistema (R$ ${selectedPlan.price})`
+                                            `Confirm and Activate System (R$ ${selectedPlan.price})`
                                         )}
                                     </button>
                                 </form>

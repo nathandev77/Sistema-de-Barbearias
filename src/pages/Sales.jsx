@@ -6,7 +6,7 @@ import { DatePicker } from '@/components/ui/DatePicker';
 
 const fmt = v => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v || 0);
 
-const CAT_LABELS = { cabelo: '💈 Cabelo', barba: '🪒 Barba', acessorio: '🧴 Acessório' };
+const CAT_LABELS = { cabelo: '💈 Hair', barba: '🪒 Beard', acessorio: '🧴 Accessory' };
 
 function Modal({ title, onClose, children }) {
     return (
@@ -48,7 +48,7 @@ export default function Sales() {
         setLoading(true);
         try {
             const [prods, sls, brbs] = await Promise.all([Product.list(), Sale.list(), Barber.list()]);
-            // Oculta o produto fantasma usado para vendas de planos
+            // Hide the placeholder product used for plan sales
             setProducts(prods.filter(p => p.name !== 'Assinatura de Plano').sort((a, b) => a.name?.localeCompare(b.name)));
             setSales(sls.sort((a, b) => b.date?.localeCompare(a.date)));
             setBarbers(brbs.filter(b => b.is_active !== false));
@@ -57,7 +57,7 @@ export default function Sales() {
 
     useEffect(() => { load(); }, [load]);
 
-    // Venda
+    // Sale
     const openNewSale = () => { setSaleForm(EMPTY_SALE); setShowModal('sale'); };
     const handleSaveSale = async (e) => {
         e.preventDefault(); setSaving(true);
@@ -66,7 +66,7 @@ export default function Sales() {
             if (!prod) return;
             const qty = Number(saleForm.quantity);
             await Sale.create({ ...saleForm, unitPrice: prod.price, quantity: qty });
-            // Subtrai estoque
+            // Subtract stock
             if (prod.stock !== undefined) await Product.update(prod.id, { stock: Math.max(0, (prod.stock || 0) - qty) });
             setShowModal(null); await load();
         } finally { setSaving(false); }
@@ -78,7 +78,7 @@ export default function Sales() {
         await load(); 
     };
 
-    // Produto
+    // Product
     const openNewProduct = () => { setProdForm(EMPTY_PRODUCT); setEditId(null); setShowModal('product'); };
     const openEditProduct = (p) => { setProdForm({ name: p.name||'', category: p.category||'cabelo', price: p.price||'', cost: p.cost||'', stock: p.stock||'', is_active: p.is_active !== false }); setEditId(p.id); setShowModal('product'); };
     const handleSaveProduct = async (e) => {
@@ -105,13 +105,13 @@ export default function Sales() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 {/* Tabs */}
                 <div className="flex bg-secondary rounded-xl p-1 gap-1">
-                    {[['vendas', 'Vendas'], ['produtos', 'Produtos']].map(([val, lbl]) => (
+                    {[['vendas', 'Sales'], ['produtos', 'Products']].map(([val, lbl]) => (
                         <button key={val} onClick={() => setTab(val)} className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all ${tab === val ? 'bg-primary text-primary-foreground shadow' : 'text-muted-foreground hover:text-foreground'}`}>{lbl}</button>
                     ))}
                 </div>
                 <button onClick={tab === 'vendas' ? openNewSale : openNewProduct} className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
-                    {tab === 'vendas' ? 'Nova Venda' : 'Novo Produto'}
+                    {tab === 'vendas' ? 'New Sale' : 'New Product'}
                 </button>
             </div>
 
@@ -119,38 +119,38 @@ export default function Sales() {
                 <div className="flex items-center justify-center h-48"><div className="w-8 h-8 border-2 border-primary/20 border-t-primary rounded-full animate-spin" /></div>
             ) : tab === 'vendas' ? (
                 <>
-                    {/* Cards resumo */}
+                    {/* Summary cards */}
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                         <div className="rounded-xl border border-border bg-card p-4">
-                            <p className="text-xs text-muted-foreground uppercase tracking-wide font-semibold">Total Vendas</p>
+                            <p className="text-xs text-muted-foreground uppercase tracking-wide font-semibold">Total Sales</p>
                             <p className="text-2xl font-bold text-primary mt-1">{fmt(totalSales)}</p>
                         </div>
                         <div className="rounded-xl border border-border bg-card p-4">
-                            <p className="text-xs text-muted-foreground uppercase tracking-wide font-semibold">Nº de Vendas</p>
+                            <p className="text-xs text-muted-foreground uppercase tracking-wide font-semibold">No. of Sales</p>
                             <p className="text-2xl font-bold text-foreground mt-1">{sales.length}</p>
                         </div>
                         <div className="rounded-xl border border-border bg-card p-4">
-                            <p className="text-xs text-muted-foreground uppercase tracking-wide font-semibold">Ticket Médio</p>
+                            <p className="text-xs text-muted-foreground uppercase tracking-wide font-semibold">Average Ticket</p>
                             <p className="text-2xl font-bold text-foreground mt-1">{fmt(sales.length ? totalSales / sales.length : 0)}</p>
                         </div>
                     </div>
 
-                    {/* Tabela vendas */}
+                    {/* Sales table */}
                     {sales.length === 0 ? (
                         <div className="rounded-xl border border-dashed border-border bg-card/50 flex flex-col items-center justify-center py-16 gap-3">
-                            <p className="text-sm text-muted-foreground">Nenhuma venda registrada</p>
-                            <button onClick={openNewSale} className="text-xs text-primary hover:underline">Registrar primeira venda →</button>
+                            <p className="text-sm text-muted-foreground">No sales recorded</p>
+                            <button onClick={openNewSale} className="text-xs text-primary hover:underline">Record first sale →</button>
                         </div>
                     ) : (
                         <div className="rounded-xl border border-border bg-card overflow-hidden">
                             <table className="w-full text-sm">
                                 <thead>
                                     <tr className="border-b border-border bg-secondary/50">
-                                        <th className="text-left px-4 py-3 text-xs text-muted-foreground font-semibold uppercase tracking-wider">Produto</th>
-                                        <th className="text-left px-4 py-3 text-xs text-muted-foreground font-semibold uppercase tracking-wider">Barbeiro</th>
-                                        <th className="text-center px-4 py-3 text-xs text-muted-foreground font-semibold uppercase tracking-wider">Qtd</th>
+                                        <th className="text-left px-4 py-3 text-xs text-muted-foreground font-semibold uppercase tracking-wider">Product</th>
+                                        <th className="text-left px-4 py-3 text-xs text-muted-foreground font-semibold uppercase tracking-wider">Barber</th>
+                                        <th className="text-center px-4 py-3 text-xs text-muted-foreground font-semibold uppercase tracking-wider">Qty</th>
                                         <th className="text-right px-4 py-3 text-xs text-muted-foreground font-semibold uppercase tracking-wider">Total</th>
-                                        <th className="text-center px-4 py-3 text-xs text-muted-foreground font-semibold uppercase tracking-wider">Data</th>
+                                        <th className="text-center px-4 py-3 text-xs text-muted-foreground font-semibold uppercase tracking-wider">Date</th>
                                         <th className="px-4 py-3"></th>
                                     </tr>
                                 </thead>
@@ -175,7 +175,7 @@ export default function Sales() {
                     )}
                 </>
             ) : (
-                /* Tab Produtos */
+                /* Products Tab */
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {products.map(p => (
                         <div key={p.id} className={`rounded-xl border bg-card p-5 flex flex-col gap-3 group hover:border-primary/30 transition-all ${p.is_active === false ? 'opacity-60' : 'border-border'}`}>
@@ -194,10 +194,10 @@ export default function Sales() {
                                 </div>
                             </div>
                             <div className="grid grid-cols-3 gap-2 pt-3 border-t border-border">
-                                <div><p className="text-xs text-muted-foreground">Preço</p><p className="text-sm font-bold text-primary">{fmt(p.price)}</p></div>
-                                <div><p className="text-xs text-muted-foreground">Custo</p><p className="text-sm font-semibold text-foreground">{fmt(p.cost)}</p></div>
-                                <div><p className="text-xs text-muted-foreground">Estoque</p>
-                                    <p className={`text-sm font-bold ${(p.stock || 0) < 3 ? 'text-red-400' : 'text-foreground'}`}>{p.stock ?? 0} un</p>
+                                <div><p className="text-xs text-muted-foreground">Price</p><p className="text-sm font-bold text-primary">{fmt(p.price)}</p></div>
+                                <div><p className="text-xs text-muted-foreground">Cost</p><p className="text-sm font-semibold text-foreground">{fmt(p.cost)}</p></div>
+                                <div><p className="text-xs text-muted-foreground">Stock</p>
+                                    <p className={`text-sm font-bold ${(p.stock || 0) < 3 ? 'text-red-400' : 'text-foreground'}`}>{p.stock ?? 0} units</p>
                                 </div>
                             </div>
                         </div>
@@ -205,20 +205,20 @@ export default function Sales() {
                 </div>
             )}
 
-            {/* Modal Nova Venda */}
+            {/* New Sale Modal */}
             {showModal === 'sale' && (
-                <Modal title="Nova Venda" onClose={() => setShowModal(null)}>
+                <Modal title="New Sale" onClose={() => setShowModal(null)}>
                     <form onSubmit={handleSaveSale} className="space-y-4">
                         <div>
-                            <label className="block text-xs text-muted-foreground mb-1.5 font-medium">Produto *</label>
+                            <label className="block text-xs text-muted-foreground mb-1.5 font-medium">Product *</label>
                             <Select
                                 value={saleForm.productId}
                                 onChange={val => setSaleForm(f => ({ ...f, productId: val }))}
                                 options={[
-                                    { value: '', label: 'Selecione um produto...' },
+                                    { value: '', label: 'Select a product...' },
                                     ...products.filter(p => p.is_active !== false).map(p => ({
                                         value: p.id,
-                                        label: `${p.name} — ${fmt(p.price)} (Estoque: ${p.stock ?? 0})`
+                                        label: `${p.name} — ${fmt(p.price)} (Stock: ${p.stock ?? 0})`
                                     }))
                                 ]}
                                 triggerClassName={inputCls}
@@ -226,19 +226,19 @@ export default function Sales() {
                         </div>
                         {selectedProduct && (
                             <div className="rounded-lg bg-primary/10 border border-primary/20 px-4 py-3 text-sm">
-                                <span className="text-muted-foreground">Preço unitário: </span>
+                                <span className="text-muted-foreground">Unit price: </span>
                                 <span className="font-bold text-primary">{fmt(selectedProduct.price)}</span>
                                 <span className="text-muted-foreground ml-4">Total: </span>
                                 <span className="font-bold text-primary">{fmt(selectedProduct.price * (Number(saleForm.quantity) || 1))}</span>
                             </div>
                         )}
                         <div>
-                            <label className="block text-xs text-muted-foreground mb-1.5 font-medium">Barbeiro</label>
+                            <label className="block text-xs text-muted-foreground mb-1.5 font-medium">Barber</label>
                             <Select
                                 value={saleForm.barberId}
                                 onChange={val => setSaleForm(f => ({ ...f, barberId: val }))}
                                 options={[
-                                    { value: '', label: 'Sem barbeiro associado' },
+                                    { value: '', label: 'No barber assigned' },
                                     ...barbers.map(b => ({ value: b.id, label: b.name }))
                                 ]}
                                 triggerClassName={inputCls}
@@ -246,54 +246,54 @@ export default function Sales() {
                         </div>
                         <div className="grid grid-cols-2 gap-3">
                             <div>
-                                <label className="block text-xs text-muted-foreground mb-1.5 font-medium">Quantidade *</label>
+                                <label className="block text-xs text-muted-foreground mb-1.5 font-medium">Quantity *</label>
                                 <input type="number" required min="1" value={saleForm.quantity} onChange={e => setSaleForm(f => ({ ...f, quantity: e.target.value }))} className={inputCls} />
                             </div>
                             <div>
-                                <label className="block text-xs text-muted-foreground mb-1.5 font-medium">Data</label>
+                                <label className="block text-xs text-muted-foreground mb-1.5 font-medium">Date</label>
                                 <DatePicker value={saleForm.date} onChange={val => setSaleForm(f => ({ ...f, date: val }))} />
                             </div>
                         </div>
                         <div className="flex justify-end gap-3 pt-2">
-                            <button type="button" onClick={() => setShowModal(null)} className="px-4 py-2 rounded-lg border border-border text-sm text-muted-foreground hover:bg-secondary transition-colors">Cancelar</button>
-                            <button type="submit" disabled={saving} className="px-5 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-60">{saving ? 'Salvando...' : 'Registrar Venda'}</button>
+                            <button type="button" onClick={() => setShowModal(null)} className="px-4 py-2 rounded-lg border border-border text-sm text-muted-foreground hover:bg-secondary transition-colors">Cancel</button>
+                            <button type="submit" disabled={saving} className="px-5 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-60">{saving ? 'Saving...' : 'Record Sale'}</button>
                         </div>
                     </form>
                 </Modal>
             )}
 
-            {/* Modal Produto */}
+            {/* Product Modal */}
             {showModal === 'product' && (
-                <Modal title={editId ? 'Editar Produto' : 'Novo Produto'} onClose={() => setShowModal(null)}>
+                <Modal title={editId ? 'Edit Product' : 'New Product'} onClose={() => setShowModal(null)}>
                     <form onSubmit={handleSaveProduct} className="space-y-4">
                         <div>
-                            <label className="block text-xs text-muted-foreground mb-1.5 font-medium">Nome do produto *</label>
-                            <input required value={prodForm.name} onChange={e => setProdForm(f => ({ ...f, name: e.target.value }))} placeholder="Ex: Pomada Modeladora" className={inputCls} />
+                            <label className="block text-xs text-muted-foreground mb-1.5 font-medium">Product name *</label>
+                            <input required value={prodForm.name} onChange={e => setProdForm(f => ({ ...f, name: e.target.value }))} placeholder="e.g. Styling Pomade" className={inputCls} />
                         </div>
                         <div>
-                            <label className="block text-xs text-muted-foreground mb-1.5 font-medium">Categoria</label>
+                            <label className="block text-xs text-muted-foreground mb-1.5 font-medium">Category</label>
                             <Select
                                 value={prodForm.category}
                                 onChange={val => setProdForm(f => ({ ...f, category: val }))}
                                 options={[
-                                    { value: 'cabelo', label: '💈 Cabelo' },
-                                    { value: 'barba', label: '🪒 Barba' },
-                                    { value: 'acessorio', label: '🧴 Acessório' }
+                                    { value: 'cabelo', label: '💈 Hair' },
+                                    { value: 'barba', label: '🪒 Beard' },
+                                    { value: 'acessorio', label: '🧴 Accessory' }
                                 ]}
                                 triggerClassName={inputCls}
                             />
                         </div>
                         <div className="grid grid-cols-3 gap-3">
                             <div>
-                                <label className="block text-xs text-muted-foreground mb-1.5 font-medium">Preço venda (R$) *</label>
+                                <label className="block text-xs text-muted-foreground mb-1.5 font-medium">Sale price (R$) *</label>
                                 <input type="number" required min="0" step="0.01" value={prodForm.price} onChange={e => setProdForm(f => ({ ...f, price: e.target.value }))} className={inputCls} />
                             </div>
                             <div>
-                                <label className="block text-xs text-muted-foreground mb-1.5 font-medium">Custo (R$)</label>
+                                <label className="block text-xs text-muted-foreground mb-1.5 font-medium">Cost (R$)</label>
                                 <input type="number" min="0" step="0.01" value={prodForm.cost} onChange={e => setProdForm(f => ({ ...f, cost: e.target.value }))} className={inputCls} />
                             </div>
                             <div>
-                                <label className="block text-xs text-muted-foreground mb-1.5 font-medium">Estoque</label>
+                                <label className="block text-xs text-muted-foreground mb-1.5 font-medium">Stock</label>
                                 <input type="number" min="0" value={prodForm.stock} onChange={e => setProdForm(f => ({ ...f, stock: e.target.value }))} className={inputCls} />
                             </div>
                         </div>
@@ -301,11 +301,11 @@ export default function Sales() {
                             <button type="button" onClick={() => setProdForm(f => ({ ...f, is_active: !f.is_active }))} className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${prodForm.is_active ? 'bg-primary' : 'bg-muted'}`}>
                                 <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform ${prodForm.is_active ? 'translate-x-4' : 'translate-x-0.5'}`} />
                             </button>
-                            <span className="text-sm text-muted-foreground">Produto ativo</span>
+                            <span className="text-sm text-muted-foreground">Active product</span>
                         </div>
                         <div className="flex justify-end gap-3 pt-2">
-                            <button type="button" onClick={() => setShowModal(null)} className="px-4 py-2 rounded-lg border border-border text-sm text-muted-foreground hover:bg-secondary transition-colors">Cancelar</button>
-                            <button type="submit" disabled={saving} className="px-5 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-60">{saving ? 'Salvando...' : editId ? 'Salvar alterações' : 'Criar produto'}</button>
+                            <button type="button" onClick={() => setShowModal(null)} className="px-4 py-2 rounded-lg border border-border text-sm text-muted-foreground hover:bg-secondary transition-colors">Cancel</button>
+                            <button type="submit" disabled={saving} className="px-5 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-60">{saving ? 'Saving...' : editId ? 'Save changes' : 'Create product'}</button>
                         </div>
                     </form>
                 </Modal>
@@ -314,19 +314,19 @@ export default function Sales() {
             <ConfirmDialog 
                 open={!!deleteSaleId} 
                 onOpenChange={(open) => !open && setDeleteSaleId(null)}
-                title="Excluir Venda?"
-                description="Tem certeza que deseja excluir esta venda? O valor será removido do faturamento (o estoque não será devolvido automaticamente)."
+                title="Delete Sale?"
+                description="Are you sure you want to delete this sale? The amount will be removed from revenue (stock will not be restored automatically)."
                 onConfirm={handleDeleteSale}
-                confirmText="Excluir Venda"
+                confirmText="Delete Sale"
             />
 
             <ConfirmDialog 
                 open={!!deleteProductId} 
                 onOpenChange={(open) => !open && setDeleteProductId(null)}
-                title="Excluir Produto?"
-                description="Tem certeza que deseja excluir este produto do catálogo? Vendas já realizadas não serão afetadas."
+                title="Delete Product?"
+                description="Are you sure you want to delete this product from the catalog? Existing sales will not be affected."
                 onConfirm={handleDeleteProduct}
-                confirmText="Excluir Produto"
+                confirmText="Delete Product"
             />
         </div>
     );

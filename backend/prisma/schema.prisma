@@ -11,7 +11,7 @@ model Tenant {
   name        String
   slug        String   @unique
   isActive              Boolean   @default(true)
-  workingDays           String    @default("1,2,3,4,5,6") // 0=Dom, 1=Seg...
+  workingDays           String    @default("1,2,3,4,5,6") // 0=Sun, 1=Mon...
   subscriptionStatus    String    @default("trial") // trial, active, expired, blocked
   trialEndsAt           DateTime?
   planType              String?   @default("pro")
@@ -194,7 +194,7 @@ model Plan {
   description     String?
   price           Float
   intervalMonths  Int      @default(1)
-  serviceCount    Int      @default(5) // Quantidade de cortes liberados por mes
+  serviceCount    Int      @default(5) // Number of haircuts allowed per month
   isActive        Boolean  @default(true)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
@@ -244,11 +244,11 @@ model ProductReservation {
 
 model SaasCost {
   id          String   @id @default(uuid())
-  name        String                         // Ex: "Supabase", "VPS EasyPanel", "Domínio"
+  name        String                         // e.g. "Supabase", "VPS EasyPanel", "Domain"
   category    String   @default("infra")     // infra, service, marketing, other
-  amount      Float                          // Valor mensal em R$
-  isRecurring Boolean  @default(true)        // Custo recorrente ou único?
-  isActive    Boolean  @default(true)        // Se deve contar no total
+  amount      Float                          // Monthly amount in R$
+  isRecurring Boolean  @default(true)        // Recurring or one-time cost?
+  isActive    Boolean  @default(true)        // Whether it counts toward the total
   notes       String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

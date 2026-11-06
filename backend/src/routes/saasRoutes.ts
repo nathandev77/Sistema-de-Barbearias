@@ -17,7 +17,7 @@ import { saasAuthMiddleware } from '../middlewares/saasAuthMiddleware';
 
 const router = Router();
 
-// Todas as rotas /api/saas exigem a chave mestra
+// All /api/saas routes require the master key
 router.use(saasAuthMiddleware);
 
 router.get('/dashboard', getDashboardData);
@@ -26,10 +26,10 @@ router.patch('/tenants/:id/extend-trial', extendTenantTrial);
 router.patch('/tenants/:id/activate-plan', activateTenantPlan);
 router.delete('/tenants/:id', deleteTenant);
 
-// Métricas Financeiras + Controle Geral
+// Financial Metrics + General Control
 router.get('/financial-metrics', getFinancialMetrics);
 
-// CRUD de Custos Operacionais
+// Operating Costs CRUD
 router.get('/costs', listCosts);
 router.post('/costs', createCost);
 router.patch('/costs/:id', updateCost);

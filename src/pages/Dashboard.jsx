@@ -4,7 +4,7 @@ import { TypingText } from '@/components/animate-ui/primitives/texts/typing';
 import { Select } from '@/components/ui/OldSelect';
 import { DatePicker } from '@/components/ui/DatePicker';
 
-// ─── Ícones ───────────────────────────────────────────────────────────────────
+// ─── Icons ────────────────────────────────────────────────────────────────────
 const CalendarIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -35,7 +35,7 @@ const FilterIcon = () => (
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z" />
     </svg>
 );
-// ─── Gráfico SVG de área ──────────────────────────────────────────────────────
+// ─── SVG area chart ───────────────────────────────────────────────────────────
 function AreaChart({ data, labels }) {
     const W = 580, H = 180, PAD = { top: 24, right: 16, bottom: 28, left: 8 };
     const innerW = W - PAD.left - PAD.right;
@@ -131,37 +131,37 @@ function StatCard({ label, value, sub, icon }) {
 
 // ─── Status badge ─────────────────────────────────────────────────────────────
 const STATUS_CONFIG = {
-    agendado:   { label: 'Agendado',   cls: 'bg-primary/15 text-primary border border-primary/30' },
-    confirmado: { label: 'Confirmado', cls: 'bg-green-500/15 text-green-400 border border-green-500/30' },
-    concluido:  { label: 'Concluído',  cls: 'bg-blue-500/15 text-blue-400 border border-blue-500/30' },
-    cancelado:  { label: 'Cancelado',  cls: 'bg-destructive/15 text-destructive border border-destructive/30' },
+    agendado:   { label: 'Scheduled', cls: 'bg-primary/15 text-primary border border-primary/30' },
+    confirmado: { label: 'Confirmed', cls: 'bg-green-500/15 text-green-400 border border-green-500/30' },
+    concluido:  { label: 'Completed', cls: 'bg-blue-500/15 text-blue-400 border border-blue-500/30' },
+    cancelado:  { label: 'Cancelled', cls: 'bg-destructive/15 text-destructive border border-destructive/30' },
 };
 
-// ─── Gera lista de últimos 12 meses ──────────────────────────────────────────
+// ─── Builds list of the last 12 months ───────────────────────────────────────
 function getPeriodOptions() {
     const options = [
-        { value: 'hoje', label: 'Hoje' },
-        { value: '7dias', label: 'Últimos 7 dias' },
-        { value: '30dias', label: 'Últimos 30 dias' }
+        { value: 'hoje', label: 'Today' },
+        { value: '7dias', label: 'Last 7 days' },
+        { value: '30dias', label: 'Last 30 days' }
     ];
     const now = new Date();
     for (let i = 0; i < 12; i++) {
         const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
         const value = d.toISOString().slice(0, 7); // 'YYYY-MM'
-        const label = d.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+        const label = d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
         options.push({ value, label: label.charAt(0).toUpperCase() + label.slice(1) });
     }
     return options;
 }
 
-// ─── Dashboard Principal ──────────────────────────────────────────────────────
+// ─── Main Dashboard ───────────────────────────────────────────────────────────
 export default function Dashboard() {
     const [allAppointments, setAllAppointments] = useState([]);
     const [clients, setClients] = useState([]);
     const [barbers, setBarbers] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // Filtros
+    // Filters
     const periodOptions = useMemo(() => getPeriodOptions(), []);
     const [selectedPeriod, setSelectedPeriod] = useState(periodOptions[0].value);
     const [selectedDate, setSelectedDate] = useState('');
@@ -170,7 +170,7 @@ export default function Dashboard() {
     const fmt = (val) =>
         new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(val);
 
-    // Carrega dados uma única vez
+    // Load data only once
     useEffect(() => {
         const load = async () => {
             try {
@@ -189,7 +189,7 @@ export default function Dashboard() {
         load();
     }, []);
 
-    // ── Métricas calculadas a partir dos filtros ──────────────────────────────
+    // ── Metrics calculated from the filters ───────────────────────────────────
     const metrics = useMemo(() => {
         if (allAppointments.length === 0 && !loading) return null;
         if (loading) return null;
@@ -209,12 +209,12 @@ export default function Dashboard() {
         d30.setDate(d30.getDate() - 30);
         const last30Days = getLocalYYYYMMDD(d30);
 
-        // Aplica filtro de barbeiro
+        // Apply barber filter
         const byBarber = selectedBarber === 'todos'
             ? allAppointments
             : allAppointments.filter(a => a.barber_name === selectedBarber);
 
-        // Período selecionado
+        // Selected period
         const PAID_STATUS = ['concluido', 'confirmado'];
         const periodAppts = byBarber.filter(a => {
             if (!a.date) return false;
@@ -229,14 +229,14 @@ export default function Dashboard() {
         const periodCount = periodConcluded.length;
         const avgTicket = periodCount > 0 ? Math.round(periodRevenue / periodCount) : 0;
 
-        // Hoje (sempre fixo para o primeiro card de métrica, mas filtrado por barbeiro)
+        // Today (always fixed for the first metric card, but filtered by barber)
         const todayAppts = byBarber.filter(a => a.date === today);
         const todayConcluded = todayAppts.filter(a => PAID_STATUS.includes(a.status)).length;
 
-        // Gráfico:
+        // Chart:
         const chartData = [];
         const chartLabels = [];
-        const DAY_NAMES = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'];
+        const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
         if (selectedDate) {
             const rev = byBarber
@@ -246,7 +246,7 @@ export default function Dashboard() {
             const [y, m, d] = selectedDate.split('-');
             chartLabels.push(`${d}/${m}`);
         } else if (selectedPeriod === 'hoje' || selectedPeriod === '7dias') {
-            // Últimos 7 dias
+            // Last 7 days
             for (let i = 6; i >= 0; i--) {
                 const d = new Date();
                 d.setDate(d.getDate() - i);
@@ -258,7 +258,7 @@ export default function Dashboard() {
                 chartLabels.push(DAY_NAMES[d.getDay()]);
             }
         } else if (selectedPeriod === '30dias') {
-            // Últimas 4 semanas
+            // Last 4 weeks
             for (let w = 3; w >= 0; w--) {
                 const end = new Date();
                 end.setDate(end.getDate() - (w * 7));
@@ -270,10 +270,10 @@ export default function Dashboard() {
                 const rev = byBarber.filter(a => a.date >= startStr && a.date <= endStr && PAID_STATUS.includes(a.status))
                     .reduce((s, a) => s + (Number(a.price) || 0), 0);
                 chartData.push(rev);
-                chartLabels.push(`Sem ${4 - w}`);
+                chartLabels.push(`Wk ${4 - w}`);
             }
         } else {
-            // Agrupa por semana do mês selecionado (4 semanas)
+            // Group by week of the selected month (4 weeks)
             for (let w = 0; w < 4; w++) {
                 const startDay = w * 7 + 1;
                 const endDay = w * 7 + 7;
@@ -282,11 +282,11 @@ export default function Dashboard() {
                     return day >= startDay && day <= endDay;
                 }).reduce((s, a) => s + (Number(a.price) || 0), 0);
                 chartData.push(rev);
-                chartLabels.push(`S${w + 1}`);
+                chartLabels.push(`W${w + 1}`);
             }
         }
 
-        // Próximos agendamentos de hoje
+        // Today's upcoming appointments
         const upcoming = todayAppts
             .filter(a => a.status !== 'cancelado')
             .sort((a, b) => (a.time || '').localeCompare(b.time || ''));
@@ -322,32 +322,32 @@ export default function Dashboard() {
 
     return (
         <div className="space-y-7 w-full">
-            {/* ── Cabeçalho + Filtros ── */}
+            {/* ── Header + Filters ── */}
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                 <div>
                     <h1 className="text-3xl font-bold text-foreground">
                         <TypingText delay={0.1} holdDelay={4000} loop={false} text="Dashboard" />
                     </h1>
-                    <p className="text-sm text-muted-foreground mt-1">Visão geral da sua barbearia</p>
+                    <p className="text-sm text-muted-foreground mt-1">Overview of your barbershop</p>
                 </div>
 
-                {/* Filtros */}
+                {/* Filters */}
                 <div className="flex items-center gap-2 flex-wrap">
                     <div className="flex items-center gap-1.5 text-muted-foreground">
                         <FilterIcon />
-                        <span className="text-xs font-medium">Filtros:</span>
+                        <span className="text-xs font-medium">Filters:</span>
                     </div>
 
-                    {/* Filtro de data específica */}
+                    {/* Specific date filter */}
                     <div className="w-36">
                         <DatePicker
                             value={selectedDate}
                             onChange={setSelectedDate}
-                            placeholder="Data Exata"
+                            placeholder="Exact Date"
                         />
                     </div>
 
-                    {/* Filtro de período */}
+                    {/* Period filter */}
                     <Select
                         value={selectedPeriod}
                         onChange={setSelectedPeriod}
@@ -355,18 +355,18 @@ export default function Dashboard() {
                         triggerClassName={`px-3 py-2 rounded-xl border border-border bg-secondary text-sm text-foreground focus:ring-2 focus:ring-primary/30 ${selectedDate ? 'opacity-50 pointer-events-none' : ''}`}
                     />
 
-                    {/* Filtro de barbeiro */}
+                    {/* Barber filter */}
                     <Select
                         value={selectedBarber}
                         onChange={setSelectedBarber}
                         options={[
-                            { value: 'todos', label: 'Todos os barbeiros' },
+                            { value: 'todos', label: 'All barbers' },
                             ...barbers.map(b => ({ value: b.name, label: b.name }))
                         ]}
                         triggerClassName="px-3 py-2 rounded-xl border border-border bg-secondary text-sm text-foreground focus:ring-2 focus:ring-primary/30"
                     />
 
-                    {/* Badge de filtro ativo */}
+                    {/* Active filter badge */}
                     {activeFilters && (
                         <button
                             onClick={() => setSelectedBarber('todos')}
@@ -384,40 +384,40 @@ export default function Dashboard() {
             {/* ── Stat Cards ── */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <StatCard
-                    label="Agendamentos Hoje"
+                    label="Appointments Today"
                     value={d.todayCount}
-                    sub={`${d.todayConcluded} concluído${d.todayConcluded !== 1 ? 's' : ''}`}
+                    sub={`${d.todayConcluded} completed`}
                     icon={<CalendarIcon />}
                 />
                 <StatCard
-                    label="Clientes Total"
+                    label="Total Clients"
                     value={d.clientsTotal}
                     sub={null}
                     icon={<UsersIcon />}
                 />
                 <StatCard
-                    label="Faturamento"
+                    label="Revenue"
                     value={fmt(d.periodRevenue)}
-                    sub={`${d.periodCount} atendimento${d.periodCount !== 1 ? 's' : ''} concluídos`}
+                    sub={`${d.periodCount} completed appointment${d.periodCount !== 1 ? 's' : ''}`}
                     icon={<DollarIcon />}
                 />
                 <StatCard
-                    label="Ticket Médio"
+                    label="Average Ticket"
                     value={fmt(d.avgTicket)}
-                    sub={selectedBarber !== 'todos' ? selectedBarber : 'Todos os barbeiros'}
+                    sub={selectedBarber !== 'todos' ? selectedBarber : 'All barbers'}
                     icon={<TrendIcon />}
                 />
             </div>
 
-            {/* ── Gráfico + Próximos ── */}
+            {/* ── Chart + Upcoming ── */}
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
-                {/* Gráfico */}
+                {/* Chart */}
                 <div className="lg:col-span-3 rounded-2xl border border-border bg-card p-6">
                     <div className="mb-5 flex items-center justify-between">
                         <div>
-                            <h2 className="text-lg font-bold text-foreground">Faturamento</h2>
+                            <h2 className="text-lg font-bold text-foreground">Revenue</h2>
                             <p className="text-xs text-muted-foreground mt-0.5">
-                                {selectedDate ? `Dia ${selectedDate.split('-').reverse().join('/')}` : selectedPeriod === 'hoje' || selectedPeriod === '7dias' ? 'Últimos 7 dias' : selectedPeriod === '30dias' ? 'Últimas 4 semanas' : 'Por semana do mês'}
+                                {selectedDate ? `Day ${selectedDate.split('-').reverse().join('/')}` : selectedPeriod === 'hoje' || selectedPeriod === '7dias' ? 'Last 7 days' : selectedPeriod === '30dias' ? 'Last 4 weeks' : 'By week of month'}
                                 {selectedBarber !== 'todos' && ` · ${selectedBarber}`}
                             </p>
                         </div>
@@ -426,7 +426,7 @@ export default function Dashboard() {
                     <div className="h-44 w-full">
                         {d.chartData.every(v => v === 0) ? (
                             <div className="h-full flex items-center justify-center">
-                                <p className="text-sm text-muted-foreground">Nenhum faturamento no período</p>
+                                <p className="text-sm text-muted-foreground">No revenue in this period</p>
                             </div>
                         ) : (
                             <AreaChart data={d.chartData} labels={d.chartLabels} />
@@ -434,19 +434,19 @@ export default function Dashboard() {
                     </div>
                 </div>
 
-                {/* Próximos Agendamentos */}
+                {/* Upcoming Appointments */}
                 <div className="lg:col-span-2 rounded-2xl border border-border bg-card p-6 flex flex-col">
                     <div className="mb-5">
-                        <h2 className="text-lg font-bold text-foreground">Próximos</h2>
+                        <h2 className="text-lg font-bold text-foreground">Upcoming</h2>
                         <p className="text-xs text-muted-foreground mt-0.5">
-                            Agendamentos do dia{selectedBarber !== 'todos' ? ` · ${selectedBarber}` : ''}
+                            Today's appointments{selectedBarber !== 'todos' ? ` · ${selectedBarber}` : ''}
                         </p>
                     </div>
 
                     {d.upcoming.length === 0 ? (
                         <div className="flex-1 flex flex-col items-center justify-center gap-2 text-center py-8">
                             <CalendarIcon />
-                            <p className="text-sm text-muted-foreground">Nenhum agendamento hoje</p>
+                            <p className="text-sm text-muted-foreground">No appointments today</p>
                         </div>
                     ) : (
                         <div className="flex flex-col gap-3 overflow-y-auto flex-1 pr-1">

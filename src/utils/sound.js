@@ -1,5 +1,5 @@
-// ─── Som de Notificação via Web Audio API ──────────────────────────────────────
-// Gera um som de sino/ding profissional de barbearia sem depender de arquivos externos.
+// ─── Notification Sound via Web Audio API ──────────────────────────────────────
+// Generates a professional barbershop bell/ding sound without relying on external files.
 
 export function playNotificationSound() {
     try {
@@ -8,7 +8,7 @@ export function playNotificationSound() {
 
         const ctx = new AudioContext();
 
-        // Primeiro tom (D5 - 587.33 Hz)
+        // First tone (D5 - 587.33 Hz)
         const osc1 = ctx.createOscillator();
         const gain1 = ctx.createGain();
         osc1.type = 'sine';
@@ -23,7 +23,7 @@ export function playNotificationSound() {
         osc1.start(ctx.currentTime);
         osc1.stop(ctx.currentTime + 0.5);
 
-        // Segundo tom mais agudo (A5 - 880 Hz) para efeito harmônico
+        // Second, higher tone (A5 - 880 Hz) for a harmonic effect
         const osc2 = ctx.createOscillator();
         const gain2 = ctx.createGain();
         osc2.type = 'sine';
@@ -38,7 +38,7 @@ export function playNotificationSound() {
         osc2.start(ctx.currentTime + 0.12);
         osc2.stop(ctx.currentTime + 0.9);
 
-        // Terceiro tom cintilante (E6 - 1318.5 Hz)
+        // Third, shimmering tone (E6 - 1318.5 Hz)
         const osc3 = ctx.createOscillator();
         const gain3 = ctx.createGain();
         osc3.type = 'triangle';
@@ -57,11 +57,11 @@ export function playNotificationSound() {
             if (ctx.state !== 'closed') ctx.close();
         }, 1200);
     } catch (e) {
-        console.warn('Áudio não permitido ou indisponível:', e);
+        console.warn('Audio not allowed or unavailable:', e);
     }
 }
 
-// ─── Notificação do Navegador (Desktop / Mobile) ──────────────────────────────
+// ─── Browser Notification (Desktop / Mobile) ──────────────────────────────
 export async function requestNotificationPermission() {
     if (!('Notification' in window)) return false;
     if (Notification.permission === 'granted') return true;
@@ -83,7 +83,7 @@ export function showDesktopNotification(title, options = {}) {
                 ...options
             });
         } catch (e) {
-            console.warn('Erro ao disparar notificação nativa:', e);
+            console.warn('Error triggering native notification:', e);
         }
     }
 }

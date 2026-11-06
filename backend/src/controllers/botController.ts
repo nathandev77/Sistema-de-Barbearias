@@ -38,12 +38,12 @@ const botGenericAppointmentSchema = z.object({
 export const upsertBotClient = async (req: Request, res: Response, next: NextFunction) => {
   try {
     if (!req.body.tenantId || !req.body.phone) {
-      return res.status(400).json({ error: 'tenantId e phone são obrigatórios.' });
+      return res.status(400).json({ error: 'tenantId and phone are required.' });
     }
     const client = await BotService.upsertClient(req.body);
     res.json({ id: client.id, name: client.name, phone: client.phone });
   } catch (error: any) {
-    if (error.message.includes('não encontrada')) return res.status(404).json({ error: error.message });
+    if (error.message.includes('not found')) return res.status(404).json({ error: error.message });
     next(error);
   }
 };
@@ -63,7 +63,7 @@ export const getAvailableSlots = async (req: Request, res: Response, next: NextF
     const { tenantSlug } = req.params;
     const { date, barberId } = req.query;
     
-    if (!date) return res.status(400).json({ error: 'A data é obrigatória' });
+    if (!date) return res.status(400).json({ error: 'Date is required' });
     
     const slots = await BotService.getAvailableSlots(tenantSlug as string, String(date), barberId ? String(barberId) : undefined);
     res.json(slots);
@@ -86,7 +86,7 @@ export const createBotAppointment = async (req: Request, res: Response, next: Ne
     const result = await BotService.createGenericBotAppointment(genericData);
     res.status(201).json(result);
   } catch (error: any) {
-    res.status(400).json({ error: error.message || 'Erro ao processar agendamento.' });
+    res.status(400).json({ error: error.message || 'Error processing appointment.' });
   }
 };
 
@@ -96,6 +96,6 @@ export const createGenericBotAppointment = async (req: Request, res: Response, n
     const result = await BotService.createGenericBotAppointment(data);
     res.status(201).json(result);
   } catch (error: any) {
-    res.status(400).json({ error: error.message || 'Erro ao processar agendamento.' });
+    res.status(400).json({ error: error.message || 'Error processing appointment.' });
   }
 };

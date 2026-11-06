@@ -1,93 +1,111 @@
-# Barber Control — SaaS Multi-Tenant
+# Barber Control — Multi-Tenant SaaS
 
-> Sistema de gestão de barbearias e agendamento online com arquitetura multi-tenant, integração com WhatsApp (Evolution API) e pipeline DevSecOps.
+> Barbershop management and online booking system with a multi-tenant architecture, WhatsApp integration (Evolution API) and a DevSecOps pipeline.
 
 [![CI/CD Pipeline](https://github.com/nathandev77/Sistema-de-Barbearias/actions/workflows/ci.yml/badge.svg)](https://github.com/nathandev77/Sistema-de-Barbearias/actions)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-## Arquitetura
+## Features
 
-O projeto adota uma arquitetura modular baseada em microsserviços lógicos, com isolamento de dados por *tenantId* em nível de banco de dados.
+- **Online booking** for customers, with barber, service, date and time selection.
+- **Barbershop dashboard**: schedule, clients, barbers, services, products, sales, expenses and history.
+- **Subscription plans** for customers and SaaS plans for barbershops.
+- **WhatsApp bot API** (Evolution API / N8N webhooks) that lets customers check barbershop info, see available time slots and book appointments through WhatsApp.
+- **SaaS admin area** to manage tenants (barbershops) and platform financials.
+
+## Architecture
+
+The project uses a modular architecture organized as logical services, with data isolation per *tenantId* at the database level.
 
 - **Frontend**: React 18 (Vite), React Router v6, Tailwind CSS, Shadcn UI / Radix.
 - **Backend**: Node.js 20, Express 5, TypeScript.
-- **Database**: PostgreSQL (Prisma ORM).
-- **Mensageria/Automação**: Evolution API, webhooks via N8N.
-- **Infraestrutura**: Docker Multi-stage, CI/CD via GitHub Actions.
+- **Database**: PostgreSQL (Prisma ORM), Redis (ioredis).
+- **Messaging/Automation**: Evolution API, webhooks via N8N.
+- **Infrastructure**: Multi-stage Docker builds, CI/CD via GitHub Actions.
 
-## Requisitos Prévios
+## Prerequisites
 
 - [Node.js](https://nodejs.org/) v20+
-- [Docker](https://www.docker.com/) e Docker Compose (para ambiente local)
-- [PostgreSQL](https://www.postgresql.org/) v14+ (ou banco gerenciado como Supabase/Neon)
+- [Docker](https://www.docker.com/) and Docker Compose (for the local environment)
+- [PostgreSQL](https://www.postgresql.org/) v14+ (or a managed database such as Supabase/Neon)
 
-## Configuração do Ambiente Local
+## Local Setup
 
-### 1. Clonar repositório e instalar dependências
+### 1. Clone the repository and install dependencies
 
 ```bash
 git clone https://github.com/nathandev77/Sistema-de-Barbearias.git
 cd Sistema-de-Barbearias
 
-# Instalar dependências da interface web
+# Install the web interface dependencies
 npm install
 
-# Instalar dependências da API
+# Install the API dependencies
 cd backend
 npm install
 ```
 
-### 2. Variáveis de Ambiente
+### 2. Environment Variables
 
-No diretório `/backend`, utilize o template fornecido para criar seu arquivo de ambiente:
+In the `/backend` directory, use the provided template to create your environment file:
 
 ```bash
 cd backend
 cp .env.example .env
 ```
 
-Edite o arquivo `.env` para incluir suas credenciais de banco de dados (`DATABASE_URL`).  
-Para gerar chaves criptográficas seguras para o sistema (`JWT_SECRET`, `SUPER_ADMIN_KEYS`), execute o utilitário nativo:
+Edit the `.env` file to include your database credentials (`DATABASE_URL`).  
+To generate secure cryptographic keys for the system (`JWT_SECRET`, `SUPER_ADMIN_KEYS`), run the built-in utility:
 
 ```bash
 node scripts/generate_keys.mjs
 ```
 
-### 3. Migrações do Banco de Dados
+### 3. Database Migrations
 
-Com o `.env` configurado, sincronize o schema do Prisma:
+With `.env` configured, sync the Prisma schema:
 
 ```bash
 npx prisma db push
 npx prisma generate
 ```
 
-### 4. Execução
+### 4. Running
 
-Suba as duas aplicações paralelamente:
+Start both applications in parallel:
 
 ```bash
-# Terminal 1: Backend (Escuta na porta 3001)
+# Terminal 1: Backend (listens on port 3001)
 cd backend && npm run dev
 
-# Terminal 2: Frontend (Escuta na porta 5173)
+# Terminal 2: Frontend (listens on port 5173)
 npm run dev
 ```
 
-Acesse a interface de administração do sistema em `http://localhost:5173/saas-admin/login`.
+Open the system administration interface at `http://localhost:5173/saas-admin/login`.
 
-## CI/CD & Deploy
+Alternatively, run the whole stack with Docker:
 
-Este repositório implementa um pipeline **DevSecOps** rigoroso no GitHub Actions (`.github/workflows/ci.yml`):
+```bash
+docker compose up -d --build
+```
 
-1. **Security Gates**: Escaneamento de secrets no histórico via *TruffleHog* e análise estática (SAST) via *CodeQL* contra vulnerabilidades da OWASP Top 10.
-2. **Quality Gates**: Checagem de dependências (`npm audit`), validação de lint e testes unitários.
-3. **Continuous Deployment**: Pushes na branch `main` ativam o deploy automatizado para a VPS, utilizando conexões seguras via SSH e orquestração por `docker-compose`.
+## CI/CD & Deployment
 
-## Segurança Aplicada (OWASP)
+This repository implements a strict **DevSecOps** pipeline on GitHub Actions (`.github/workflows/ci.yml`):
 
-O backend possui proteções nativas contra vetores comuns:
-- **Rate Limiting**: Mitigação de brute-force em rotas de autenticação e recuperação de senha.
-- **Timing Attacks**: Verificação de chaves administrativas (Super Admin) utilizando `crypto.timingSafeEqual`.
-- **Injections**: Camada de validação estrita via `Zod`, rejeitando payloads malformados antes de alcançarem o ORM.
-- **Data Exposure**: Remoção de senhas em memória e hashes via `bcrypt` (salt 12). Logs mascarados em ambiente produtivo.
+1. **Security Gates**: secret scanning of the git history with *TruffleHog* and static analysis (SAST) with *CodeQL* against OWASP Top 10 vulnerabilities.
+2. **Quality Gates**: dependency checks (`npm audit`), type checking/linting and unit tests.
+3. **Continuous Delivery**: deployment to the VPS is triggered manually (`workflow_dispatch` on `main`), using secure SSH connections and `docker compose` orchestration.
+
+## Applied Security (OWASP)
+
+The backend has built-in protections against common attack vectors:
+- **Rate Limiting**: brute-force mitigation on authentication and password recovery routes.
+- **Timing Attacks**: administrative (Super Admin) key verification using `crypto.timingSafeEqual`.
+- **Injections**: strict validation layer with `Zod`, rejecting malformed payloads before they reach the ORM.
+- **Data Exposure**: passwords removed from memory and hashed with `bcrypt` (salt 12). Logs are masked in production.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).

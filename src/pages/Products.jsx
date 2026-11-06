@@ -26,11 +26,11 @@ const EMPTY = {
 
 export default function ProductsPage() {
   const [products, setProducts] = useState([]);
-  const [moves, setMoves] = useState([]); // Placeholder para movimentos de estoque se suportado
+  const [moves, setMoves] = useState([]); // Placeholder for stock movements if supported
   const [loading, setLoading] = useState(true);
 
   const [search, setSearch] = useState("");
-  const [tipo, setTipo] = useState("todos");
+  const [categoryFilter, setCategoryFilter] = useState("todos");
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [deleteId, setDeleteId] = useState(null);
@@ -55,72 +55,72 @@ export default function ProductsPage() {
   const rows = useMemo(() => {
     const q = normalizeText(search).trim();
     return products.filter((p) => {
-      if (tipo !== "todos" && p.category !== tipo) return false;
+      if (categoryFilter !== "todos" && p.category !== categoryFilter) return false;
       if (!q) return true;
       return normalizeText(p.name).includes(q);
     });
-  }, [products, search, tipo]);
+  }, [products, search, categoryFilter]);
 
   const baixoEstoque = products.filter((p) => p.stock <= (p.stockMin || 5)).length;
   const valorEstoque = products.reduce((s, p) => s + (p.stock || 0) * (p.cost || 0), 0);
 
   return (
     <PageShell>
-      <PageHeader title="Produtos" subtitle="Toda venda atualiza estoque, receita de produto, comissão e Controle Geral." />
+      <PageHeader title="Products" subtitle="Every sale updates stock, product revenue, commission and the General Overview." />
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 px-8 pb-6">
-        <StatCard label="Produtos" value={products.length} icon={ShoppingBag} tone="sky" />
-        <StatCard label="Para levar" value={products.filter((p) => p.category === "levar").length} icon={ShoppingBag} tone="violet" />
-        <StatCard label="Estoque baixo" value={baixoEstoque} icon={AlertTriangle} tone="rose" />
-        <StatCard label="Valor em estoque" value={formatBRL(valorEstoque)} icon={ShoppingBag} tone="emerald" />
+        <StatCard label="Products" value={products.length} icon={ShoppingBag} tone="sky" />
+        <StatCard label="Take-home" value={products.filter((p) => p.category === "levar").length} icon={ShoppingBag} tone="violet" />
+        <StatCard label="Low stock" value={baixoEstoque} icon={AlertTriangle} tone="rose" />
+        <StatCard label="Stock value" value={formatBRL(valorEstoque)} icon={ShoppingBag} tone="emerald" />
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-3 px-8 pb-6">
         <div className="flex flex-wrap items-center gap-3 flex-1 min-w-0">
-          <SearchInput value={search} onChange={setSearch} placeholder="Pesquisar produto" />
-          <Select value={tipo} onValueChange={setTipo}>
+          <SearchInput value={search} onChange={setSearch} placeholder="Search product" />
+          <Select value={categoryFilter} onValueChange={setCategoryFilter}>
             <SelectTrigger className="h-10 w-[190px] rounded-full bg-card/70 border-border"><SelectValue /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="todos">Todas as categorias</SelectItem>
-              <SelectItem value="levar">Para levar</SelectItem>
-              <SelectItem value="consumo">Consumo no local</SelectItem>
+              <SelectItem value="todos">All categories</SelectItem>
+              <SelectItem value="levar">Take-home</SelectItem>
+              <SelectItem value="consumo">On-site consumption</SelectItem>
             </SelectContent>
           </Select>
         </div>
         <Button onClick={() => { setEditing(null); setOpen(true); }} className="rounded-full h-10 px-5 gap-2 bg-primary hover:bg-primary/90">
-          <Plus className="h-4 w-4" /> Novo produto
+          <Plus className="h-4 w-4" /> New product
         </Button>
       </div>
 
       <div className="px-8 pb-16 space-y-4">
         <SectionCard>
-          <SectionHeader title="Produtos" count={rows.length} />
+          <SectionHeader title="Products" count={rows.length} />
           <DataTable
             widths={["20%", "14%", "12%", "12%", "14%", "12%", "16%"]}
-            head={<><Th>Produto</Th><Th>Categoria</Th><Th>Custo</Th><Th>Preço</Th><Th>Estoque</Th><Th>Comissão</Th><Th className="text-right">Ações</Th></>}
+            head={<><Th>Product</Th><Th>Category</Th><Th>Cost</Th><Th>Price</Th><Th>Stock</Th><Th>Commission</Th><Th className="text-right">Actions</Th></>}
           >
             {loading ? (
-                <EmptyRow colSpan={7} title="Carregando produtos..." />
+                <EmptyRow colSpan={7} title="Loading products..." />
             ) : rows.length === 0 ? (
-              <EmptyRow colSpan={7} title="Nenhum produto encontrado." hint="Cadastre um produto ou ajuste os filtros." />
+              <EmptyRow colSpan={7} title="No products found." hint="Add a product or adjust the filters." />
             ) : rows.map((p) => (
               <Row key={p.id}>
                 <Td className="font-semibold truncate">{p.name}</Td>
-                <Td className="text-muted-foreground">{p.category === "levar" ? "Para levar" : "Consumo no local"}</Td>
+                <Td className="text-muted-foreground">{p.category === "levar" ? "Take-home" : "On-site consumption"}</Td>
                 <Td className="tabular-nums">{formatBRL(p.cost)}</Td>
                 <Td className="tabular-nums">{formatBRL(p.price)}</Td>
                 <Td>
                   <span className="inline-flex items-center gap-2">
                     <span className="tabular-nums">{p.stock || 0}</span>
-                    {(p.stock || 0) <= (p.stockMin || 5) && <Pill tone="rose">Baixo</Pill>}
+                    {(p.stock || 0) <= (p.stockMin || 5) && <Pill tone="rose">Low</Pill>}
                   </span>
                 </Td>
                 <Td className="tabular-nums">{p.commission_pct || 0}%</Td>
                 <Td>
                   <div className="flex items-center justify-end gap-1">
-                    <IconBtn label="Movimentar estoque" onClick={() => setStockProduct(p)}><ArrowDownUp className="h-4 w-4" /></IconBtn>
-                    <IconBtn label="Editar" onClick={() => { setEditing(p); setOpen(true); }}><Pencil className="h-4 w-4" /></IconBtn>
-                    <IconBtn label="Excluir" danger onClick={() => setDeleteId(p.id)}><Trash2 className="h-4 w-4" /></IconBtn>
+                    <IconBtn label="Adjust stock" onClick={() => setStockProduct(p)}><ArrowDownUp className="h-4 w-4" /></IconBtn>
+                    <IconBtn label="Edit" onClick={() => { setEditing(p); setOpen(true); }}><Pencil className="h-4 w-4" /></IconBtn>
+                    <IconBtn label="Delete" danger onClick={() => setDeleteId(p.id)}><Trash2 className="h-4 w-4" /></IconBtn>
                   </div>
                 </Td>
               </Row>
@@ -136,11 +136,11 @@ export default function ProductsPage() {
       <AlertDialog open={!!deleteId} onOpenChange={(o) => !o && setDeleteId(null)}>
         <AlertDialogContent className="bg-card border-border">
           <AlertDialogHeader>
-            <AlertDialogTitle>Excluir este produto?</AlertDialogTitle>
-            <AlertDialogDescription>Esta ação não poderá ser desfeita.</AlertDialogDescription>
+            <AlertDialogTitle>Delete this product?</AlertDialogTitle>
+            <AlertDialogDescription>This action cannot be undone.</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Voltar</AlertDialogCancel>
+            <AlertDialogCancel>Back</AlertDialogCancel>
             <AlertDialogAction onClick={async () => {
               if (deleteId) {
                 await Product.delete(deleteId);
@@ -148,7 +148,7 @@ export default function ProductsPage() {
               }
               setDeleteId(null);
             }} className="bg-destructive text-white hover:bg-destructive/90">
-              <Trash2 className="h-4 w-4" /> Excluir
+              <Trash2 className="h-4 w-4" /> Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -191,7 +191,7 @@ function ProductForm({ open, onOpenChange, product, onSave }) {
         onOpenChange(false);
         onSave();
     } catch(err) {
-        alert("Erro ao salvar produto: " + err.message);
+        alert("Error saving product: " + err.message);
     }
   };
 
@@ -199,53 +199,53 @@ function ProductForm({ open, onOpenChange, product, onSave }) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="bg-card border-border max-w-2xl p-0 gap-0 overflow-hidden">
         <DialogHeader className="px-6 py-5 border-b border-border/60 space-y-1">
-          <DialogTitle className="text-lg font-semibold tracking-tight">{product ? "Editar produto" : "Novo produto"}</DialogTitle>
-          <DialogDescription className="text-sm text-muted-foreground">Produtos geram Receita de Produto ao serem vendidos.</DialogDescription>
+          <DialogTitle className="text-lg font-semibold tracking-tight">{product ? "Edit product" : "New product"}</DialogTitle>
+          <DialogDescription className="text-sm text-muted-foreground">Products generate Product Revenue when sold.</DialogDescription>
         </DialogHeader>
         <div className="px-6 py-5 grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-[70vh] overflow-y-auto">
-          <FormField label="Nome" required>
+          <FormField label="Name" required>
             <Input value={form.name} onChange={(e) => set({ name: e.target.value })} className="h-10 bg-background border-border" />
           </FormField>
-          <FormField label="Categoria">
+          <FormField label="Category">
             <Select value={form.category} onValueChange={(v) => set({ category: v })}>
               <SelectTrigger className="h-10 bg-background border-border"><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="levar">Para levar</SelectItem>
-                <SelectItem value="consumo">Consumo no local</SelectItem>
-                <SelectItem value="cabelo">Cabelo</SelectItem>
-                <SelectItem value="barba">Barba</SelectItem>
-                <SelectItem value="acessorio">Acessório</SelectItem>
+                <SelectItem value="levar">Take-home</SelectItem>
+                <SelectItem value="consumo">On-site consumption</SelectItem>
+                <SelectItem value="cabelo">Hair</SelectItem>
+                <SelectItem value="barba">Beard</SelectItem>
+                <SelectItem value="acessorio">Accessory</SelectItem>
               </SelectContent>
             </Select>
           </FormField>
-          <FormField label="Custo (R$)">
+          <FormField label="Cost (R$)">
             <Input type="number" value={form.cost} onChange={(e) => set({ cost: e.target.value })} className="h-10 bg-background border-border" />
           </FormField>
-          <FormField label="Preço (R$)">
+          <FormField label="Price (R$)">
             <Input type="number" value={form.price} onChange={(e) => set({ price: e.target.value })} className="h-10 bg-background border-border" />
           </FormField>
-          <FormField label="Estoque">
+          <FormField label="Stock">
             <Input type="number" value={form.stock} onChange={(e) => set({ stock: e.target.value })} className="h-10 bg-background border-border" />
           </FormField>
-          <FormField label="Estoque mínimo">
+          <FormField label="Minimum stock">
             <Input type="number" value={form.stockMin} onChange={(e) => set({ stockMin: e.target.value })} className="h-10 bg-background border-border" />
           </FormField>
-          <FormField label="Comissão (%)">
+          <FormField label="Commission (%)">
             <Input type="number" value={form.commission_pct} onChange={(e) => set({ commission_pct: e.target.value })} className="h-10 bg-background border-border" />
           </FormField>
           <FormField label="Status">
             <Select value={form.is_active ? "Ativo" : "Inativo"} onValueChange={(v) => set({ is_active: v === "Ativo" })}>
               <SelectTrigger className="h-10 bg-background border-border"><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="Ativo">Ativo</SelectItem>
-                <SelectItem value="Inativo">Inativo</SelectItem>
+                <SelectItem value="Ativo">Active</SelectItem>
+                <SelectItem value="Inativo">Inactive</SelectItem>
               </SelectContent>
             </Select>
           </FormField>
         </div>
         <div className="flex items-center justify-end gap-2 px-6 py-4 border-t border-border/60 bg-card/60">
-          <Button variant="ghost" onClick={() => onOpenChange(false)}>Voltar</Button>
-          <Button onClick={save} className="bg-primary hover:bg-primary/90">Salvar</Button>
+          <Button variant="ghost" onClick={() => onOpenChange(false)}>Back</Button>
+          <Button onClick={save} className="bg-primary hover:bg-primary/90">Save</Button>
         </div>
       </DialogContent>
     </Dialog>
@@ -253,26 +253,26 @@ function ProductForm({ open, onOpenChange, product, onSave }) {
 }
 
 function StockDialog({ product, onOpenChange, onSave }) {
-  const [tipo, setTipo] = useState("Entrada");
-  const [qtd, setQtd] = useState("1");
-  const [motivo, setMotivo] = useState("");
+  const [movementType, setMovementType] = useState("in");
+  const [quantity, setQuantity] = useState("1");
+  const [reason, setReason] = useState("");
 
   const handleSave = async () => {
     if (!product) return;
-    const qtyNum = Number(qtd);
+    const qtyNum = Number(quantity);
     if (qtyNum <= 0) return;
     
     let newStock = product.stock || 0;
-    if (tipo === "Entrada") newStock += qtyNum;
-    else if (tipo === "Saída") newStock -= qtyNum;
-    else newStock = qtyNum; // Ajuste
+    if (movementType === "in") newStock += qtyNum;
+    else if (movementType === "out") newStock -= qtyNum;
+    else newStock = qtyNum; // Adjustment
     
     try {
         await Product.update(product.id, { stock: Math.max(0, newStock) });
         onOpenChange(false);
         onSave();
     } catch(err) {
-        alert("Erro ao ajustar estoque: " + err.message);
+        alert("Error adjusting stock: " + err.message);
     }
   };
 
@@ -280,32 +280,32 @@ function StockDialog({ product, onOpenChange, onSave }) {
     <Dialog open={!!product} onOpenChange={onOpenChange}>
       <DialogContent className="bg-card border-border max-w-lg p-0 gap-0 overflow-hidden">
         <DialogHeader className="px-6 py-5 border-b border-border/60 space-y-1">
-          <DialogTitle className="text-lg font-semibold tracking-tight">Movimentar estoque</DialogTitle>
+          <DialogTitle className="text-lg font-semibold tracking-tight">Adjust stock</DialogTitle>
           <DialogDescription className="text-sm text-muted-foreground">
-            {product?.name} — estoque atual: {product?.stock || 0}
+            {product?.name} — current stock: {product?.stock || 0}
           </DialogDescription>
         </DialogHeader>
         <div className="px-6 py-5 space-y-4">
-          <FormField label="Tipo de movimento">
-            <Select value={tipo} onValueChange={setTipo}>
+          <FormField label="Movement type">
+            <Select value={movementType} onValueChange={setMovementType}>
               <SelectTrigger className="h-10 bg-background border-border"><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="Entrada">Entrada (adiciona)</SelectItem>
-                <SelectItem value="Saída">Saída (remove)</SelectItem>
-                <SelectItem value="Ajuste">Ajuste (define total)</SelectItem>
+                <SelectItem value="in">Stock in (adds)</SelectItem>
+                <SelectItem value="out">Stock out (removes)</SelectItem>
+                <SelectItem value="adjust">Adjustment (sets total)</SelectItem>
               </SelectContent>
             </Select>
           </FormField>
-          <FormField label="Quantidade" required>
-            <Input type="number" value={qtd} onChange={(e) => setQtd(e.target.value)} className="h-10 bg-background border-border" />
+          <FormField label="Quantity" required>
+            <Input type="number" value={quantity} onChange={(e) => setQuantity(e.target.value)} className="h-10 bg-background border-border" />
           </FormField>
-          <FormField label="Motivo (Opcional)">
-            <Input value={motivo} onChange={(e) => setMotivo(e.target.value)} className="h-10 bg-background border-border" placeholder="Ex: Compra de fornecedor, perda..." />
+          <FormField label="Reason (Optional)">
+            <Input value={reason} onChange={(e) => setReason(e.target.value)} className="h-10 bg-background border-border" placeholder="e.g. Supplier purchase, loss..." />
           </FormField>
         </div>
         <div className="flex items-center justify-end gap-2 px-6 py-4 border-t border-border/60 bg-card/60">
-          <Button variant="ghost" onClick={() => onOpenChange(false)}>Voltar</Button>
-          <Button onClick={handleSave} className="bg-primary hover:bg-primary/90">Confirmar</Button>
+          <Button variant="ghost" onClick={() => onOpenChange(false)}>Back</Button>
+          <Button onClick={handleSave} className="bg-primary hover:bg-primary/90">Confirm</Button>
         </div>
       </DialogContent>
     </Dialog>

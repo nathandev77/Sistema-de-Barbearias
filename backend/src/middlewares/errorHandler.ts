@@ -9,10 +9,10 @@ export function errorHandler(
 ) {
   console.error('[Error]:', err);
 
-  // Tratamento de erros de validação (Zod)
+  // Validation error handling (Zod)
   if (err && (err.name === 'ZodError' || err instanceof ZodError || err.issues || err.errors)) {
     const issues = err.issues || err.errors || [];
-    const firstMsg = issues[0]?.message || 'Dados de entrada inválidos.';
+    const firstMsg = issues[0]?.message || 'Invalid input data.';
     return res.status(400).json({
       error: firstMsg,
       details: issues.map((e: any) => ({
@@ -22,15 +22,15 @@ export function errorHandler(
     });
   }
 
-  // Tratamento de erros do Prisma
+  // Prisma error handling
   if (err.code && typeof err.code === 'string' && err.code.startsWith('P2')) {
     return res.status(400).json({
-      error: 'Restrição de banco de dados violada.',
-      message: 'Não foi possível completar a operação no banco de dados.'
+      error: 'Database constraint violated.',
+      message: 'The database operation could not be completed.'
     });
   }
 
-  // Outros erros
+  // Other errors
   const statusCode = err.status || err.statusCode || 500;
   const message = process.env.NODE_ENV === 'production' && statusCode === 500 
     ? 'Internal Server Error' 

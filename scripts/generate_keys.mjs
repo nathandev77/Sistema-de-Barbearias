@@ -2,7 +2,7 @@
 import crypto from 'crypto';
 
 console.log('\n🔐 ========================================================');
-console.log('       GERADOR DE CHAVES CRIPTOGRÁFICAS — SAAS BARBER      ');
+console.log('       CRYPTOGRAPHIC KEY GENERATOR — SAAS BARBER           ');
 console.log('========================================================\n');
 
 function generateSecureKey(prefix = 'sk_master') {
@@ -15,15 +15,15 @@ const adminKey1 = generateSecureKey('sk_admin');
 const adminKey2 = generateSecureKey('sk_admin');
 const jwtSecret = crypto.randomBytes(48).toString('hex');
 
-console.log('📌 SUGESTÕES DE CHAVES SEGURAS PARA O .env DO BACKEND:\n');
+console.log('📌 SUGGESTED SECURE KEYS FOR THE BACKEND .env:\n');
 console.log(`SUPER_ADMIN_KEYS="${ownerKey},${adminKey1}"`);
 console.log(`JWT_SECRET="${jwtSecret}"\n`);
 
 console.log('--------------------------------------------------------');
-console.log('🔑 DETALHES DE ACESSO INDIVIDUAL:');
-console.log(`• Chave do Dono (Você):  ${ownerKey}`);
-console.log(`• Chave de Admin Aux:    ${adminKey1}`);
-console.log(`• Chave Reserva:         ${adminKey2}`);
+console.log('🔑 INDIVIDUAL ACCESS DETAILS:');
+console.log(`• Owner Key (You):       ${ownerKey}`);
+console.log(`• Aux Admin Key:         ${adminKey1}`);
+console.log(`• Backup Key:            ${adminKey2}`);
 console.log('--------------------------------------------------------\n');
-console.log('💡 Dica: Cole SUPER_ADMIN_KEYS no seu arquivo backend/.env');
-console.log('Cada administrador pode usar sua respectiva chave para logar no /saas-admin.\n');
+console.log('💡 Tip: Paste SUPER_ADMIN_KEYS into your backend/.env file');
+console.log('Each administrator can use their respective key to log in to /saas-admin.\n');

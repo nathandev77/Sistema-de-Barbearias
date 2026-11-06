@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { prisma } from '../prisma';
 
 const serviceInputSchema = z.object({
-  name: z.string().min(1, 'Nome do serviço é obrigatório'),
+  name: z.string().min(1, 'Service name is required'),
   description: z.string().optional().nullable(),
   price: z.preprocess((v) => Number(v), z.number().min(0)),
   durationMinutes: z.preprocess((v) => (v !== undefined && v !== null && v !== '' ? Number(v) : undefined), z.number().min(1)).optional(),

@@ -4,13 +4,13 @@ import { fetchApi } from '@/api/base44Client';
 import { Loader2, Save } from 'lucide-react';
 
 const DAYS = [
-    { value: '0', label: 'Domingo' },
-    { value: '1', label: 'Segunda-feira' },
-    { value: '2', label: 'Terça-feira' },
-    { value: '3', label: 'Quarta-feira' },
-    { value: '4', label: 'Quinta-feira' },
-    { value: '5', label: 'Sexta-feira' },
-    { value: '6', label: 'Sábado' },
+    { value: '0', label: 'Sunday' },
+    { value: '1', label: 'Monday' },
+    { value: '2', label: 'Tuesday' },
+    { value: '3', label: 'Wednesday' },
+    { value: '4', label: 'Thursday' },
+    { value: '5', label: 'Friday' },
+    { value: '6', label: 'Saturday' },
 ];
 
 export default function Settings() {
@@ -25,7 +25,7 @@ export default function Settings() {
                 setSelectedDays(data.workingDays.split(','));
             }
         } catch (error) {
-            console.error("Erro ao carregar configurações:", error);
+            console.error("Error loading settings:", error);
         } finally {
             setLoading(false);
         }
@@ -50,9 +50,9 @@ export default function Settings() {
                 method: 'PUT',
                 body: JSON.stringify({ workingDays: selectedDays.join(',') })
             });
-            alert('Configurações salvas com sucesso!');
+            alert('Settings saved successfully!');
         } catch (error) {
-            alert('Erro ao salvar: ' + error.message);
+            alert('Error saving: ' + error.message);
         } finally {
             setSaving(false);
         }
@@ -65,8 +65,8 @@ export default function Settings() {
     return (
         <div className="space-y-6 max-w-4xl">
             <div>
-                <h2 className="text-2xl font-bold tracking-tight text-foreground">Configurações da Barbearia</h2>
-                <p className="text-sm text-muted-foreground mt-1">Gerencie dias de funcionamento e outras preferências globais.</p>
+                <h2 className="text-2xl font-bold tracking-tight text-foreground">Barbershop Settings</h2>
+                <p className="text-sm text-muted-foreground mt-1">Manage business days and other global preferences.</p>
             </div>
 
             <motion.div
@@ -74,9 +74,9 @@ export default function Settings() {
                 animate={{ opacity: 1, y: 0 }}
                 className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm p-6"
             >
-                <h3 className="text-lg font-semibold text-foreground mb-4">Dias de Funcionamento</h3>
+                <h3 className="text-lg font-semibold text-foreground mb-4">Business Days</h3>
                 <p className="text-sm text-muted-foreground mb-6">
-                    Selecione os dias da semana em que a barbearia estará aberta. O robô de agendamentos não oferecerá horários nos dias desmarcados.
+                    Select the days of the week the barbershop will be open. The booking bot will not offer time slots on unselected days.
                 </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
@@ -114,7 +114,7 @@ export default function Settings() {
                         className="flex items-center gap-2 px-6 py-2.5 bg-primary text-primary-foreground text-sm font-semibold rounded-xl hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 disabled:opacity-70"
                     >
                         {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                        {saving ? 'Salvando...' : 'Salvar Configurações'}
+                        {saving ? 'Saving...' : 'Save Settings'}
                     </button>
                 </div>
             </motion.div>

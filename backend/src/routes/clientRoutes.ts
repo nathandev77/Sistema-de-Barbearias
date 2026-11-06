@@ -8,6 +8,6 @@ router.use(requireAuth);
 router.post('/', createClient);
 router.get('/', listClients);
 router.put('/:id', updateClient);
-router.delete('/:id', requireRole(['ADMIN']), deleteClient); // Apenas ADMIN deleta clientes
+router.delete('/:id', requireRole(['ADMIN']), deleteClient); // Only ADMIN deletes clients
 
 export default router;

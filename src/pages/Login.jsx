@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { auth } from '@/api/base44Client';
 
-// ─── Input com ícone ──────────────────────────────────────────────────────────
+// ─── Input with icon ─────────────────────────────────────────────────────────
 function Input({ id, type, value, onChange, placeholder, icon, rightElement, required = true, disabled = false }) {
     return (
         <div className="relative group">
@@ -77,7 +77,7 @@ function Logo() {
                         delay={0.5}
                         holdDelay={3000}
                         loop={true}
-                        text="Gestão & Controle de Barbearias"
+                        text="Barbershop Management & Control"
                     >
                         <TypingTextCursor />
                     </TypingText>
@@ -103,7 +103,7 @@ export default function Login() {
     const [error, setError] = useState('');
     const [isTrialExpiredError, setIsTrialExpiredError] = useState(false);
 
-    // Register Trial State (Nome da Barbearia + Email)
+    // Register Trial State (Barbershop Name + Email)
     const [barbershopName, setBarbershopName] = useState('');
     const [registerEmail, setRegisterEmail] = useState('');
     const [registerSuccess, setRegisterSuccess] = useState(null);
@@ -148,7 +148,7 @@ export default function Login() {
             const res = await loginAdmin(email.trim().toLowerCase(), password);
 
             if (res?.mustChangePassword) {
-                // Ativar modo de primeiro acesso obrigatório
+                // Activate mandatory first-access mode
                 setTempPassword(password);
                 setMode('firstAccess');
                 setError('');
@@ -158,17 +158,17 @@ export default function Login() {
             navigate('/admin');
         } catch (err) {
             const msg = err?.message || '';
-            if (msg.includes('TRIAL_EXPIRED') || msg.toLowerCase().includes('teste de 4 dias expirou')) {
+            if (msg.includes('TRIAL_EXPIRED') || msg.toLowerCase().includes('trial period has expired') || msg.toLowerCase().includes('teste de 4 dias expirou')) {
                 setIsTrialExpiredError(true);
-                setError('Seu período de teste de 4 dias encerrou. Escolha um plano para reativar seu acesso.');
-            } else if (msg.toLowerCase().includes('muitas tentativas') || msg.toLowerCase().includes('rate') || msg.includes('429')) {
-                setError('Muitas tentativas de login. Aguarde alguns instantes e tente novamente.');
-            } else if (msg.toLowerCase().includes('bloqueado') || msg.toLowerCase().includes('inativa')) {
-                setError('Acesso bloqueado. Entre em contato com o suporte ou escolha um plano.');
+                setError('Your 4-day trial period has ended. Choose a plan to reactivate your access.');
+            } else if (msg.toLowerCase().includes('too many') || msg.toLowerCase().includes('muitas tentativas') || msg.toLowerCase().includes('rate') || msg.includes('429')) {
+                setError('Too many login attempts. Please wait a moment and try again.');
+            } else if (msg.toLowerCase().includes('blocked') || msg.toLowerCase().includes('inactive') || msg.toLowerCase().includes('bloqueado') || msg.toLowerCase().includes('inativa')) {
+                setError('Access blocked. Contact support or choose a plan.');
             } else if (msg) {
                 setError(msg);
             } else {
-                setError('E-mail ou senha inválidos. Verifique suas credenciais.');
+                setError('Invalid email or password. Please check your credentials.');
             }
         } finally {
             setLoading(false);
@@ -182,10 +182,10 @@ export default function Login() {
 
         try {
             if (!barbershopName.trim() || barbershopName.trim().length < 2) {
-                throw new Error('Informe o nome da barbearia.');
+                throw new Error('Please enter the barbershop name.');
             }
             if (!registerEmail.trim() || !registerEmail.includes('@')) {
-                throw new Error('Informe um e-mail válido.');
+                throw new Error('Please enter a valid email.');
             }
 
             const response = await auth.registerTrial({
@@ -196,7 +196,7 @@ export default function Login() {
             setRegisterSuccess(response);
             setEmail(registerEmail.trim().toLowerCase());
         } catch (err) {
-            setError(err.message || 'Erro ao gerar cadastro de teste grátis.');
+            setError(err.message || 'Error creating free trial registration.');
         } finally {
             setLoading(false);
         }
@@ -207,7 +207,7 @@ export default function Login() {
         setError('');
 
         if (!isNewPasswordValid) {
-            setError('A nova senha deve cumprir todos os requisitos de segurança e ser confirmada.');
+            setError('The new password must meet all security requirements and be confirmed.');
             return;
         }
 
@@ -222,7 +222,7 @@ export default function Login() {
 
             navigate('/admin');
         } catch (err) {
-            setError(err.message || 'Erro ao redefinir a senha no primeiro acesso.');
+            setError(err.message || 'Error resetting the password on first access.');
         } finally {
             setLoading(false);
         }
@@ -301,7 +301,7 @@ export default function Login() {
                                 boxShadow: mode === 'login' ? '0 2px 10px hsl(217 91% 60% / 0.3)' : 'none'
                             }}
                         >
-                            Entrar
+                            Sign In
                         </button>
                         <button
                             type="button"
@@ -323,7 +323,7 @@ export default function Login() {
                                 boxShadow: mode === 'register' ? '0 2px 10px hsl(217 91% 60% / 0.3)' : 'none'
                             }}
                         >
-                            <Sparkles style={{ width: 13, height: 13 }} /> Teste Grátis (4d)
+                            <Sparkles style={{ width: 13, height: 13 }} /> Free Trial (4d)
                         </button>
                     </div>
                 )}
@@ -335,14 +335,14 @@ export default function Login() {
                     <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                             <label htmlFor="login-email" style={{ fontSize: 11, fontWeight: 600, color: 'hsl(220 10% 50%)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-                                E-mail de Acesso
+                                Login Email
                             </label>
                             <Input
                                 id="login-email"
                                 type="email"
                                 value={email}
                                 onChange={e => setEmail(e.target.value)}
-                                placeholder="seu@email.com"
+                                placeholder="you@email.com"
                                 icon={<Mail style={{ width: 16, height: 16 }} />}
                             />
                         </div>
@@ -350,7 +350,7 @@ export default function Login() {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <label htmlFor="login-password" style={{ fontSize: 11, fontWeight: 600, color: 'hsl(220 10% 50%)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-                                    Senha (ou Senha Provisória do E-mail)
+                                    Password (or Temporary Password from Email)
                                 </label>
                             </div>
                             <Input
@@ -394,7 +394,7 @@ export default function Login() {
                                             color: '#000', fontWeight: 700, borderRadius: 8, textDecoration: 'none', fontSize: 12
                                         }}
                                     >
-                                        <CreditCard style={{ width: 14, height: 14 }} /> Escolher um Plano para Reativar
+                                        <CreditCard style={{ width: 14, height: 14 }} /> Choose a Plan to Reactivate
                                     </Link>
                                 )}
                             </div>
@@ -419,9 +419,9 @@ export default function Login() {
                             {loading ? (
                                 <>
                                     <div style={{ width: 16, height: 16, border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
-                                    Acessando...
+                                    Signing in...
                                 </>
-                            ) : 'Entrar no Painel'}
+                            ) : 'Sign In to Dashboard'}
                         </button>
                     </form>
                 )}
@@ -433,32 +433,32 @@ export default function Login() {
                     <form onSubmit={handleRegisterTrial} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                             <label style={{ fontSize: 11, fontWeight: 600, color: 'hsl(220 10% 50%)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-                                Nome da Barbearia *
+                                Barbershop Name *
                             </label>
                             <Input
                                 id="reg-barbershop"
                                 type="text"
                                 value={barbershopName}
                                 onChange={e => setBarbershopName(e.target.value)}
-                                placeholder="Ex: Barbearia Estilo & Arte"
+                                placeholder="E.g. Style & Art Barbershop"
                                 icon={<Building2 style={{ width: 16, height: 16 }} />}
                             />
                         </div>
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                             <label style={{ fontSize: 11, fontWeight: 600, color: 'hsl(220 10% 50%)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-                                Seu Melhor E-mail *
+                                Your Best Email *
                             </label>
                             <Input
                                 id="reg-email"
                                 type="email"
                                 value={registerEmail}
                                 onChange={e => setRegisterEmail(e.target.value)}
-                                placeholder="seuemail@gmail.com"
+                                placeholder="youremail@gmail.com"
                                 icon={<Mail style={{ width: 16, height: 16 }} />}
                             />
                             <p style={{ fontSize: 11, color: 'hsl(220 10% 55%)', marginTop: 2 }}>
-                                Enviaremos a senha provisória de acesso para este e-mail.
+                                We will send the temporary access password to this email.
                             </p>
                         </div>
 
@@ -476,7 +476,7 @@ export default function Login() {
                         }}>
                             <ShieldCheck style={{ width: 16, height: 16, flexShrink: 0, marginTop: 1, color: '#38bdf8' }} />
                             <span>
-                                <strong>4 Dias Grátis:</strong> No seu primeiro login, o sistema solicitará que você troque a senha recebida por uma definitiva.
+                                <strong>4 Free Days:</strong> On your first login, the system will ask you to replace the password you received with a permanent one.
                             </span>
                         </div>
 
@@ -512,9 +512,9 @@ export default function Login() {
                             {loading ? (
                                 <>
                                     <div style={{ width: 16, height: 16, border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
-                                    Criando e enviando e-mail...
+                                    Creating and sending email...
                                 </>
-                            ) : 'Receber Acesso por E-mail →'}
+                            ) : 'Get Access by Email →'}
                         </button>
                     </form>
                 )}
@@ -536,10 +536,10 @@ export default function Login() {
                         </div>
 
                         <h3 style={{ fontSize: 20, fontWeight: 700, color: '#fff', marginBottom: 6 }}>
-                            Acesso Enviado! 🎉
+                            Access Sent! 🎉
                         </h3>
                         <p style={{ fontSize: 13, color: '#cbd5e1', lineHeight: 1.5, marginBottom: 20 }}>
-                            Enviamos a senha provisória da barbearia <strong>{registerSuccess.barbershopName}</strong> para:
+                            We sent the temporary password for the barbershop <strong>{registerSuccess.barbershopName}</strong> to:
                             <br />
                             <span style={{ color: '#38bdf8', fontFamily: 'monospace', fontWeight: 600 }}>{registerSuccess.email}</span>
                         </p>
@@ -558,7 +558,7 @@ export default function Login() {
                             alignItems: 'center'
                         }}>
                             <Mail style={{ width: 18, height: 18, flexShrink: 0, color: '#38bdf8' }} />
-                            <span>Sua <strong>senha temporária</strong> foi enviada para o seu e-mail.</span>
+                            <span>Your <strong>temporary password</strong> has been sent to your email.</span>
                         </div>
 
                         <div style={{
@@ -571,7 +571,7 @@ export default function Login() {
                             textAlign: 'left',
                             marginBottom: 20
                         }}>
-                            🔒 <strong>Primeiro Acesso:</strong> Copie a senha do seu e-mail para fazer o login. O sistema solicitará a troca obrigatória para sua nova senha pessoal.
+                            🔒 <strong>First Access:</strong> Copy the password from your email to log in. The system will require you to change it to your new personal password.
                         </div>
 
                         <button
@@ -589,7 +589,7 @@ export default function Login() {
                                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                             }}
                         >
-                            Fazer Login com a Senha Recebida →
+                            Log In with the Password Received →
                         </button>
                     </div>
                 )}
@@ -608,10 +608,10 @@ export default function Login() {
                         }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#fef08a', fontWeight: 700, fontSize: 13, marginBottom: 4 }}>
                                 <KeyRound style={{ width: 16, height: 16, color: '#facc15' }} />
-                                <span>Primeiro Acesso Obrigatório</span>
+                                <span>Mandatory First Access</span>
                             </div>
                             <p style={{ margin: 0, fontSize: 12, color: '#fef9c3', lineHeight: 1.4 }}>
-                                Para garantir a segurança da sua conta, defina sua nova <strong>senha definitiva</strong> antes de acessar o painel.
+                                To keep your account secure, set your new <strong>permanent password</strong> before accessing the dashboard.
                             </p>
                         </div>
 
@@ -631,14 +631,14 @@ export default function Login() {
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                             <label style={{ fontSize: 11, fontWeight: 600, color: 'hsl(220 10% 50%)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-                                Nova Senha Definitiva *
+                                New Permanent Password *
                             </label>
                             <Input
                                 id="first-new-password"
                                 type={showNewPassword ? 'text' : 'password'}
                                 value={newPassword}
                                 onChange={e => setNewPassword(e.target.value)}
-                                placeholder="Crie sua nova senha"
+                                placeholder="Create your new password"
                                 icon={<Lock style={{ width: 16, height: 16 }} />}
                                 rightElement={
                                     <button
@@ -655,14 +655,14 @@ export default function Login() {
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                             <label style={{ fontSize: 11, fontWeight: 600, color: 'hsl(220 10% 50%)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-                                Confirmar Nova Senha *
+                                Confirm New Password *
                             </label>
                             <Input
                                 id="first-confirm-password"
                                 type={showNewPassword ? 'text' : 'password'}
                                 value={confirmPassword}
                                 onChange={e => setConfirmPassword(e.target.value)}
-                                placeholder="Repita a nova senha"
+                                placeholder="Repeat the new password"
                                 icon={<Lock style={{ width: 16, height: 16 }} />}
                             />
                         </div>
@@ -679,22 +679,22 @@ export default function Login() {
                             fontSize: 11
                         }}>
                             <div style={{ color: passwordChecks.length ? '#4ade80' : '#94a3b8', display: 'flex', alignItems: 'center', gap: 4 }}>
-                                <span>{passwordChecks.length ? '✓' : '•'} Mínimo 8 caracteres</span>
+                                <span>{passwordChecks.length ? '✓' : '•'} At least 8 characters</span>
                             </div>
                             <div style={{ color: passwordChecks.upper ? '#4ade80' : '#94a3b8', display: 'flex', alignItems: 'center', gap: 4 }}>
-                                <span>{passwordChecks.upper ? '✓' : '•'} 1 Maiúscula (A-Z)</span>
+                                <span>{passwordChecks.upper ? '✓' : '•'} 1 Uppercase (A-Z)</span>
                             </div>
                             <div style={{ color: passwordChecks.lower ? '#4ade80' : '#94a3b8', display: 'flex', alignItems: 'center', gap: 4 }}>
-                                <span>{passwordChecks.lower ? '✓' : '•'} 1 Minúscula (a-z)</span>
+                                <span>{passwordChecks.lower ? '✓' : '•'} 1 Lowercase (a-z)</span>
                             </div>
                             <div style={{ color: passwordChecks.number ? '#4ade80' : '#94a3b8', display: 'flex', alignItems: 'center', gap: 4 }}>
-                                <span>{passwordChecks.number ? '✓' : '•'} 1 Número (0-9)</span>
+                                <span>{passwordChecks.number ? '✓' : '•'} 1 Number (0-9)</span>
                             </div>
                             <div style={{ color: passwordChecks.special ? '#4ade80' : '#94a3b8', display: 'flex', alignItems: 'center', gap: 4 }}>
-                                <span>{passwordChecks.special ? '✓' : '•'} 1 Especial (!@#$)</span>
+                                <span>{passwordChecks.special ? '✓' : '•'} 1 Special (!@#$)</span>
                             </div>
                             <div style={{ color: passwordChecks.match ? '#4ade80' : '#94a3b8', display: 'flex', alignItems: 'center', gap: 4 }}>
-                                <span>{passwordChecks.match ? '✓' : '•'} Senhas coincidem</span>
+                                <span>{passwordChecks.match ? '✓' : '•'} Passwords match</span>
                             </div>
                         </div>
 
@@ -731,9 +731,9 @@ export default function Login() {
                             {loading ? (
                                 <>
                                     <div style={{ width: 16, height: 16, border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
-                                    Salvando e entrando...
+                                    Saving and signing in...
                                 </>
-                            ) : 'Salvar Nova Senha e Entrar →'}
+                            ) : 'Save New Password and Sign In →'}
                         </button>
                     </form>
                 )}
@@ -744,7 +744,7 @@ export default function Login() {
                     display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: 12, color: 'hsl(220 10% 50%)'
                 }}>
                     <Link to="/planos" style={{ color: 'hsl(217 91% 65%)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
-                        <CreditCard style={{ width: 13, height: 13 }} /> Planos & Assinaturas
+                        <CreditCard style={{ width: 13, height: 13 }} /> Plans & Subscriptions
                     </Link>
                 </div>
             </div>

@@ -1,6 +1,6 @@
 // ============================================================
-// Base44 API Client - Conexão Real com o Backend
-// Todas as entidades conectadas ao backend Node.js/Prisma
+// Base44 API Client - Real Backend Connection
+// All entities connected to the Node.js/Prisma backend
 // ============================================================
 const API_URL = import.meta.env.PROD ? '/api' : 'http://localhost:3001/api';
 
@@ -17,7 +17,7 @@ export async function fetchApi(endpoint, options = {}) {
     const response = await fetch(`${API_URL}${endpoint}`, { ...options, headers });
 
     if (!response.ok) {
-        let errorMsg = 'Erro na requisição da API';
+        let errorMsg = 'API request error';
         try {
             const errorData = await response.json();
             errorMsg = errorData.error || errorMsg;
@@ -34,7 +34,7 @@ export async function fetchApi(endpoint, options = {}) {
     return response.json();
 }
 
-// ─── HELPERS DE MAPEAMENTO ────────────────────────────────────────────────────
+// ─── MAPPING HELPERS ──────────────────────────────────────────────────────────
 
 const mapBarberFromBackend = (b) => ({
     ...b,
@@ -64,9 +64,9 @@ const mapBarberToBackend = (data) => ({
     lunchEnd: data.lunchEnd || undefined
 });
 
-// ─── ENTIDADES ────────────────────────────────────────────────────────────────
+// ─── ENTITIES ──────────────────────────────────────────────────────────────────
 
-// BARBEIROS
+// BARBERS
 export const Barber = {
     async list() {
         const data = await fetchApi('/barbers');
@@ -92,7 +92,7 @@ export const Barber = {
     }
 };
 
-// CLIENTES DA BARBEARIA (aba Clientes no painel admin)
+// BARBERSHOP CLIENTS (Clients tab in the admin panel)
 export const Client = {
     async list() {
         return fetchApi('/clients');
@@ -125,7 +125,7 @@ export const Client = {
     }
 };
 
-// SERVIÇOS
+// SERVICES
 export const Service = {
     async list() {
         return fetchApi('/services');
@@ -148,7 +148,7 @@ export const Service = {
     }
 };
 
-// AGENDAMENTOS
+// APPOINTMENTS
 export const Appointment = {
     async list(filters = {}) {
         const params = new URLSearchParams(filters).toString();
@@ -175,7 +175,7 @@ export const Appointment = {
     }
 };
 
-// PRODUTOS
+// PRODUCTS
 export const Product = {
     async list() {
         return fetchApi('/products');
@@ -198,7 +198,7 @@ export const Product = {
     }
 };
 
-// VENDAS
+// SALES
 export const Sale = {
     async list() {
         return fetchApi('/sales');
@@ -221,7 +221,7 @@ export const Sale = {
     }
 };
 
-// DESPESAS
+// EXPENSES
 export const Expense = {
     async list() {
         return fetchApi('/expenses');
@@ -244,7 +244,7 @@ export const Expense = {
     }
 };
 
-// ASSINATURAS
+// SUBSCRIPTIONS
 export const Subscription = {
     async create(data) {
         return fetchApi('/plans/subscribe', {
@@ -264,7 +264,7 @@ export const Subscription = {
     }
 };
 
-// RESERVAS DE PRODUTOS
+// PRODUCT RESERVATIONS
 export const ProductReservation = {
     async list(filters = {}) {
         const params = new URLSearchParams(filters).toString();
@@ -313,7 +313,7 @@ export const auth = {
             return {
                 mustChangePassword: true,
                 email: data.email || email,
-                message: data.message || 'Primeiro acesso detectado. É obrigatório criar sua nova senha.'
+                message: data.message || 'First access detected. You must create a new password.'
             };
         }
 
@@ -364,14 +364,14 @@ export const auth = {
         localStorage.removeItem('base44_token');
     },
 
-    // Portal do Cliente — usa JWT específico do portal
+    // Client Portal — uses a portal-specific JWT
     async getClientUser() {
         const raw = localStorage.getItem('base44_auth_client');
         return raw ? JSON.parse(raw) : null;
     },
 
     async loginClient(email, password, barbershopId, barbershopSlug) {
-        // Usa a rota específica do portal para autenticar clientes da barbearia
+        // Use the portal-specific route to authenticate barbershop clients
         const response = await fetch(`${API_URL}/portal/${barbershopSlug}/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -379,7 +379,7 @@ export const auth = {
         });
 
         const data = await response.json();
-        if (!response.ok) throw new Error(data.error || 'Credenciais inválidas.');
+        if (!response.ok) throw new Error(data.error || 'Invalid credentials.');
 
         localStorage.setItem('base44_client_token', data.token);
         const clientToStore = {

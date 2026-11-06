@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-const DAYS = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
-const MONTHS = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+const DAYS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-export function DatePicker({ value, onChange, placeholder = "dd/mm/aaaa", className = "", triggerClassName = "", align = "left" }) {
+export function DatePicker({ value, onChange, placeholder = "dd/mm/yyyy", className = "", triggerClassName = "", align = "left" }) {
     const [open, setOpen] = useState(false);
     
     const getInitialMonth = () => {
@@ -131,10 +131,10 @@ export function DatePicker({ value, onChange, placeholder = "dd/mm/aaaa", classN
                     
                     <div className="mt-4 pt-3 border-t border-border flex justify-between items-center">
                         <button type="button" onClick={() => { onChange(''); setOpen(false); }} className={`text-xs px-2 py-1 rounded hover:bg-secondary transition-colors ${value ? 'text-destructive font-medium' : 'text-muted-foreground'}`}>
-                            Limpar
+                            Clear
                         </button>
                         <button type="button" onClick={setToday} className="text-xs px-3 py-1.5 bg-secondary hover:bg-white/10 text-primary font-bold rounded-lg transition-colors">
-                            Hoje
+                            Today
                         </button>
                     </div>
                 </div>

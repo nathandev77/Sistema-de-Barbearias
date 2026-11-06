@@ -20,10 +20,10 @@ import {
 
 const STATUSES = ['agendado', 'confirmado', 'concluido', 'cancelado'];
 const STATUS_LABELS = {
-    agendado: { label: 'Agendado', className: 'text-blue-400 bg-blue-400/10 border-blue-400/20' },
-    confirmado: { label: 'Confirmado', className: 'text-green-400 bg-green-400/10 border-green-400/20' },
-    concluido: { label: 'Concluído', className: 'text-primary bg-primary/10 border-primary/20' },
-    cancelado: { label: 'Cancelado', className: 'text-destructive bg-destructive/10 border-destructive/20' },
+    agendado: { label: 'Scheduled', className: 'text-blue-400 bg-blue-400/10 border-blue-400/20' },
+    confirmado: { label: 'Confirmed', className: 'text-green-400 bg-green-400/10 border-green-400/20' },
+    concluido: { label: 'Completed', className: 'text-primary bg-primary/10 border-primary/20' },
+    cancelado: { label: 'Cancelled', className: 'text-destructive bg-destructive/10 border-destructive/20' },
 };
 
 // ── Status Card Icons ─────────────────────────────────────────────────────────
@@ -210,7 +210,7 @@ export default function Agenda() {
             await load();
         } catch (error) {
             console.error(error);
-            alert('Erro ao salvar: ' + (error.response?.data?.error || error.message || 'Desconhecido'));
+            alert('Error saving: ' + (error.response?.data?.error || error.message || 'Unknown'));
         } finally {
             setSaving(false);
         }
@@ -252,20 +252,20 @@ export default function Agenda() {
         const startOfMonthStr = startOfMonth.toISOString().split("T")[0];
 
         return appointments.filter(a => {
-            // Filtro de Barbeiro
+            // Barber filter
             if (selectedBarberId !== 'all' && a.barberId !== selectedBarberId) return false;
 
-            // Filtro de Data Específica
+            // Specific date filter
             if (filterDate && a.date !== filterDate) return false;
 
-            // Filtro de Presets de Período (quando filterDate não está setada)
+            // Period preset filter (when filterDate is not set)
             if (!filterDate) {
                 if (periodPreset === 'today' && a.date !== todayStr) return false;
                 if (periodPreset === 'week' && (a.date < startOfWeekStr || a.date > todayStr)) return false;
                 if (periodPreset === 'month' && (a.date < startOfMonthStr || a.date > todayStr)) return false;
             }
 
-            // Busca por texto (cliente, barbeiro, serviços)
+            // Text search (client, barber, services)
             if (searchQuery) {
                 const q = searchQuery.toLowerCase();
                 const clientMatch = (a.client_name || a.client?.name || '').toLowerCase().includes(q);
@@ -278,7 +278,7 @@ export default function Agenda() {
         });
     }, [appointments, filterDate, periodPreset, selectedBarberId, searchQuery]);
 
-    // ── Status counts (baseado nos filtros atuais) ────────────────────────────
+    // ── Status counts (based on current filters) ──────────────────────────────
     const statusCounts = useMemo(() => {
         return {
             agendado: filtered.filter(a => a.status === 'agendado').length,
@@ -295,13 +295,13 @@ export default function Agenda() {
 
     // ── Date label helper ──────────────────────────────────────────────────────
     const getDateLabel = () => {
-        if (!filterDate) return 'Todas as datas';
+        if (!filterDate) return 'All dates';
         const today = new Date();
         const selected = new Date(filterDate + 'T12:00:00');
         const todayStr = today.toISOString().split('T')[0];
         const day = filterDate.split('-')[2];
         const month = filterDate.split('-')[1];
-        const prefix = filterDate === todayStr ? 'Hoje' : selected.toLocaleDateString('pt-BR', { weekday: 'short' }).replace('.', '');
+        const prefix = filterDate === todayStr ? 'Today' : selected.toLocaleDateString('en-US', { weekday: 'short' }).replace('.', '');
         return `${prefix} • ${day}/${month}`;
     };
 
@@ -309,10 +309,10 @@ export default function Agenda() {
 
     // ── Status counter cards config ────────────────────────────────────────────
     const STATUS_CARDS = [
-        { key: 'agendado', label: 'Agendados', count: statusCounts.agendado, icon: <CalendarCheckIcon />, color: 'text-blue-400', bg: 'bg-blue-400/10', border: 'border-blue-400/20' },
-        { key: 'confirmado', label: 'Confirmados', count: statusCounts.confirmado, icon: <CheckCircleIcon />, color: 'text-green-400', bg: 'bg-green-400/10', border: 'border-green-400/20' },
-        { key: 'cancelado', label: 'Cancelados', count: statusCounts.cancelado, icon: <XCircleIcon />, color: 'text-red-400', bg: 'bg-red-400/10', border: 'border-red-400/20' },
-        { key: 'concluido', label: 'Histórico (Concluídos)', count: statusCounts.concluido, icon: <ClipboardCheckIcon />, color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/20', to: '/admin/historico' },
+        { key: 'agendado', label: 'Scheduled', count: statusCounts.agendado, icon: <CalendarCheckIcon />, color: 'text-blue-400', bg: 'bg-blue-400/10', border: 'border-blue-400/20' },
+        { key: 'confirmado', label: 'Confirmed', count: statusCounts.confirmado, icon: <CheckCircleIcon />, color: 'text-green-400', bg: 'bg-green-400/10', border: 'border-green-400/20' },
+        { key: 'cancelado', label: 'Cancelled', count: statusCounts.cancelado, icon: <XCircleIcon />, color: 'text-red-400', bg: 'bg-red-400/10', border: 'border-red-400/20' },
+        { key: 'concluido', label: 'History (Completed)', count: statusCounts.concluido, icon: <ClipboardCheckIcon />, color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/20', to: '/admin/historico' },
     ];
 
     // ── Render table section ───────────────────────────────────────────────────
@@ -329,12 +329,12 @@ export default function Agenda() {
                             </span>
                         )}
                     </div>
-                    {title === 'Finalizados' && (
+                    {title === 'Completed' && (
                         <Link
                             to="/admin/historico"
                             className="text-xs text-primary hover:text-primary/80 font-medium inline-flex items-center gap-1 transition-colors"
                         >
-                            Ver no Histórico Completo →
+                            View in Full History →
                         </Link>
                     )}
                 </div>
@@ -343,7 +343,7 @@ export default function Agenda() {
                         <table className="w-full text-sm">
                             <thead>
                                 <tr className="border-b border-border">
-                                    {['Cliente', 'Serviço', 'Barbeiro', 'Data / Hora', 'Status', 'Ações'].map(h => (
+                                    {['Client', 'Service', 'Barber', 'Date / Time', 'Status', 'Actions'].map(h => (
                                         <th key={h} className="text-left px-5 py-3.5 text-[11px] uppercase tracking-widest text-muted-foreground font-medium">{h}</th>
                                     ))}
                                 </tr>
@@ -357,7 +357,7 @@ export default function Agenda() {
                                         <td className="px-5 py-3.5 text-muted-foreground">
                                             {appt.date ? (
                                                 <span>
-                                                    {filterDate === appt.date ? 'Hoje' : appt.date.split('-').reverse().join('/')}
+                                                    {filterDate === appt.date ? 'Today' : appt.date.split('-').reverse().join('/')}
                                                     {appt.time ? ` • ${appt.time}` : ''}
                                                 </span>
                                             ) : '—'}
@@ -373,7 +373,7 @@ export default function Agenda() {
                                                 <button
                                                     onClick={() => openEdit(appt)}
                                                     className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-all"
-                                                    title="Editar"
+                                                    title="Edit"
                                                 >
                                                     <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -382,7 +382,7 @@ export default function Agenda() {
                                                 <button
                                                     onClick={() => setDeleteId(appt.id)}
                                                     className="p-1.5 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
-                                                    title="Excluir"
+                                                    title="Delete"
                                                 >
                                                     <TrashIcon />
                                                 </button>
@@ -425,30 +425,30 @@ export default function Agenda() {
                 })}
             </div>
 
-            {/* ── Search & Filters Bar (Idêntico ao Histórico) ──────────────── */}
+            {/* ── Search & Filters Bar (Same as History) ────────────────────── */}
             <div className="flex flex-wrap items-center justify-between gap-3 bg-card/40 p-4 rounded-2xl border border-border">
                 <div className="flex flex-wrap items-center gap-3 flex-1 min-w-[280px]">
-                    {/* Input de Busca */}
+                    {/* Search input */}
                     <div className="relative flex-1 min-w-[200px] max-w-xs">
                         <span className="absolute inset-y-0 left-3.5 flex items-center text-muted-foreground pointer-events-none">
                             <SearchIcon />
                         </span>
                         <input
                             type="text"
-                            placeholder="Buscar cliente, barbeiro ou serviço..."
+                            placeholder="Search client, barber or service..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="w-full pl-9 pr-3 h-10 rounded-full border border-border bg-card/70 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/50 focus:border-primary/50 transition-all"
                         />
                     </div>
 
-                    {/* Seletor de Barbeiro */}
+                    {/* Barber selector */}
                     <Select value={selectedBarberId} onValueChange={setSelectedBarberId}>
                         <SelectTrigger className="w-[180px] h-10 rounded-full bg-card/70 border-border text-xs">
-                            <SelectValue placeholder="Barbeiro" />
+                            <SelectValue placeholder="Barber" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="all">Todos os Barbeiros</SelectItem>
+                            <SelectItem value="all">All Barbers</SelectItem>
                             {barbers.map((b) => (
                                 <SelectItem key={b.id} value={b.id}>
                                     {b.name}
@@ -457,13 +457,13 @@ export default function Agenda() {
                         </SelectContent>
                     </Select>
 
-                    {/* Presets de Período: Todos, Hoje, Semana, Mês */}
+                    {/* Period presets: All, Today, Week, Month */}
                     <div className="inline-flex rounded-full border border-border p-0.5 bg-card/70 text-xs">
                         {[
-                            { id: "all", label: "Todos" },
-                            { id: "today", label: "Hoje" },
-                            { id: "week", label: "Semana" },
-                            { id: "month", label: "Mês" },
+                            { id: "all", label: "All" },
+                            { id: "today", label: "Today" },
+                            { id: "week", label: "Week" },
+                            { id: "month", label: "Month" },
                         ].map((p) => (
                             <button
                                 key={p.id}
@@ -483,7 +483,7 @@ export default function Agenda() {
                         ))}
                     </div>
 
-                    {/* DatePicker Personalizado */}
+                    {/* Custom DatePicker */}
                     <div className="w-[165px]">
                         <DatePicker
                             value={filterDate}
@@ -491,24 +491,24 @@ export default function Agenda() {
                                 setFilterDate(date);
                                 setPeriodPreset("all");
                             }}
-                            placeholder="Data específica"
+                            placeholder="Specific date"
                             triggerClassName="h-10 rounded-full bg-card/70 border border-border px-3.5 text-xs w-full hover:bg-secondary/70 hover:border-primary/40"
                         />
                     </div>
 
-                    {/* Limpar Filtros */}
+                    {/* Clear filters */}
                     {hasActiveFilters && (
                         <button
                             type="button"
                             onClick={handleClearFilters}
                             className="text-xs text-primary hover:text-primary/80 font-medium px-2 py-1 transition-colors"
                         >
-                            Limpar Filtros
+                            Clear Filters
                         </button>
                     )}
                 </div>
 
-                {/* Botão Novo Agendamento */}
+                {/* New Appointment button */}
                 <button
                     type="button"
                     onClick={openNew}
@@ -517,7 +517,7 @@ export default function Agenda() {
                     <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
                     </svg>
-                    Novo Agendamento
+                    New Appointment
                 </button>
             </div>
 
@@ -531,77 +531,77 @@ export default function Agenda() {
                     <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10 text-muted-foreground/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
-                    <p className="text-sm font-medium text-foreground">Nenhum agendamento pendente</p>
+                    <p className="text-sm font-medium text-foreground">No pending appointments</p>
                     <p className="text-xs text-muted-foreground max-w-sm">
-                        Todos os cortes agendados foram finalizados ou ainda não foram criados para este período.
+                        All scheduled cuts have been completed or none have been created for this period yet.
                     </p>
                     <div className="flex items-center gap-3 mt-1">
                         <button onClick={openNew} className="text-xs text-primary hover:underline">
-                            + Novo agendamento
+                            + New appointment
                         </button>
                         {completed.length > 0 && (
                             <Link to="/admin/historico" className="text-xs text-emerald-400 hover:underline">
-                                Ver {completed.length} corte(s) no Histórico →
+                                View {completed.length} cut(s) in History →
                             </Link>
                         )}
                     </div>
                 </div>
             ) : (
                 <div className="space-y-8">
-                    {renderTable('Serviços em Andamento', inProgress)}
-                    {renderTable('Cancelados', cancelled)}
+                    {renderTable('Services in Progress', inProgress)}
+                    {renderTable('Cancelled', cancelled)}
                 </div>
             )}
 
             {/* ── Modal ────────────────────────────────────────────────────── */}
             {showModal && (
-                <Modal title={editId ? 'Editar Agendamento' : 'Novo Agendamento'} onClose={() => setShowModal(false)}>
+                <Modal title={editId ? 'Edit Appointment' : 'New Appointment'} onClose={() => setShowModal(false)}>
                     <form onSubmit={handleSave} className="space-y-4">
                         <div className="grid grid-cols-1 gap-4 text-sm">
-                            {/* Cliente e Barbeiro */}
+                            {/* Client and Barber */}
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                                 <div>
-                                    <label className="block text-xs text-muted-foreground mb-1.5 font-medium">Cliente *</label>
+                                    <label className="block text-xs text-muted-foreground mb-1.5 font-medium">Client *</label>
                                     <select
                                         required
                                         value={form.clientId}
                                         onChange={e => setForm(f => ({ ...f, clientId: e.target.value }))}
                                         className="w-full px-3 py-2.5 rounded-xl border border-border bg-secondary/60 text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary/50 transition-all"
                                     >
-                                        <option value="" disabled>Selecione um cliente</option>
+                                        <option value="" disabled>Select a client</option>
                                         {clients.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                                     </select>
                                 </div>
                                 <div>
-                                    <label className="block text-xs text-muted-foreground mb-1.5 font-medium">Barbeiro *</label>
+                                    <label className="block text-xs text-muted-foreground mb-1.5 font-medium">Barber *</label>
                                     <select
                                         required
                                         value={form.barberId}
                                         onChange={e => setForm(f => ({ ...f, barberId: e.target.value }))}
                                         className="w-full px-3 py-2.5 rounded-xl border border-border bg-secondary/60 text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary/50 transition-all"
                                     >
-                                        <option value="" disabled>Selecione um barbeiro</option>
+                                        <option value="" disabled>Select a barber</option>
                                         {barbers.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
                                     </select>
                                 </div>
                             </div>
 
-                            {/* Seleção Moderna de Serviços */}
+                            {/* Modern service selection */}
                             <div className="space-y-2">
                                 <div className="flex items-center justify-between">
                                     <label className="block text-xs text-muted-foreground font-medium">
-                                        Serviços *
+                                        Services *
                                     </label>
                                     {form.serviceIds.length > 0 && (
                                         <span className="text-[11px] font-semibold text-primary bg-primary/10 px-2.5 py-0.5 rounded-full border border-primary/20">
-                                            {form.serviceIds.length} selecionado{form.serviceIds.length > 1 ? 's' : ''}
+                                            {form.serviceIds.length} selected
                                         </span>
                                     )}
                                 </div>
 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-44 overflow-y-auto p-1.5 rounded-xl border border-border/80 bg-background/40">
                                     {services.length === 0 ? (
-                                        <p className="col-span-2 text-xs text-muted-foreground text-center py-4">Nenhum serviço cadastrado.</p>
+                                        <p className="col-span-2 text-xs text-muted-foreground text-center py-4">No services registered.</p>
                                     ) : (
                                         services.map(s => {
                                             const isSelected = form.serviceIds.includes(s.id);
@@ -652,10 +652,10 @@ export default function Agenda() {
                                 </div>
                             </div>
 
-                            {/* Data e Hora */}
+                            {/* Date and Time */}
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                                 <div>
-                                    <label className="block text-xs text-muted-foreground mb-1.5 font-medium">Data *</label>
+                                    <label className="block text-xs text-muted-foreground mb-1.5 font-medium">Date *</label>
                                     <DatePicker
                                         value={form.date}
                                         onChange={val => setForm(f => ({ ...f, date: val }))}
@@ -664,22 +664,22 @@ export default function Agenda() {
                                 </div>
                                 <div>
                                     <label className="block text-xs text-muted-foreground mb-1.5 font-medium">
-                                        {loadingTimes ? 'Carregando horários...' : availableTimes.length === 0 && form.date ? 'Sem horários livres' : 'Horário *'}
+                                        {loadingTimes ? 'Loading times...' : availableTimes.length === 0 && form.date ? 'No available times' : 'Time *'}
                                     </label>
                                     <TimePicker
                                         value={form.time}
                                         onChange={val => setForm(f => ({ ...f, time: val }))}
-                                        placeholder="Selecione o horário"
+                                        placeholder="Select a time"
                                         times={availableTimes}
                                         triggerClassName="w-full h-10 px-3 rounded-xl border border-border bg-secondary/60 text-foreground text-sm hover:bg-secondary/80"
                                     />
                                 </div>
                             </div>
 
-                            {/* Valor e Status */}
+                            {/* Price and Status */}
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                                 <div>
-                                    <label className="block text-xs text-muted-foreground mb-1.5 font-medium">Valor Total (R$)</label>
+                                    <label className="block text-xs text-muted-foreground mb-1.5 font-medium">Total Price (R$)</label>
                                     <input
                                         type="number"
                                         min="0"
@@ -706,34 +706,34 @@ export default function Agenda() {
                                 </div>
                             </div>
 
-                            {/* Observações */}
+                            {/* Notes */}
                             <div>
-                                <label className="block text-xs text-muted-foreground mb-1.5 font-medium">Observações</label>
+                                <label className="block text-xs text-muted-foreground mb-1.5 font-medium">Notes</label>
                                 <textarea
                                     rows={2}
                                     value={form.notes}
                                     onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
-                                    placeholder="Observações adicionais ou preferências do cliente..."
+                                    placeholder="Additional notes or client preferences..."
                                     className="w-full px-3 py-2 rounded-xl border border-border bg-secondary/60 text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary/50 transition-all resize-none"
                                 />
                             </div>
                         </div>
 
-                        {/* Botões de Ação */}
+                        {/* Action buttons */}
                         <div className="flex justify-end gap-3 pt-3 border-t border-border/80">
                             <button
                                 type="button"
                                 onClick={() => setShowModal(false)}
                                 className="px-4 py-2.5 rounded-xl border border-border text-sm text-muted-foreground hover:bg-secondary hover:text-foreground transition-all"
                             >
-                                Cancelar
+                                Cancel
                             </button>
                             <button
                                 type="submit"
                                 disabled={saving}
                                 className="px-5 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-all disabled:opacity-60 shadow-lg shadow-primary/20"
                             >
-                                {saving ? 'Salvando...' : editId ? 'Salvar alterações' : 'Criar agendamento'}
+                                {saving ? 'Saving...' : editId ? 'Save changes' : 'Create appointment'}
                             </button>
                         </div>
                     </form>
@@ -743,10 +743,10 @@ export default function Agenda() {
             <ConfirmDialog 
                 open={!!deleteId} 
                 onOpenChange={(open) => !open && setDeleteId(null)}
-                title="Excluir Agendamento?"
-                description="Tem certeza que deseja excluir este agendamento? Esta ação não pode ser desfeita e ele não aparecerá mais na agenda."
+                title="Delete Appointment?"
+                description="Are you sure you want to delete this appointment? This action cannot be undone and it will no longer appear in the schedule."
                 onConfirm={handleDelete}
-                confirmText="Excluir Agendamento"
+                confirmText="Delete Appointment"
             />
         </div>
     );

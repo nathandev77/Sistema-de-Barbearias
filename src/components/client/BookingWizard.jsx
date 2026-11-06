@@ -27,7 +27,7 @@ export default function BookingWizard() {
     useEffect(() => {
         if (selectedBarber && selectedDate) {
             setLoadingTimes(true);
-            setSelectedTime(''); // reseta a hora ao trocar a data
+            setSelectedTime(''); // reset the time when the date changes
             Appointment.getAvailableSlots(selectedBarber.id, selectedDate)
                 .then(setAvailableTimes)
                 .catch(console.error)
@@ -60,7 +60,7 @@ export default function BookingWizard() {
             setSuccess(true);
         } catch (e) {
             console.error(e);
-            setErrorMsg(e.message || 'Ocorreu um erro ao criar o agendamento.');
+            setErrorMsg(e.message || 'An error occurred while creating the appointment.');
         } finally {
             setLoading(false);
         }
@@ -74,12 +74,12 @@ export default function BookingWizard() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                 </div>
-                <h2 style={{ fontSize: 24, fontWeight: 700, color: '#fff', marginBottom: 8 }}>Agendamento Confirmado!</h2>
-                <p style={{ color: 'hsl(220 10% 60%)', fontSize: 14 }}>Te esperamos no dia {selectedDate} às {selectedTime}.</p>
+                <h2 style={{ fontSize: 24, fontWeight: 700, color: '#fff', marginBottom: 8 }}>Appointment Confirmed!</h2>
+                <p style={{ color: 'hsl(220 10% 60%)', fontSize: 14 }}>We look forward to seeing you on {selectedDate} at {selectedTime}.</p>
                 <button 
                     onClick={() => { setStep(1); setSelectedServices([]); setSelectedBarber(null); setSelectedDate(''); setSelectedTime(''); setSuccess(false); }}
                     style={{ marginTop: 24, background: 'rgba(255,255,255,0.1)', color: '#fff', padding: '10px 20px', borderRadius: 8, border: 'none', cursor: 'pointer' }}>
-                    Novo Agendamento
+                    New Appointment
                 </button>
             </div>
         );
@@ -103,7 +103,7 @@ export default function BookingWizard() {
             <AnimatePresence mode="wait">
                 {step === 1 && (
                     <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-                        <h2 style={{ fontSize: 20, fontWeight: 700, color: '#fff', marginBottom: 16 }}>1. Escolha os Serviços</h2>
+                        <h2 style={{ fontSize: 20, fontWeight: 700, color: '#fff', marginBottom: 16 }}>1. Choose Services</h2>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                             {services.map(s => {
                                 const isSelected = selectedServices.some(sel => sel.id === s.id);
@@ -135,7 +135,7 @@ export default function BookingWizard() {
                                 disabled={selectedServices.length === 0}
                                 onClick={() => setStep(2)}
                                 style={{ background: 'hsl(217 91% 60%)', color: '#fff', padding: '12px 24px', borderRadius: 8, border: 'none', cursor: selectedServices.length > 0 ? 'pointer' : 'not-allowed', opacity: selectedServices.length > 0 ? 1 : 0.5, fontWeight: 600 }}>
-                                Próximo Passo
+                                Next Step
                             </button>
                         </div>
                     </motion.div>
@@ -143,7 +143,7 @@ export default function BookingWizard() {
 
                 {step === 2 && (
                     <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-                        <h2 style={{ fontSize: 20, fontWeight: 700, color: '#fff', marginBottom: 16 }}>2. Escolha o Profissional</h2>
+                        <h2 style={{ fontSize: 20, fontWeight: 700, color: '#fff', marginBottom: 16 }}>2. Choose a Professional</h2>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                             {barbers.map(b => (
                                 <div 
@@ -157,17 +157,17 @@ export default function BookingWizard() {
                                     }}
                                 >
                                     <div style={{ fontSize: 16, fontWeight: 600, color: '#fff' }}>{b.name}</div>
-                                    <div style={{ fontSize: 13, color: 'hsl(220 10% 50%)', marginTop: 4 }}>Especialidade: {b.specialty}</div>
+                                    <div style={{ fontSize: 13, color: 'hsl(220 10% 50%)', marginTop: 4 }}>Specialty: {b.specialty}</div>
                                 </div>
                             ))}
                         </div>
                         <div style={{ marginTop: 24, display: 'flex', justifyContent: 'space-between' }}>
-                            <button onClick={() => setStep(1)} style={{ background: 'transparent', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', padding: '12px 24px', borderRadius: 8, cursor: 'pointer' }}>Voltar</button>
+                            <button onClick={() => setStep(1)} style={{ background: 'transparent', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', padding: '12px 24px', borderRadius: 8, cursor: 'pointer' }}>Back</button>
                             <button 
                                 disabled={!selectedBarber}
                                 onClick={() => setStep(3)}
                                 style={{ background: 'hsl(217 91% 60%)', color: '#fff', padding: '12px 24px', borderRadius: 8, border: 'none', cursor: selectedBarber ? 'pointer' : 'not-allowed', opacity: selectedBarber ? 1 : 0.5, fontWeight: 600 }}>
-                                Próximo Passo
+                                Next Step
                             </button>
                         </div>
                     </motion.div>
@@ -175,37 +175,37 @@ export default function BookingWizard() {
 
                 {step === 3 && (
                     <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-                        <h2 style={{ fontSize: 20, fontWeight: 700, color: '#fff', marginBottom: 16 }}>3. Escolha Data e Hora</h2>
+                        <h2 style={{ fontSize: 20, fontWeight: 700, color: '#fff', marginBottom: 16 }}>3. Choose Date and Time</h2>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                             <div>
-                                <label style={{ display: 'block', marginBottom: 8, fontSize: 13, color: 'hsl(220 10% 60%)' }}>Data</label>
+                                <label style={{ display: 'block', marginBottom: 8, fontSize: 13, color: 'hsl(220 10% 60%)' }}>Date</label>
                                 <DatePicker 
                                     value={selectedDate}
                                     onChange={setSelectedDate}
-                                    placeholder="Data da reserva"
+                                    placeholder="Booking date"
                                     triggerClassName="w-full flex justify-between items-center gap-2 bg-black/30 border border-white/10 text-white px-4 py-3 rounded-lg hover:bg-white/5 transition-all outline-none focus:border-primary/50"
                                 />
                             </div>
                             <div>
                                 <label style={{ display: 'block', marginBottom: 8, fontSize: 13, color: 'hsl(220 10% 60%)' }}>
-                                    {loadingTimes ? 'Carregando horários...' : availableTimes.length === 0 && selectedDate ? 'Nenhum horário disponível' : 'Horário'}
+                                    {loadingTimes ? 'Loading times...' : availableTimes.length === 0 && selectedDate ? 'No times available' : 'Time'}
                                 </label>
                                 <TimePicker
                                     value={selectedTime}
                                     onChange={setSelectedTime}
-                                    placeholder="Horário da reserva"
+                                    placeholder="Booking time"
                                     triggerClassName="w-full flex justify-between items-center gap-2 bg-black/30 border border-white/10 text-white px-4 py-3 rounded-lg hover:bg-white/5 transition-all outline-none focus:border-primary/50"
                                     times={availableTimes}
                                 />
                             </div>
                         </div>
                         <div style={{ marginTop: 24, display: 'flex', justifyContent: 'space-between' }}>
-                            <button onClick={() => setStep(2)} style={{ background: 'transparent', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', padding: '12px 24px', borderRadius: 8, cursor: 'pointer' }}>Voltar</button>
+                            <button onClick={() => setStep(2)} style={{ background: 'transparent', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', padding: '12px 24px', borderRadius: 8, cursor: 'pointer' }}>Back</button>
                             <button 
                                 disabled={!selectedDate || !selectedTime}
                                 onClick={() => setStep(4)}
                                 style={{ background: 'hsl(217 91% 60%)', color: '#fff', padding: '12px 24px', borderRadius: 8, border: 'none', cursor: (selectedDate && selectedTime) ? 'pointer' : 'not-allowed', opacity: (selectedDate && selectedTime) ? 1 : 0.5, fontWeight: 600 }}>
-                                Resumo e Confirmação
+                                Summary and Confirmation
                             </button>
                         </div>
                     </motion.div>
@@ -213,22 +213,22 @@ export default function BookingWizard() {
 
                 {step === 4 && (
                     <motion.div key="step4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-                        <h2 style={{ fontSize: 20, fontWeight: 700, color: '#fff', marginBottom: 16 }}>4. Confirmar Agendamento</h2>
+                        <h2 style={{ fontSize: 20, fontWeight: 700, color: '#fff', marginBottom: 16 }}>4. Confirm Appointment</h2>
                         <div style={{ background: 'rgba(0,0,0,0.2)', borderRadius: 12, padding: 20, border: '1px solid rgba(255,255,255,0.05)' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12, paddingBottom: 12, borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                                <span style={{ color: 'hsl(220 10% 60%)' }}>Serviços</span>
+                                <span style={{ color: 'hsl(220 10% 60%)' }}>Services</span>
                                 <strong style={{ color: '#fff', textAlign: 'right' }}>
                                     {selectedServices.map(s => s.name).join(', ')} <br/>
                                     <span style={{ fontSize: 14, color: 'hsl(217 91% 60%)' }}>(Total: R$ {selectedServices.reduce((sum, s) => sum + s.price, 0).toFixed(2)})</span>
                                 </strong>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12, paddingBottom: 12, borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                                <span style={{ color: 'hsl(220 10% 60%)' }}>Profissional</span>
+                                <span style={{ color: 'hsl(220 10% 60%)' }}>Professional</span>
                                 <strong style={{ color: '#fff' }}>{selectedBarber?.name}</strong>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <span style={{ color: 'hsl(220 10% 60%)' }}>Data e Hora</span>
-                                <strong style={{ color: '#fff' }}>{selectedDate} às {selectedTime}</strong>
+                                <span style={{ color: 'hsl(220 10% 60%)' }}>Date and Time</span>
+                                <strong style={{ color: '#fff' }}>{selectedDate} at {selectedTime}</strong>
                             </div>
                         </div>
                         {errorMsg && (
@@ -237,12 +237,12 @@ export default function BookingWizard() {
                             </div>
                         )}
                         <div style={{ marginTop: 24, display: 'flex', justifyContent: 'space-between' }}>
-                            <button disabled={loading} onClick={() => setStep(3)} style={{ background: 'transparent', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', padding: '12px 24px', borderRadius: 8, cursor: 'pointer' }}>Voltar</button>
+                            <button disabled={loading} onClick={() => setStep(3)} style={{ background: 'transparent', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', padding: '12px 24px', borderRadius: 8, cursor: 'pointer' }}>Back</button>
                             <button 
                                 disabled={loading}
                                 onClick={handleConfirm}
                                 style={{ background: 'hsl(142 71% 45%)', color: '#fff', padding: '12px 32px', borderRadius: 8, border: 'none', cursor: 'pointer', fontWeight: 600 }}>
-                                {loading ? 'Confirmando...' : 'Confirmar Agendamento'}
+                                {loading ? 'Confirming...' : 'Confirm Appointment'}
                             </button>
                         </div>
                     </motion.div>

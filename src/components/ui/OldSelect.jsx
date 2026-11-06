@@ -8,7 +8,7 @@ export function Select({
     className = '', 
     triggerClassName = '', 
     menuClassName = '',
-    placeholder = 'Selecione...'
+    placeholder = 'Select...'
 }) {
     const [isOpen, setIsOpen] = useState(false);
     const [coords, setCoords] = useState({ top: 0, left: 0, width: 0 });

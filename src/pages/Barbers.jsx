@@ -24,8 +24,8 @@ const EMPTY = {
   name: "", specialty: "Barbeiro", is_active: true, commission_pct: 40, fixed_salary: 0,
 };
 
-// Como o backend original nao tem ajustes, vou apenas ignorar o AdjustmentDialog 
-// e mockar os totais para a interface.
+// Since the original backend has no adjustments, the AdjustmentDialog is simply ignored 
+// and the totals are mocked for the UI.
 
 export default function BarbersPage() {
   const [barbers, setBarbers] = useState([]);
@@ -57,56 +57,56 @@ export default function BarbersPage() {
     return barbers.filter((b) => (!q ? true : normalizeText(b.name).includes(q)));
   }, [barbers, search]);
 
-  const totalPagar = 0; // Seria calculado baseado nos atendimentos (backend ou redux store).
+  const totalPagar = 0; // Would be calculated from the services performed (backend or redux store).
   const atendimentos = 0;
 
   return (
     <PageShell>
-      <PageHeader title="Barbeiros" subtitle="Equipe, comissões e totais a receber." />
+      <PageHeader title="Barbers" subtitle="Team, commissions and amounts receivable." />
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 px-8 pb-6">
-        <StatCard label="Barbeiros" value={barbers.length} icon={Scissors} tone="sky" />
-        <StatCard label="Ativos" value={barbers.filter((b) => b.is_active).length} icon={Scissors} tone="emerald" />
-        <StatCard label="Atendimentos no mês" value={atendimentos} icon={Wallet} tone="violet" />
-        <StatCard label="Total a pagar" value={formatBRL(totalPagar)} icon={DollarSign} tone="amber" />
+        <StatCard label="Barbers" value={barbers.length} icon={Scissors} tone="sky" />
+        <StatCard label="Active" value={barbers.filter((b) => b.is_active).length} icon={Scissors} tone="emerald" />
+        <StatCard label="Services this month" value={atendimentos} icon={Wallet} tone="violet" />
+        <StatCard label="Total payable" value={formatBRL(totalPagar)} icon={DollarSign} tone="amber" />
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-3 px-8 pb-6">
         <div className="flex flex-wrap items-center gap-3 flex-1 min-w-0">
-          <SearchInput value={search} onChange={setSearch} placeholder="Pesquisar barbeiro" />
+          <SearchInput value={search} onChange={setSearch} placeholder="Search barber" />
         </div>
         <Button onClick={() => { setEditing(null); setOpen(true); }} className="rounded-full h-10 px-5 gap-2 bg-primary hover:bg-primary/90">
-          <Plus className="h-4 w-4" /> Novo barbeiro
+          <Plus className="h-4 w-4" /> New barber
         </Button>
       </div>
 
       <div className="px-8 pb-16">
         <SectionCard>
-          <SectionHeader title="Equipe" count={rows.length} />
+          <SectionHeader title="Team" count={rows.length} />
           <DataTable
             widths={["20%", "20%", "20%", "20%", "20%"]}
-            head={<><Th>Barbeiro</Th><Th>Cargo</Th><Th>Comissão (%)</Th><Th>Fixo</Th><Th className="text-right">Ações</Th></>}
+            head={<><Th>Barber</Th><Th>Role</Th><Th>Commission (%)</Th><Th>Fixed</Th><Th className="text-right">Actions</Th></>}
           >
             {loading ? (
-              <EmptyRow colSpan={5} title="Carregando barbeiros..." />
+              <EmptyRow colSpan={5} title="Loading barbers..." />
             ) : rows.length === 0 ? (
-              <EmptyRow colSpan={5} title="Nenhum barbeiro encontrado." />
+              <EmptyRow colSpan={5} title="No barbers found." />
             ) : rows.map((b) => {
               return (
                 <Row key={b.id} onClick={() => setDetail(b)}>
                   <Td className="font-semibold truncate">
                     <div className="flex items-center gap-2 min-w-0">
                       <span className="truncate">{b.name}</span>
-                      <Pill tone={b.is_active ? "emerald" : "slate"}>{b.is_active ? "Ativo" : "Inativo"}</Pill>
+                      <Pill tone={b.is_active ? "emerald" : "slate"}>{b.is_active ? "Active" : "Inactive"}</Pill>
                     </div>
                   </Td>
-                  <Td className="text-muted-foreground truncate">{b.specialty || "Barbeiro"}</Td>
+                  <Td className="text-muted-foreground truncate">{b.specialty || "Barber"}</Td>
                   <Td className="tabular-nums">{b.commission_pct ?? 0}%</Td>
                   <Td className="tabular-nums">{formatBRL(b.fixed_salary ?? 0)}</Td>
                   <Td>
                     <div className="flex items-center justify-end gap-1" onClick={e => e.stopPropagation()}>
-                      <IconBtn label="Editar" onClick={() => { setEditing(b); setOpen(true); }}><Pencil className="h-4 w-4" /></IconBtn>
-                      <IconBtn label="Excluir" danger onClick={() => setDeleteId(b.id)}><Trash2 className="h-4 w-4" /></IconBtn>
+                      <IconBtn label="Edit" onClick={() => { setEditing(b); setOpen(true); }}><Pencil className="h-4 w-4" /></IconBtn>
+                      <IconBtn label="Delete" danger onClick={() => setDeleteId(b.id)}><Trash2 className="h-4 w-4" /></IconBtn>
                     </div>
                   </Td>
                 </Row>
@@ -123,14 +123,14 @@ export default function BarbersPage() {
           <DialogHeader className="px-6 py-5 border-b border-border/60 space-y-1">
             <DialogTitle className="text-lg font-semibold tracking-tight">{detail?.name}</DialogTitle>
             <DialogDescription className="text-sm text-muted-foreground">
-              Perfil financeiro resumido.
+              Financial profile summary.
             </DialogDescription>
           </DialogHeader>
           {detail && (() => {
             return (
               <div className="px-6 py-5 space-y-2">
-                <KV label="Comissão" value={`${detail.commission_pct ?? 0}%`} />
-                <KV label="Salário Fixo" value={formatBRL(detail.fixed_salary ?? 0)} />
+                <KV label="Commission" value={`${detail.commission_pct ?? 0}%`} />
+                <KV label="Fixed Salary" value={formatBRL(detail.fixed_salary ?? 0)} />
               </div>
             );
           })()}
@@ -140,11 +140,11 @@ export default function BarbersPage() {
       <AlertDialog open={!!deleteId} onOpenChange={(o) => !o && setDeleteId(null)}>
         <AlertDialogContent className="bg-card border-border">
           <AlertDialogHeader>
-            <AlertDialogTitle>Excluir este barbeiro?</AlertDialogTitle>
-            <AlertDialogDescription>O histórico de atendimentos é preservado, mas o barbeiro será removido permanentemente do quadro.</AlertDialogDescription>
+            <AlertDialogTitle>Delete this barber?</AlertDialogTitle>
+            <AlertDialogDescription>Service history is preserved, but the barber will be permanently removed from the team.</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Voltar</AlertDialogCancel>
+            <AlertDialogCancel>Back</AlertDialogCancel>
             <AlertDialogAction onClick={async () => {
               if (deleteId) {
                 await Barber.delete(deleteId);
@@ -152,7 +152,7 @@ export default function BarbersPage() {
               }
               setDeleteId(null);
             }} className="bg-destructive text-white hover:bg-destructive/90">
-              <Trash2 className="h-4 w-4" /> Excluir
+              <Trash2 className="h-4 w-4" /> Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -195,7 +195,7 @@ function BarberForm({ open, onOpenChange, barber, onSave }) {
         onOpenChange(false);
         onSave();
     } catch(err) {
-        alert("Erro ao salvar: " + err.message);
+        alert("Error saving: " + err.message);
     }
   };
 
@@ -203,35 +203,35 @@ function BarberForm({ open, onOpenChange, barber, onSave }) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="bg-card border-border max-w-2xl p-0 gap-0 overflow-hidden">
         <DialogHeader className="px-6 py-5 border-b border-border/60 space-y-1">
-          <DialogTitle className="text-lg font-semibold tracking-tight">{barber ? "Editar barbeiro" : "Novo barbeiro"}</DialogTitle>
-          <DialogDescription className="text-sm text-muted-foreground">Preencha os detalhes da contratação.</DialogDescription>
+          <DialogTitle className="text-lg font-semibold tracking-tight">{barber ? "Edit barber" : "New barber"}</DialogTitle>
+          <DialogDescription className="text-sm text-muted-foreground">Fill in the hiring details.</DialogDescription>
         </DialogHeader>
         <div className="px-6 py-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <FormField label="Nome" required>
+          <FormField label="Name" required>
             <Input value={form.name} onChange={(e) => set({ name: e.target.value })} className="h-10 bg-background border-border" />
           </FormField>
-          <FormField label="Cargo / Especialidade">
+          <FormField label="Role / Specialty">
             <Input value={form.specialty} onChange={(e) => set({ specialty: e.target.value })} className="h-10 bg-background border-border" />
           </FormField>
-          <FormField label="Comissão (%)">
+          <FormField label="Commission (%)">
             <Input type="number" value={form.commission_pct} onChange={(e) => set({ commission_pct: e.target.value })} className="h-10 bg-background border-border" />
           </FormField>
-          <FormField label="Salário fixo (R$)">
+          <FormField label="Fixed salary (R$)">
             <Input type="number" value={form.fixed_salary} onChange={(e) => set({ fixed_salary: e.target.value })} className="h-10 bg-background border-border" />
           </FormField>
           <FormField label="Status">
-            <Select value={form.is_active ? "Ativo" : "Inativo"} onValueChange={(v) => set({ is_active: v === "Ativo" })}>
+            <Select value={form.is_active ? "active" : "inactive"} onValueChange={(v) => set({ is_active: v === "active" })}>
               <SelectTrigger className="h-10 bg-background border-border"><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="Ativo">Ativo</SelectItem>
-                <SelectItem value="Inativo">Inativo</SelectItem>
+                <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="inactive">Inactive</SelectItem>
               </SelectContent>
             </Select>
           </FormField>
         </div>
         <div className="flex items-center justify-end gap-2 px-6 py-4 border-t border-border/60 bg-card/60">
-          <Button variant="ghost" onClick={() => onOpenChange(false)}>Voltar</Button>
-          <Button onClick={save} className="bg-primary hover:bg-primary/90">Salvar</Button>
+          <Button variant="ghost" onClick={() => onOpenChange(false)}>Back</Button>
+          <Button onClick={save} className="bg-primary hover:bg-primary/90">Save</Button>
         </div>
       </DialogContent>
     </Dialog>

@@ -14,12 +14,12 @@ import { requireAuth, requireRole } from '../middlewares/authMiddleware';
 const router = Router();
 router.use(requireAuth);
 
-// Leitura — todos os autenticados podem ver planos e assinaturas
+// Read — all authenticated users can view plans and subscriptions
 router.get('/', getPlans);
 router.get('/subscriptions', getAllSubscriptions);
 router.get('/client/:clientId', getClientSubscriptions);
 
-// Mutações financeiras — exclusivo ADMIN
+// Financial mutations — ADMIN only
 router.post('/', requireRole(['ADMIN']), createPlan);
 router.delete('/:id', requireRole(['ADMIN']), deletePlan);
 router.post('/subscribe', requireRole(['ADMIN']), subscribeClient);

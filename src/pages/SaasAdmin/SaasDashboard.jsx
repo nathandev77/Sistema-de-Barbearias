@@ -15,10 +15,10 @@ import { fetchSaas } from '@/lib/saas-client';
 // TAB DEFINITIONS
 // ═══════════════════════════════════════════════════════════════════════════════
 const TABS = [
-    { id: 'overview', label: 'Visão Geral', icon: PieChart },
-    { id: 'financial', label: 'Financeiro', icon: DollarSign },
-    { id: 'tenants', label: 'Barbearias', icon: Building2 },
-    { id: 'costs', label: 'Custos Operacionais', icon: Receipt },
+    { id: 'overview', label: 'Overview', icon: PieChart },
+    { id: 'financial', label: 'Financial', icon: DollarSign },
+    { id: 'tenants', label: 'Barbershops', icon: Building2 },
+    { id: 'costs', label: 'Operating Costs', icon: Receipt },
 ];
 
 export default function SaasDashboard() {
@@ -91,7 +91,7 @@ export default function SaasDashboard() {
                 })
             });
             const result = await response.json();
-            if (!response.ok) throw new Error(result.error || 'Erro ao criar barbearia');
+            if (!response.ok) throw new Error(result.error || 'Error creating barbershop');
             await loadDashboardData();
             setCreatedData({
                 adminUrl: `${window.location.origin}/admin/login`,
@@ -107,7 +107,7 @@ export default function SaasDashboard() {
         try {
             await fetchSaas(`/saas/tenants/${tenantId}/extend-trial`, { method: 'PATCH', body: JSON.stringify({ days }) });
             await loadDashboardData();
-        } catch (err) { alert('Erro: ' + err.message); }
+        } catch (err) { alert('Error: ' + err.message); }
         finally { setActionLoadingId(null); }
     };
 
@@ -116,7 +116,7 @@ export default function SaasDashboard() {
         try {
             await fetchSaas(`/saas/tenants/${tenantId}/activate-plan`, { method: 'PATCH', body: JSON.stringify({ planType, durationMonths }) });
             await loadDashboardData();
-        } catch (err) { alert('Erro: ' + err.message); }
+        } catch (err) { alert('Error: ' + err.message); }
         finally { setActionLoadingId(null); }
     };
 
@@ -127,16 +127,16 @@ export default function SaasDashboard() {
             const nextActive = currentStatus === 'blocked';
             await fetchSaas(`/saas/tenants/${tenantId}/status`, { method: 'PATCH', body: JSON.stringify({ status: nextStatus, isActive: nextActive }) });
             await loadDashboardData();
-        } catch (err) { alert('Erro: ' + err.message); }
+        } catch (err) { alert('Error: ' + err.message); }
         finally { setActionLoadingId(null); }
     };
 
     const handleDeleteTenant = async (id, name) => {
-        if (!window.confirm(`Tem certeza absoluta que deseja apagar a barbearia "${name}"? TODOS os dados serão excluídos definitivamente.`)) return;
+        if (!window.confirm(`Are you absolutely sure you want to delete the barbershop "${name}"? ALL data will be permanently deleted.`)) return;
         try {
             await fetchSaas(`/saas/tenants/${id}`, { method: 'DELETE' });
             await loadDashboardData();
-        } catch (error) { alert('Erro: ' + error.message); }
+        } catch (error) { alert('Error: ' + error.message); }
     };
 
     const resetModal = () => {
@@ -161,16 +161,16 @@ export default function SaasDashboard() {
             setEditingCost(null);
             setCostForm({ name: '', category: 'infra', amount: '', isRecurring: true, notes: '' });
             await loadDashboardData();
-        } catch (err) { alert('Erro: ' + err.message); }
+        } catch (err) { alert('Error: ' + err.message); }
         finally { setCostSaving(false); }
     };
 
     const handleDeleteCost = async (id) => {
-        if (!window.confirm('Excluir este custo?')) return;
+        if (!window.confirm('Delete this cost?')) return;
         try {
             await fetchSaas(`/saas/costs/${id}`, { method: 'DELETE' });
             await loadDashboardData();
-        } catch (err) { alert('Erro: ' + err.message); }
+        } catch (err) { alert('Error: ' + err.message); }
     };
 
     const openEditCost = (cost) => {
@@ -201,7 +201,7 @@ export default function SaasDashboard() {
             <div className="min-h-screen bg-[#09090b] flex items-center justify-center">
                 <div className="flex flex-col items-center gap-4">
                     <div className="w-10 h-10 border-2 border-primary/20 border-t-primary rounded-full animate-spin" />
-                    <p className="text-xs uppercase tracking-widest text-gray-500">Carregando Painel Master...</p>
+                    <p className="text-xs uppercase tracking-widest text-gray-500">Loading Master Panel...</p>
                 </div>
             </div>
         );
@@ -224,7 +224,7 @@ export default function SaasDashboard() {
                                 <h1 className="text-xl font-bold tracking-tight bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
                                     Barber Control
                                 </h1>
-                                <p className="text-xs text-primary/80 font-medium tracking-wide">Painel Master & Controle Geral</p>
+                                <p className="text-xs text-primary/80 font-medium tracking-wide">Master Panel & General Control</p>
                             </div>
                         </div>
                         <div className="flex items-center gap-3">
@@ -232,13 +232,13 @@ export default function SaasDashboard() {
                                 onClick={loadDashboardData}
                                 className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-semibold rounded-lg border border-white/10 transition-colors"
                             >
-                                <RefreshCw className="w-3.5 h-3.5" /> Atualizar
+                                <RefreshCw className="w-3.5 h-3.5" /> Refresh
                             </button>
                             <button 
                                 onClick={handleLogout}
                                 className="flex items-center text-xs px-3.5 py-2 text-red-400 hover:text-red-300 hover:bg-red-400/10 rounded-lg transition-colors border border-red-400/20" 
                             >
-                                <LogOut className="w-3.5 h-3.5 mr-1.5" /> Sair
+                                <LogOut className="w-3.5 h-3.5 mr-1.5" /> Log Out
                             </button>
                         </div>
                     </div>
@@ -308,7 +308,7 @@ export default function SaasDashboard() {
                 </AnimatePresence>
             </main>
 
-            {/* Modal Nova Barbearia */}
+            {/* New Barbershop Modal */}
             <AnimatePresence>
                 {showModal && (
                     <CreateTenantModal 
@@ -325,7 +325,7 @@ export default function SaasDashboard() {
                 )}
             </AnimatePresence>
 
-            {/* Modal de Custo */}
+            {/* Cost Modal */}
             <AnimatePresence>
                 {showCostModal && (
                     <CostModal 
@@ -343,7 +343,7 @@ export default function SaasDashboard() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// TAB: VISÃO GERAL
+// TAB: OVERVIEW
 // ═══════════════════════════════════════════════════════════════════════════════
 function OverviewTab({ metrics, fin }) {
     const revenue = fin?.revenue || {};
@@ -356,19 +356,19 @@ function OverviewTab({ metrics, fin }) {
             {/* KPI Cards Row 1 */}
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
                 <KpiCard label="MRR" value={formatCurrency(revenue.mrr || 0)} icon={<DollarSign className="w-4 h-4 text-emerald-400" />} accent="emerald" />
-                <KpiCard label="Lucro Líquido" value={formatCurrency(revenue.netProfit || 0)} icon={<TrendingUp className="w-4 h-4 text-green-400" />} accent={revenue.netProfit >= 0 ? "emerald" : "red"} />
-                <KpiCard label="Assinantes" value={conversion.activePaying || 0} icon={<CheckCircle2 className="w-4 h-4 text-blue-400" />} accent="blue" />
-                <KpiCard label="Em Trial" value={conversion.trialActive || 0} icon={<Clock className="w-4 h-4 text-amber-400" />} accent="amber" />
-                <KpiCard label="Conversão" value={`${conversion.conversionRate || 0}%`} icon={<Percent className="w-4 h-4 text-purple-400" />} accent="purple" />
+                <KpiCard label="Net Profit" value={formatCurrency(revenue.netProfit || 0)} icon={<TrendingUp className="w-4 h-4 text-green-400" />} accent={revenue.netProfit >= 0 ? "emerald" : "red"} />
+                <KpiCard label="Subscribers" value={conversion.activePaying || 0} icon={<CheckCircle2 className="w-4 h-4 text-blue-400" />} accent="blue" />
+                <KpiCard label="In Trial" value={conversion.trialActive || 0} icon={<Clock className="w-4 h-4 text-amber-400" />} accent="amber" />
+                <KpiCard label="Conversion" value={`${conversion.conversionRate || 0}%`} icon={<Percent className="w-4 h-4 text-purple-400" />} accent="purple" />
                 <KpiCard label="Churn" value={`${fin?.churn?.churnRate || 0}%`} icon={<ArrowDown className="w-4 h-4 text-red-400" />} accent="red" />
             </div>
 
             {/* KPI Cards Row 2 */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <KpiCard label="Total Barbearias" value={metrics?.totalTenants || 0} icon={<Building2 className="w-4 h-4 text-blue-400" />} />
-                <KpiCard label="Novos (7 dias)" value={growth.newLast7Days || 0} icon={<Plus className="w-4 h-4 text-cyan-400" />} accent="cyan" />
-                <KpiCard label="Novos (30 dias)" value={growth.newLast30Days || 0} icon={<TrendingUp className="w-4 h-4 text-indigo-400" />} accent="indigo" />
-                <KpiCard label="Custos Mensais" value={formatCurrency(costs.totalMonthlyCosts || 0)} icon={<Wallet className="w-4 h-4 text-orange-400" />} accent="orange" />
+                <KpiCard label="Total Barbershops" value={metrics?.totalTenants || 0} icon={<Building2 className="w-4 h-4 text-blue-400" />} />
+                <KpiCard label="New (7 days)" value={growth.newLast7Days || 0} icon={<Plus className="w-4 h-4 text-cyan-400" />} accent="cyan" />
+                <KpiCard label="New (30 days)" value={growth.newLast30Days || 0} icon={<TrendingUp className="w-4 h-4 text-indigo-400" />} accent="indigo" />
+                <KpiCard label="Monthly Costs" value={formatCurrency(costs.totalMonthlyCosts || 0)} icon={<Wallet className="w-4 h-4 text-orange-400" />} accent="orange" />
             </div>
 
             {/* Charts Row */}
@@ -376,9 +376,9 @@ function OverviewTab({ metrics, fin }) {
                 {/* Weekly Growth Chart */}
                 <div className="bg-card/20 border border-white/10 rounded-2xl p-6 backdrop-blur-md">
                     <h3 className="text-sm font-bold text-white mb-1 flex items-center gap-2">
-                        <BarChart3 className="w-4 h-4 text-primary" /> Novos Cadastros (12 Semanas)
+                        <BarChart3 className="w-4 h-4 text-primary" /> New Sign-ups (12 Weeks)
                     </h3>
-                    <p className="text-[10px] text-gray-500 mb-4">Barbearias registradas por semana</p>
+                    <p className="text-[10px] text-gray-500 mb-4">Barbershops registered per week</p>
                     <div className="flex items-end gap-1 h-32">
                         {(growth.weeklyGrowth || []).map((w, i) => {
                             const max = Math.max(...(growth.weeklyGrowth || []).map(x => x.count), 1);
@@ -400,9 +400,9 @@ function OverviewTab({ metrics, fin }) {
                 {/* Monthly Growth Chart */}
                 <div className="bg-card/20 border border-white/10 rounded-2xl p-6 backdrop-blur-md">
                     <h3 className="text-sm font-bold text-white mb-1 flex items-center gap-2">
-                        <TrendingUp className="w-4 h-4 text-emerald-400" /> Cadastros vs Ativações (6 Meses)
+                        <TrendingUp className="w-4 h-4 text-emerald-400" /> Sign-ups vs Activations (6 Months)
                     </h3>
-                    <p className="text-[10px] text-gray-500 mb-4">Novos cadastros e conversões mensais</p>
+                    <p className="text-[10px] text-gray-500 mb-4">Monthly new sign-ups and conversions</p>
                     <div className="flex items-end gap-3 h-32">
                         {(growth.monthlyGrowth || []).map((m, i) => {
                             const maxVal = Math.max(
@@ -416,12 +416,12 @@ function OverviewTab({ metrics, fin }) {
                                         <div 
                                             className="flex-1 bg-gradient-to-t from-blue-500/60 to-blue-500/20 rounded-t-md"
                                             style={{ height: `${hNew}%` }}
-                                            title={`Novos: ${m.newTenants}`}
+                                            title={`New: ${m.newTenants}`}
                                         />
                                         <div 
                                             className="flex-1 bg-gradient-to-t from-emerald-500/60 to-emerald-500/20 rounded-t-md"
                                             style={{ height: `${hAct}%` }}
-                                            title={`Ativações: ${m.activations}`}
+                                            title={`Activations: ${m.activations}`}
                                         />
                                     </div>
                                     <span className="text-[9px] text-gray-500">{m.month}</span>
@@ -430,8 +430,8 @@ function OverviewTab({ metrics, fin }) {
                         })}
                     </div>
                     <div className="flex items-center gap-4 mt-3 justify-center">
-                        <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-blue-500/60" /><span className="text-[10px] text-gray-400">Novos</span></div>
-                        <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-emerald-500/60" /><span className="text-[10px] text-gray-400">Ativações</span></div>
+                        <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-blue-500/60" /><span className="text-[10px] text-gray-400">New</span></div>
+                        <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-emerald-500/60" /><span className="text-[10px] text-gray-400">Activations</span></div>
                     </div>
                 </div>
             </div>
@@ -441,14 +441,14 @@ function OverviewTab({ metrics, fin }) {
                 {/* Revenue by Plan */}
                 <div className="bg-card/20 border border-white/10 rounded-2xl p-6 backdrop-blur-md">
                     <h3 className="text-sm font-bold text-white mb-4 flex items-center gap-2">
-                        <PieChart className="w-4 h-4 text-primary" /> Receita por Plano
+                        <PieChart className="w-4 h-4 text-primary" /> Revenue by Plan
                     </h3>
                     <div className="space-y-3">
                         {Object.entries(revenue.revenueByPlan || {}).map(([planId, data]) => (
                             <div key={planId} className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
                                     <div className={`w-2.5 h-2.5 rounded-full ${planId === 'annual' ? 'bg-emerald-400' : planId === 'quarterly' ? 'bg-blue-400' : 'bg-amber-400'}`} />
-                                    <span className="text-xs text-gray-300 capitalize">{planId === 'monthly' ? 'Mensal' : planId === 'quarterly' ? 'Trimestral' : 'Anual'}</span>
+                                    <span className="text-xs text-gray-300 capitalize">{planId === 'monthly' ? 'Monthly' : planId === 'quarterly' ? 'Quarterly' : 'Annual'}</span>
                                 </div>
                                 <div className="text-right">
                                     <span className="text-xs font-bold text-white">{formatCurrency(data.revenue)}</span>
@@ -457,7 +457,7 @@ function OverviewTab({ metrics, fin }) {
                             </div>
                         ))}
                         {Object.keys(revenue.revenueByPlan || {}).length === 0 && (
-                            <p className="text-xs text-gray-500 text-center py-4">Nenhum assinante ativo</p>
+                            <p className="text-xs text-gray-500 text-center py-4">No active subscribers</p>
                         )}
                     </div>
                 </div>
@@ -465,20 +465,20 @@ function OverviewTab({ metrics, fin }) {
                 {/* Volume */}
                 <div className="bg-card/20 border border-white/10 rounded-2xl p-6 backdrop-blur-md lg:col-span-2">
                     <h3 className="text-sm font-bold text-white mb-4 flex items-center gap-2">
-                        <Activity className="w-4 h-4 text-cyan-400" /> Volume de Operação
+                        <Activity className="w-4 h-4 text-cyan-400" /> Operations Volume
                     </h3>
                     <div className="grid grid-cols-3 gap-4">
                         <div className="text-center">
                             <div className="text-3xl font-bold bg-gradient-to-b from-white to-gray-400 bg-clip-text text-transparent">{metrics?.totalBarbers || 0}</div>
-                            <div className="text-[10px] text-gray-500 uppercase tracking-wider mt-1">Barbeiros</div>
+                            <div className="text-[10px] text-gray-500 uppercase tracking-wider mt-1">Barbers</div>
                         </div>
                         <div className="text-center">
                             <div className="text-3xl font-bold bg-gradient-to-b from-white to-gray-400 bg-clip-text text-transparent">{metrics?.totalClients || 0}</div>
-                            <div className="text-[10px] text-gray-500 uppercase tracking-wider mt-1">Clientes</div>
+                            <div className="text-[10px] text-gray-500 uppercase tracking-wider mt-1">Clients</div>
                         </div>
                         <div className="text-center">
                             <div className="text-3xl font-bold bg-gradient-to-b from-white to-gray-400 bg-clip-text text-transparent">{metrics?.totalAppointments || 0}</div>
-                            <div className="text-[10px] text-gray-500 uppercase tracking-wider mt-1">Agendamentos</div>
+                            <div className="text-[10px] text-gray-500 uppercase tracking-wider mt-1">Appointments</div>
                         </div>
                     </div>
                 </div>
@@ -488,7 +488,7 @@ function OverviewTab({ metrics, fin }) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// TAB: FINANCEIRO
+// TAB: FINANCIAL
 // ═══════════════════════════════════════════════════════════════════════════════
 function FinancialTab({ fin }) {
     const revenue = fin?.revenue || {};
@@ -496,38 +496,38 @@ function FinancialTab({ fin }) {
     const costs = fin?.costs || {};
     const churn = fin?.churn || {};
 
-    const costCategories = { infra: 'Infraestrutura', service: 'Serviços', marketing: 'Marketing', other: 'Outros' };
+    const costCategories = { infra: 'Infrastructure', service: 'Services', marketing: 'Marketing', other: 'Other' };
 
     return (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-6">
             {/* Financial KPIs */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 <FinancialCard 
-                    label="MRR (Receita Recorrente Mensal)"
+                    label="MRR (Monthly Recurring Revenue)"
                     value={formatCurrency(revenue.mrr || 0)}
                     subtitle={`ARR: ${formatCurrency(revenue.arr || 0)}`}
                     icon={<DollarSign className="w-5 h-5 text-emerald-400" />}
                     accent="emerald"
                 />
                 <FinancialCard 
-                    label="Custos Operacionais Mensais"
+                    label="Monthly Operating Costs"
                     value={formatCurrency(costs.totalMonthlyCosts || 0)}
-                    subtitle={`Únicos: ${formatCurrency(costs.totalOneTimeCosts || 0)}`}
+                    subtitle={`One-time: ${formatCurrency(costs.totalOneTimeCosts || 0)}`}
                     icon={<Wallet className="w-5 h-5 text-orange-400" />}
                     accent="orange"
                 />
                 <FinancialCard 
-                    label="Lucro Líquido Mensal"
+                    label="Monthly Net Profit"
                     value={formatCurrency(revenue.netProfit || 0)}
-                    subtitle={revenue.netProfit >= 0 ? 'Operação positiva' : 'Operação negativa'}
+                    subtitle={revenue.netProfit >= 0 ? 'Profitable operation' : 'Unprofitable operation'}
                     icon={<TrendingUp className="w-5 h-5" style={{color: revenue.netProfit >= 0 ? '#34d399' : '#f87171'}} />}
                     accent={revenue.netProfit >= 0 ? 'emerald' : 'red'}
                     highlight
                 />
                 <FinancialCard 
-                    label="Conversão Trial → Pagante"
+                    label="Trial → Paying Conversion"
                     value={`${conversion.conversionRate || 0}%`}
-                    subtitle={`${conversion.activePaying || 0} de ${conversion.totalTrials || 0} trials`}
+                    subtitle={`${conversion.activePaying || 0} of ${conversion.totalTrials || 0} trials`}
                     icon={<Percent className="w-5 h-5 text-purple-400" />}
                     accent="purple"
                 />
@@ -535,10 +535,10 @@ function FinancialTab({ fin }) {
 
             {/* Breakdown */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                {/* Breakdown de custos */}
+                {/* Cost breakdown */}
                 <div className="bg-card/20 border border-white/10 rounded-2xl p-6 backdrop-blur-md">
                     <h3 className="text-sm font-bold text-white mb-4 flex items-center gap-2">
-                        <PieChart className="w-4 h-4 text-orange-400" /> Custos por Categoria
+                        <PieChart className="w-4 h-4 text-orange-400" /> Costs by Category
                     </h3>
                     {Object.entries(costs.costsByCategory || {}).length > 0 ? (
                         <div className="space-y-3">
@@ -559,21 +559,21 @@ function FinancialTab({ fin }) {
                             })}
                         </div>
                     ) : (
-                        <p className="text-xs text-gray-500 text-center py-8">Nenhum custo cadastrado. Vá até a aba "Custos Operacionais" para adicionar.</p>
+                        <p className="text-xs text-gray-500 text-center py-8">No costs registered. Go to the "Operating Costs" tab to add some.</p>
                     )}
                 </div>
 
-                {/* Funil de conversão */}
+                {/* Conversion funnel */}
                 <div className="bg-card/20 border border-white/10 rounded-2xl p-6 backdrop-blur-md">
                     <h3 className="text-sm font-bold text-white mb-4 flex items-center gap-2">
-                        <BarChart3 className="w-4 h-4 text-purple-400" /> Funil de Conversão
+                        <BarChart3 className="w-4 h-4 text-purple-400" /> Conversion Funnel
                     </h3>
                     <div className="space-y-3">
-                        <FunnelBar label="Cadastros Totais" value={conversion.totalTrials || 0} max={conversion.totalTrials || 1} color="bg-blue-500" />
-                        <FunnelBar label="Trials Ativos" value={conversion.trialActive || 0} max={conversion.totalTrials || 1} color="bg-amber-500" />
-                        <FunnelBar label="Trials Expirados" value={conversion.trialExpired || 0} max={conversion.totalTrials || 1} color="bg-red-500" />
-                        <FunnelBar label="Assinantes Pagantes" value={conversion.activePaying || 0} max={conversion.totalTrials || 1} color="bg-emerald-500" />
-                        <FunnelBar label="Churn (cancelados)" value={churn.churned || 0} max={conversion.totalTrials || 1} color="bg-gray-500" />
+                        <FunnelBar label="Total Sign-ups" value={conversion.totalTrials || 0} max={conversion.totalTrials || 1} color="bg-blue-500" />
+                        <FunnelBar label="Active Trials" value={conversion.trialActive || 0} max={conversion.totalTrials || 1} color="bg-amber-500" />
+                        <FunnelBar label="Expired Trials" value={conversion.trialExpired || 0} max={conversion.totalTrials || 1} color="bg-red-500" />
+                        <FunnelBar label="Paying Subscribers" value={conversion.activePaying || 0} max={conversion.totalTrials || 1} color="bg-emerald-500" />
+                        <FunnelBar label="Churn (canceled)" value={churn.churned || 0} max={conversion.totalTrials || 1} color="bg-gray-500" />
                     </div>
                 </div>
             </div>
@@ -582,7 +582,7 @@ function FinancialTab({ fin }) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// TAB: BARBEARIAS
+// TAB: BARBERSHOPS
 // ═══════════════════════════════════════════════════════════════════════════════
 function TenantsTab({ filteredTenants, searchTerm, setSearchTerm, statusFilter, setStatusFilter, actionLoadingId, onExtendTrial, onActivatePlan, onToggleStatus, onDelete, onShowCreateModal, copyToClipboard }) {
     return (
@@ -592,25 +592,25 @@ function TenantsTab({ filteredTenants, searchTerm, setSearchTerm, statusFilter, 
                 <div className="p-6 border-b border-white/5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                     <div>
                         <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                            Barbearias no Sistema
+                            Barbershops in the System
                             <span className="text-xs px-2.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 font-semibold">{filteredTenants.length}</span>
                         </h2>
-                        <p className="text-xs text-gray-500 mt-0.5">Gerenciamento de acesso, dias de teste e planos</p>
+                        <p className="text-xs text-gray-500 mt-0.5">Access, trial days and plan management</p>
                     </div>
                     <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
                         <div className="relative flex-1 md:w-64">
                             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
-                            <input type="text" placeholder="Buscar..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="w-full bg-black/40 border border-white/10 text-white placeholder:text-gray-500 pl-9 pr-3 py-1.5 rounded-xl text-xs focus:border-primary/50 outline-none" />
+                            <input type="text" placeholder="Search..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="w-full bg-black/40 border border-white/10 text-white placeholder:text-gray-500 pl-9 pr-3 py-1.5 rounded-xl text-xs focus:border-primary/50 outline-none" />
                         </div>
                         <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} className="bg-black/40 border border-white/10 text-gray-300 px-3 py-1.5 rounded-xl text-xs outline-none cursor-pointer">
-                            <option value="all">Todos</option>
-                            <option value="active">Ativos</option>
+                            <option value="all">All</option>
+                            <option value="active">Active</option>
                             <option value="trial">Trial</option>
-                            <option value="expired">Expirados</option>
-                            <option value="blocked">Bloqueados</option>
+                            <option value="expired">Expired</option>
+                            <option value="blocked">Blocked</option>
                         </select>
                         <button onClick={onShowCreateModal} className="flex items-center gap-1.5 px-3.5 py-1.5 bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-semibold rounded-xl shadow-lg shadow-primary/25">
-                            <Plus className="w-4 h-4" /> Nova Barbearia
+                            <Plus className="w-4 h-4" /> New Barbershop
                         </button>
                     </div>
                 </div>
@@ -619,14 +619,14 @@ function TenantsTab({ filteredTenants, searchTerm, setSearchTerm, statusFilter, 
                     <table className="w-full text-xs text-left">
                         <thead className="text-[11px] uppercase bg-black/40 text-gray-400 font-semibold tracking-wider">
                             <tr>
-                                <th className="px-5 py-3.5">Barbearia</th>
-                                <th className="px-5 py-3.5">Dono / Contato</th>
+                                <th className="px-5 py-3.5">Barbershop</th>
+                                <th className="px-5 py-3.5">Owner / Contact</th>
                                 <th className="px-5 py-3.5">Status</th>
-                                <th className="px-5 py-3.5 text-center">Plano</th>
+                                <th className="px-5 py-3.5 text-center">Plan</th>
                                 <th className="px-5 py-3.5 text-center">Links</th>
-                                <th className="px-5 py-3.5 text-center">Barbeiros</th>
-                                <th className="px-5 py-3.5 text-center">Clientes</th>
-                                <th className="px-5 py-3.5 text-right">Ações</th>
+                                <th className="px-5 py-3.5 text-center">Barbers</th>
+                                <th className="px-5 py-3.5 text-center">Clients</th>
+                                <th className="px-5 py-3.5 text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-white/5">
@@ -648,11 +648,11 @@ function TenantsTab({ filteredTenants, searchTerm, setSearchTerm, statusFilter, 
                                         </td>
                                         <td className="px-5 py-4">
                                             {isBlocked ? (
-                                                <StatusBadge color="red" icon={Lock} label="Bloqueado" />
+                                                <StatusBadge color="red" icon={Lock} label="Blocked" />
                                             ) : isActiveSub ? (
-                                                <StatusBadge color="emerald" icon={CheckCircle2} label="Ativo" />
+                                                <StatusBadge color="emerald" icon={CheckCircle2} label="Active" />
                                             ) : tenant.isTrialExpired ? (
-                                                <StatusBadge color="red" icon={AlertTriangle} label="Trial Expirado" />
+                                                <StatusBadge color="red" icon={AlertTriangle} label="Trial Expired" />
                                             ) : isTrial ? (
                                                 <StatusBadge color="amber" icon={Clock} label={`Trial (${tenant.trialDaysRemaining}d)`} />
                                             ) : (
@@ -674,7 +674,7 @@ function TenantsTab({ filteredTenants, searchTerm, setSearchTerm, statusFilter, 
                                         <td className="px-5 py-4 text-right">
                                             <div className="flex items-center justify-end gap-1.5">
                                                 <button onClick={() => onExtendTrial(tenant.id, 7)} disabled={isLoadingThis} className="px-2 py-1 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 font-semibold rounded-lg border border-amber-500/20 text-[11px]">+7d</button>
-                                                <button onClick={() => onActivatePlan(tenant.id)} disabled={isLoadingThis} className="px-2 py-1 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 font-semibold rounded-lg border border-emerald-500/20 text-[11px]">Ativar</button>
+                                                <button onClick={() => onActivatePlan(tenant.id)} disabled={isLoadingThis} className="px-2 py-1 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 font-semibold rounded-lg border border-emerald-500/20 text-[11px]">Activate</button>
                                                 <button onClick={() => onToggleStatus(tenant.id, tenant.subscriptionStatus)} disabled={isLoadingThis} className={`p-1.5 rounded-lg border transition-colors ${isBlocked ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'}`}>
                                                     {isBlocked ? <Unlock className="w-3.5 h-3.5" /> : <Lock className="w-3.5 h-3.5" />}
                                                 </button>
@@ -687,7 +687,7 @@ function TenantsTab({ filteredTenants, searchTerm, setSearchTerm, statusFilter, 
                                 );
                             })}
                             {filteredTenants.length === 0 && (
-                                <tr><td colSpan="8" className="px-6 py-12 text-center text-gray-500">Nenhuma barbearia encontrada.</td></tr>
+                                <tr><td colSpan="8" className="px-6 py-12 text-center text-gray-500">No barbershops found.</td></tr>
                             )}
                         </tbody>
                     </table>
@@ -698,32 +698,32 @@ function TenantsTab({ filteredTenants, searchTerm, setSearchTerm, statusFilter, 
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// TAB: CUSTOS OPERACIONAIS
+// TAB: OPERATING COSTS
 // ═══════════════════════════════════════════════════════════════════════════════
 function CostsTab({ fin, onAddCost, onEditCost, onDeleteCost }) {
     const costs = fin?.costs || {};
     const items = costs.items || [];
-    const categoryLabels = { infra: 'Infraestrutura', service: 'Serviços', marketing: 'Marketing', other: 'Outros' };
+    const categoryLabels = { infra: 'Infrastructure', service: 'Services', marketing: 'Marketing', other: 'Other' };
     const categoryColors = { infra: 'blue', service: 'purple', marketing: 'pink', other: 'gray' };
 
     return (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-6">
             {/* Summary */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <KpiCard label="Total Mensal (Recorrentes)" value={formatCurrency(costs.totalMonthlyCosts || 0)} icon={<RefreshCw className="w-4 h-4 text-orange-400" />} accent="orange" />
-                <KpiCard label="Custos Únicos" value={formatCurrency(costs.totalOneTimeCosts || 0)} icon={<Receipt className="w-4 h-4 text-gray-400" />} />
-                <KpiCard label="Itens Cadastrados" value={items.length} icon={<BarChart3 className="w-4 h-4 text-blue-400" />} accent="blue" />
+                <KpiCard label="Monthly Total (Recurring)" value={formatCurrency(costs.totalMonthlyCosts || 0)} icon={<RefreshCw className="w-4 h-4 text-orange-400" />} accent="orange" />
+                <KpiCard label="One-time Costs" value={formatCurrency(costs.totalOneTimeCosts || 0)} icon={<Receipt className="w-4 h-4 text-gray-400" />} />
+                <KpiCard label="Registered Items" value={items.length} icon={<BarChart3 className="w-4 h-4 text-blue-400" />} accent="blue" />
             </div>
 
             {/* Items Table */}
             <div className="bg-card/20 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-md">
                 <div className="p-6 border-b border-white/5 flex items-center justify-between">
                     <div>
-                        <h2 className="text-lg font-bold text-white">Custos Operacionais do SaaS</h2>
-                        <p className="text-xs text-gray-500 mt-0.5">Cadastre todos os custos fixos e variáveis para manter o Barber Control rodando</p>
+                        <h2 className="text-lg font-bold text-white">SaaS Operating Costs</h2>
+                        <p className="text-xs text-gray-500 mt-0.5">Register all fixed and variable costs to keep Barber Control running</p>
                     </div>
                     <button onClick={onAddCost} className="flex items-center gap-1.5 px-3.5 py-1.5 bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-semibold rounded-xl shadow-lg shadow-primary/25">
-                        <Plus className="w-4 h-4" /> Novo Custo
+                        <Plus className="w-4 h-4" /> New Cost
                     </button>
                 </div>
 
@@ -732,12 +732,12 @@ function CostsTab({ fin, onAddCost, onEditCost, onDeleteCost }) {
                         <table className="w-full text-xs text-left">
                             <thead className="text-[11px] uppercase bg-black/40 text-gray-400 font-semibold tracking-wider">
                                 <tr>
-                                    <th className="px-5 py-3.5">Nome</th>
-                                    <th className="px-5 py-3.5">Categoria</th>
-                                    <th className="px-5 py-3.5 text-right">Valor (R$)</th>
-                                    <th className="px-5 py-3.5 text-center">Tipo</th>
-                                    <th className="px-5 py-3.5">Observações</th>
-                                    <th className="px-5 py-3.5 text-right">Ações</th>
+                                    <th className="px-5 py-3.5">Name</th>
+                                    <th className="px-5 py-3.5">Category</th>
+                                    <th className="px-5 py-3.5 text-right">Amount (R$)</th>
+                                    <th className="px-5 py-3.5 text-center">Type</th>
+                                    <th className="px-5 py-3.5">Notes</th>
+                                    <th className="px-5 py-3.5 text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-white/5">
@@ -754,7 +754,7 @@ function CostsTab({ fin, onAddCost, onEditCost, onDeleteCost }) {
                                             <td className="px-5 py-4 text-right font-bold text-white">{formatCurrency(cost.amount)}</td>
                                             <td className="px-5 py-4 text-center">
                                                 <span className={`text-[10px] font-semibold ${cost.isRecurring ? 'text-amber-400' : 'text-gray-400'}`}>
-                                                    {cost.isRecurring ? '🔄 Recorrente' : '1️⃣ Único'}
+                                                    {cost.isRecurring ? '🔄 Recurring' : '1️⃣ One-time'}
                                                 </span>
                                             </td>
                                             <td className="px-5 py-4 text-gray-400 max-w-[200px] truncate">{cost.notes || '—'}</td>
@@ -777,8 +777,8 @@ function CostsTab({ fin, onAddCost, onEditCost, onDeleteCost }) {
                 ) : (
                     <div className="px-6 py-16 text-center">
                         <Wallet className="w-12 h-12 text-gray-600 mx-auto mb-3" />
-                        <p className="text-sm text-gray-400 font-medium">Nenhum custo cadastrado</p>
-                        <p className="text-xs text-gray-500 mt-1">Clique em "Novo Custo" para começar a controlar seus gastos operacionais.</p>
+                        <p className="text-sm text-gray-400 font-medium">No costs registered</p>
+                        <p className="text-xs text-gray-500 mt-1">Click "New Cost" to start tracking your operating expenses.</p>
                     </div>
                 )}
             </div>
@@ -800,46 +800,46 @@ function CostModal({ editing, form, setForm, saving, onSubmit, onClose }) {
                             <Receipt className="w-5 h-5 text-orange-400" />
                         </div>
                         <div>
-                            <h3 className="text-base font-bold text-white">{editing ? 'Editar Custo' : 'Novo Custo Operacional'}</h3>
-                            <p className="text-xs text-gray-500">Controle os gastos para manter o SaaS</p>
+                            <h3 className="text-base font-bold text-white">{editing ? 'Edit Cost' : 'New Operating Cost'}</h3>
+                            <p className="text-xs text-gray-500">Track the expenses of running the SaaS</p>
                         </div>
                     </div>
                     <button onClick={onClose} className="text-gray-400 hover:text-white"><X className="w-5 h-5" /></button>
                 </div>
                 <form onSubmit={onSubmit} className="p-6 space-y-4">
                     <div>
-                        <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5 block">Nome do Custo</label>
-                        <input required value={form.name} onChange={e => setForm({...form, name: e.target.value})} className="w-full bg-black/50 border border-white/10 text-white h-10 rounded-xl px-3 text-xs focus:border-primary/50 outline-none" placeholder="Ex: Supabase, VPS EasyPanel, Domínio..." />
+                        <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5 block">Cost Name</label>
+                        <input required value={form.name} onChange={e => setForm({...form, name: e.target.value})} className="w-full bg-black/50 border border-white/10 text-white h-10 rounded-xl px-3 text-xs focus:border-primary/50 outline-none" placeholder="E.g. Supabase, EasyPanel VPS, Domain..." />
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                         <div>
-                            <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5 block">Categoria</label>
+                            <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5 block">Category</label>
                             <select value={form.category} onChange={e => setForm({...form, category: e.target.value})} className="w-full bg-black/50 border border-white/10 text-gray-300 h-10 rounded-xl px-3 text-xs outline-none cursor-pointer">
-                                <option value="infra">Infraestrutura</option>
-                                <option value="service">Serviços</option>
+                                <option value="infra">Infrastructure</option>
+                                <option value="service">Services</option>
                                 <option value="marketing">Marketing</option>
-                                <option value="other">Outros</option>
+                                <option value="other">Other</option>
                             </select>
                         </div>
                         <div>
-                            <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5 block">Valor Mensal (R$)</label>
+                            <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5 block">Monthly Amount (R$)</label>
                             <input required type="number" step="0.01" min="0" value={form.amount} onChange={e => setForm({...form, amount: e.target.value})} className="w-full bg-black/50 border border-white/10 text-white h-10 rounded-xl px-3 text-xs focus:border-primary/50 outline-none" placeholder="59.90" />
                         </div>
                     </div>
                     <div className="flex items-center gap-3">
                         <label className="flex items-center gap-2 cursor-pointer">
                             <input type="checkbox" checked={form.isRecurring} onChange={e => setForm({...form, isRecurring: e.target.checked})} className="rounded border-white/20 bg-black/50 text-primary" />
-                            <span className="text-xs text-gray-300">Custo Recorrente (mensal)</span>
+                            <span className="text-xs text-gray-300">Recurring Cost (monthly)</span>
                         </label>
                     </div>
                     <div>
-                        <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5 block">Observações (opcional)</label>
-                        <textarea value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} className="w-full bg-black/50 border border-white/10 text-white rounded-xl px-3 py-2 text-xs focus:border-primary/50 outline-none resize-none h-16" placeholder="Ex: Plano free tier, renovação anual..." />
+                        <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5 block">Notes (optional)</label>
+                        <textarea value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} className="w-full bg-black/50 border border-white/10 text-white rounded-xl px-3 py-2 text-xs focus:border-primary/50 outline-none resize-none h-16" placeholder="E.g. Free tier plan, annual renewal..." />
                     </div>
                     <div className="pt-3 flex items-center justify-end gap-3 border-t border-white/5">
-                        <button type="button" onClick={onClose} className="px-4 py-2 text-xs font-semibold text-gray-300 hover:text-white">Cancelar</button>
+                        <button type="button" onClick={onClose} className="px-4 py-2 text-xs font-semibold text-gray-300 hover:text-white">Cancel</button>
                         <button type="submit" disabled={saving} className="flex items-center justify-center min-w-[120px] px-4 py-2 text-xs font-semibold rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25">
-                            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : (editing ? 'Salvar Alterações' : 'Adicionar Custo')}
+                            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : (editing ? 'Save Changes' : 'Add Cost')}
                         </button>
                     </div>
                 </form>
@@ -858,11 +858,11 @@ function CreateTenantModal({ createdData, creating, createError, formData, setFo
                         <div className="w-16 h-16 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-6 border border-emerald-500/30">
                             <CheckCircle2 className="w-8 h-8 text-emerald-400" />
                         </div>
-                        <h3 className="text-2xl font-bold text-center text-white mb-1">Barbearia Criada!</h3>
-                        <p className="text-center text-xs text-emerald-400 font-semibold mb-6">✨ 4 Dias de Teste Grátis ativados.</p>
+                        <h3 className="text-2xl font-bold text-center text-white mb-1">Barbershop Created!</h3>
+                        <p className="text-center text-xs text-emerald-400 font-semibold mb-6">✨ 4-Day Free Trial activated.</p>
                         <div className="space-y-3.5 mb-8">
                             <div>
-                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1 block">Painel Admin</label>
+                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1 block">Admin Panel</label>
                                 <div className="flex items-center gap-2 bg-black/50 p-2.5 rounded-xl border border-white/5">
                                     <Link2 className="w-4 h-4 text-primary" />
                                     <input readOnly value={createdData.adminUrl} className="bg-transparent flex-1 text-xs text-white outline-none" />
@@ -870,7 +870,7 @@ function CreateTenantModal({ createdData, creating, createError, formData, setFo
                                 </div>
                             </div>
                             <div>
-                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1 block">Portal Clientes</label>
+                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1 block">Client Portal</label>
                                 <div className="flex items-center gap-2 bg-black/50 p-2.5 rounded-xl border border-white/5">
                                     <Link2 className="w-4 h-4 text-emerald-400" />
                                     <input readOnly value={createdData.portalUrl} className="bg-transparent flex-1 text-xs text-white outline-none" />
@@ -878,12 +878,12 @@ function CreateTenantModal({ createdData, creating, createError, formData, setFo
                                 </div>
                             </div>
                             <div className="mt-3 p-3.5 bg-primary/10 rounded-xl border border-primary/20">
-                                <p className="text-[11px] text-primary mb-1 font-semibold">Credenciais:</p>
+                                <p className="text-[11px] text-primary mb-1 font-semibold">Credentials:</p>
                                 <p className="text-xs font-mono text-white">E-mail: {createdData.email}</p>
-                                <p className="text-xs font-mono text-white">Senha: {createdData.password}</p>
+                                <p className="text-xs font-mono text-white">Password: {createdData.password}</p>
                             </div>
                         </div>
-                        <button onClick={onClose} className="w-full py-3 bg-white/10 hover:bg-white/20 rounded-xl text-xs font-bold">Concluir</button>
+                        <button onClick={onClose} className="w-full py-3 bg-white/10 hover:bg-white/20 rounded-xl text-xs font-bold">Done</button>
                     </div>
                 ) : (
                     <>
@@ -891,8 +891,8 @@ function CreateTenantModal({ createdData, creating, createError, formData, setFo
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20"><Building2 className="w-5 h-5 text-primary" /></div>
                                 <div>
-                                    <h3 className="text-base font-bold text-white">Cadastrar Barbearia</h3>
-                                    <p className="text-xs text-gray-500">4 dias de teste grátis</p>
+                                    <h3 className="text-base font-bold text-white">Register Barbershop</h3>
+                                    <p className="text-xs text-gray-500">4-day free trial</p>
                                 </div>
                             </div>
                             <button onClick={onClose} className="text-gray-400 hover:text-white"><X className="w-5 h-5" /></button>
@@ -900,8 +900,8 @@ function CreateTenantModal({ createdData, creating, createError, formData, setFo
                         <form onSubmit={onSubmit} className="p-6 space-y-4">
                             <div className="grid grid-cols-2 gap-3">
                                 <div>
-                                    <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5 block">Barbearia</label>
-                                    <input required value={formData.barbershopName} onChange={e => setFormData({...formData, barbershopName: e.target.value})} className="w-full bg-black/50 border border-white/10 text-white h-10 rounded-xl px-3 text-xs focus:border-primary/50 outline-none" placeholder="Ex: Barbearia Vip" />
+                                    <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5 block">Barbershop</label>
+                                    <input required value={formData.barbershopName} onChange={e => setFormData({...formData, barbershopName: e.target.value})} className="w-full bg-black/50 border border-white/10 text-white h-10 rounded-xl px-3 text-xs focus:border-primary/50 outline-none" placeholder="E.g. VIP Barbershop" />
                                 </div>
                                 <div>
                                     <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5 block">Slug</label>
@@ -909,8 +909,8 @@ function CreateTenantModal({ createdData, creating, createError, formData, setFo
                                 </div>
                             </div>
                             <div>
-                                <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5 block">Responsável</label>
-                                <input required value={formData.ownerName} onChange={e => setFormData({...formData, ownerName: e.target.value})} className="w-full bg-black/50 border border-white/10 text-white h-10 rounded-xl px-3 text-xs focus:border-primary/50 outline-none" placeholder="Ex: Carlos" />
+                                <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5 block">Owner</label>
+                                <input required value={formData.ownerName} onChange={e => setFormData({...formData, ownerName: e.target.value})} className="w-full bg-black/50 border border-white/10 text-white h-10 rounded-xl px-3 text-xs focus:border-primary/50 outline-none" placeholder="E.g. Carlos" />
                             </div>
                             <div className="grid grid-cols-2 gap-3">
                                 <div>
@@ -918,15 +918,15 @@ function CreateTenantModal({ createdData, creating, createError, formData, setFo
                                     <input required type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full bg-black/50 border border-white/10 text-white h-10 rounded-xl px-3 text-xs focus:border-primary/50 outline-none" placeholder="carlos@email.com" />
                                 </div>
                                 <div>
-                                    <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5 block">Senha</label>
+                                    <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5 block">Password</label>
                                     <input required type="text" value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} minLength={8} className="w-full bg-black/50 border border-white/10 text-white h-10 rounded-xl px-3 text-xs focus:border-primary/50 outline-none" placeholder="Min. 8 chars" />
                                 </div>
                             </div>
                             {createError && <div className="p-3 text-xs text-red-400 bg-red-400/10 border border-red-400/20 rounded-xl">{createError}</div>}
                             <div className="pt-3 flex items-center justify-end gap-3 border-t border-white/5">
-                                <button type="button" onClick={onClose} className="px-4 py-2 text-xs font-semibold text-gray-300 hover:text-white">Cancelar</button>
+                                <button type="button" onClick={onClose} className="px-4 py-2 text-xs font-semibold text-gray-300 hover:text-white">Cancel</button>
                                 <button type="submit" disabled={creating} className="flex items-center justify-center min-w-[140px] px-4 py-2 text-xs font-semibold rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25">
-                                    {creating ? <Loader2 className="w-4 h-4 animate-spin" /> : "Criar com 4 Dias Grátis"}
+                                    {creating ? <Loader2 className="w-4 h-4 animate-spin" /> : "Create with 4 Free Days"}
                                 </button>
                             </div>
                         </form>

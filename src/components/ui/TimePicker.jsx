@@ -38,9 +38,9 @@ export function TimePicker({ value, onChange, placeholder = "hh:mm", className =
             {open && (
                 <div className={`absolute top-full mt-2 z-50 w-64 p-4 bg-card border border-border rounded-2xl shadow-2xl animate-in fade-in zoom-in-95 duration-100 ${align === 'right' ? 'right-0 origin-top-right' : 'left-0 origin-top-left'}`}>
                     <div className="flex items-center justify-between mb-3">
-                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Horários</p>
+                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Times</p>
                         {value && (
-                            <button type="button" onClick={() => { onChange(''); setOpen(false); }} className="text-[10px] text-destructive hover:underline font-medium">Limpar</button>
+                            <button type="button" onClick={() => { onChange(''); setOpen(false); }} className="text-[10px] text-destructive hover:underline font-medium">Clear</button>
                         )}
                     </div>
                     

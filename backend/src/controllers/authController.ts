@@ -4,32 +4,32 @@ import { emailWithMxValidator, brazilPhoneValidator, passwordValidator } from '.
 import { AuthService } from '../services/authService';
 
 // ==========================================
-// SCHEMAS DE VALIDAÇÃO (ZERO TRUST)
+// VALIDATION SCHEMAS (ZERO TRUST)
 // ==========================================
 
 const registerSchema = z.object({
-  barbershopName: z.string().min(3, "Nome da barbearia muito curto").max(100, "Nome muito longo"),
-  barbershopSlug: z.string().min(3).max(50).regex(/^[a-z0-9-]+$/, "O slug deve conter apenas letras minúsculas, números e hífens.").optional(),
-  ownerName: z.string().min(3, "Nome do dono obrigatório").max(100).optional(),
+  barbershopName: z.string().min(3, "Barbershop name is too short").max(100, "Name is too long"),
+  barbershopSlug: z.string().min(3).max(50).regex(/^[a-z0-9-]+$/, "The slug must contain only lowercase letters, numbers and hyphens.").optional(),
+  ownerName: z.string().min(3, "Owner name is required").max(100).optional(),
   email: emailWithMxValidator,
   phone: brazilPhoneValidator.optional(),
   password: passwordValidator.optional(),
 });
 
 const trialRegisterSchema = z.object({
-  barbershopName: z.string().min(2, "Nome da barbearia deve ter pelo menos 2 caracteres").max(100, "Nome muito longo"),
+  barbershopName: z.string().min(2, "Barbershop name must be at least 2 characters").max(100, "Name is too long"),
   email: emailWithMxValidator,
   phone: z.string().optional(),
 });
 
 const loginSchema = z.object({
-  email: z.string().email("Formato de email inválido"),
-  password: z.string().min(1, "A senha é obrigatória")
+  email: z.string().email("Invalid email format"),
+  password: z.string().min(1, "Password is required")
 });
 
 const firstAccessSchema = z.object({
-  email: z.string().email("Formato de email inválido"),
-  tempPassword: z.string().min(1, "Senha temporária é obrigatória"),
+  email: z.string().email("Invalid email format"),
+  tempPassword: z.string().min(1, "Temporary password is required"),
   newPassword: passwordValidator,
 });
 

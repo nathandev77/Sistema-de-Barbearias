@@ -2,11 +2,11 @@ import { Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
 import { SaasFinancialService } from '../services/saasFinancialService';
 
-// ─── Schemas de Validação ──────────────────────────────────────────────
+// ─── Validation Schemas ──────────────────────────────────────────────
 const costSchema = z.object({
-  name: z.string().min(2, 'Nome do custo obrigatório').max(100),
+  name: z.string().min(2, 'Cost name is required').max(100),
   category: z.enum(['infra', 'service', 'marketing', 'other']).default('infra'),
-  amount: z.number().min(0, 'Valor não pode ser negativo'),
+  amount: z.number().min(0, 'Amount cannot be negative'),
   isRecurring: z.boolean().default(true),
   isActive: z.boolean().default(true),
   notes: z.string().max(500).optional().nullable(),
@@ -14,7 +14,7 @@ const costSchema = z.object({
 
 const costUpdateSchema = costSchema.partial();
 
-// ─── CRUD: Custos Operacionais do SaaS ────────────────────────────────
+// ─── CRUD: SaaS Operating Costs ────────────────────────────────
 
 export const listCosts = async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
@@ -56,7 +56,7 @@ export const deleteCost = async (req: Request, res: Response, next: NextFunction
   }
 };
 
-// ─── Métricas Financeiras Avançadas ───────────────────────────────────
+// ─── Advanced Financial Metrics ───────────────────────────────────
 
 export const getFinancialMetrics = async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {

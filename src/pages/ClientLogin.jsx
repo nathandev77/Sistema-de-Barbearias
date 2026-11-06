@@ -5,7 +5,7 @@ import Beams from '@/components/ui/Beams';
 
 const API_URL = import.meta.env.PROD ? '/api' : 'http://localhost:3001/api';
 
-// ── Ícones ────────────────────────────────────────────────────────────────────
+// ── Icons ───────────────────────────────────────────────────────────────────────
 const MailIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -37,7 +37,7 @@ const ScissorsIcon = () => (
     </svg>
 );
 
-// ── Input com ícone ────────────────────────────────────────────────────────────
+// ── Input with icon ──────────────────────────────────────────────────────────
 function InputField({ id, type = 'text', value, onChange, placeholder, icon, required = true }) {
     return (
         <div className="relative group">
@@ -97,14 +97,14 @@ export default function ClientLogin() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
-    // Já está logado nesta barbearia → redireciona
+    // Already logged in to this barbershop → redirect
     useEffect(() => {
         if (localStorage.getItem('clientToken') && localStorage.getItem('clientId')) {
             navigate(`/${slug}`, { replace: true });
         }
     }, [clientUser, slug, navigate]);
 
-    // Busca dados da barbearia
+    // Fetch barbershop data
     useEffect(() => {
         fetch(`${API_URL}/auth/tenant/${slug}`)
             .then(async res => {
@@ -140,7 +140,7 @@ export default function ClientLogin() {
                 body: JSON.stringify({ email: loginEmail, password: loginPassword })
             });
             const data = await res.json();
-            if (!res.ok) throw new Error(data.error || 'Erro ao entrar');
+            if (!res.ok) throw new Error(data.error || 'Error signing in');
             saveClientSession(data);
             window.location.href = `/${slug}`;
         } catch (err) {
@@ -161,7 +161,7 @@ export default function ClientLogin() {
                 body: JSON.stringify({ name: regName, email: regEmail, phone: regPhone, password: regPassword })
             });
             const data = await res.json();
-            if (!res.ok) throw new Error(data.error || 'Erro ao criar conta');
+            if (!res.ok) throw new Error(data.error || 'Error creating account');
             saveClientSession(data);
             window.location.href = `/${slug}`;
         } catch (err) {
@@ -190,8 +190,8 @@ export default function ClientLogin() {
         return (
             <div style={{ minHeight: '100vh', background: 'hsl(220 15% 6%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <div style={{ textAlign: 'center', color: '#fff' }}>
-                    <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 8 }}>Barbearia não encontrada</h1>
-                    <p style={{ color: 'hsl(220 10% 60%)', fontSize: 14 }}>O link que você acessou não existe ou foi alterado.</p>
+                    <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 8 }}>Barbershop not found</h1>
+                    <p style={{ color: 'hsl(220 10% 60%)', fontSize: 14 }}>The link you accessed does not exist or has been changed.</p>
                 </div>
             </div>
         );
@@ -215,7 +215,7 @@ export default function ClientLogin() {
                 boxShadow: '0 32px 80px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
                 position: 'relative', zIndex: 10,
             }}>
-                {/* Logo + Nome da Barbearia */}
+                {/* Logo + Barbershop Name */}
                 <div style={{ textAlign: 'center', marginBottom: 28 }}>
                     <div style={{
                         width: 52, height: 52, borderRadius: 16,
@@ -229,10 +229,10 @@ export default function ClientLogin() {
                     <h1 style={{ fontSize: 22, fontWeight: 800, color: '#fff', marginBottom: 4 }}>
                         {barbershop ? barbershop.name : '...'}
                     </h1>
-                    <p style={{ fontSize: 13, color: 'hsl(220 10% 55%)' }}>Área do Cliente · Agende seu horário</p>
+                    <p style={{ fontSize: 13, color: 'hsl(220 10% 55%)' }}>Client Area · Book your appointment</p>
                 </div>
 
-                {/* Tabs Login / Cadastro */}
+                {/* Tabs Login / Sign Up */}
                 <div style={{
                     display: 'flex', gap: 4,
                     background: 'rgba(0,0,0,0.3)', borderRadius: 12, padding: 4, marginBottom: 28,
@@ -250,7 +250,7 @@ export default function ClientLogin() {
                                 boxShadow: tab === t ? '0 4px 12px hsl(217 91% 60% / 0.3)' : 'none',
                             }}
                         >
-                            {t === 'login' ? 'Entrar' : 'Criar Conta'}
+                            {t === 'login' ? 'Sign In' : 'Create Account'}
                         </button>
                     ))}
                 </div>
@@ -260,10 +260,10 @@ export default function ClientLogin() {
                     <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
                             <label style={{ fontSize: 11, fontWeight: 600, color: 'hsl(220 10% 50%)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>E-mail</label>
-                            <InputField id="login-email" type="email" value={loginEmail} onChange={e => setLoginEmail(e.target.value)} placeholder="seu@email.com" icon={<MailIcon />} />
+                            <InputField id="login-email" type="email" value={loginEmail} onChange={e => setLoginEmail(e.target.value)} placeholder="you@email.com" icon={<MailIcon />} />
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-                            <label style={{ fontSize: 11, fontWeight: 600, color: 'hsl(220 10% 50%)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Senha</label>
+                            <label style={{ fontSize: 11, fontWeight: 600, color: 'hsl(220 10% 50%)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Password</label>
                             <InputField id="login-password" type="password" value={loginPassword} onChange={e => setLoginPassword(e.target.value)} placeholder="••••••••" icon={<LockIcon />} />
                         </div>
 
@@ -274,13 +274,13 @@ export default function ClientLogin() {
                         )}
 
                         <button type="submit" disabled={loading} style={{ marginTop: 4, width: '100%', padding: '13px', borderRadius: 12, border: 'none', cursor: loading ? 'not-allowed' : 'pointer', background: 'hsl(217 91% 60%)', color: '#fff', fontSize: 14, fontWeight: 700, boxShadow: '0 4px 18px hsl(217 91% 60% / 0.35)', opacity: loading ? 0.7 : 1, transition: 'all 0.2s' }}>
-                            {loading ? 'Entrando...' : 'Entrar'}
+                            {loading ? 'Signing in...' : 'Sign In'}
                         </button>
 
                         <p style={{ textAlign: 'center', fontSize: 12, color: 'hsl(220 10% 50%)', marginTop: 4 }}>
-                            Não tem conta?{' '}
+                            Don't have an account?{' '}
                             <button type="button" onClick={() => setTab('register')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'hsl(217 91% 65%)', fontWeight: 600, fontSize: 12 }}>
-                                Criar agora →
+                                Create one now →
                             </button>
                         </p>
                     </form>
@@ -290,20 +290,20 @@ export default function ClientLogin() {
                 {tab === 'register' && (
                     <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-                            <label style={{ fontSize: 11, fontWeight: 600, color: 'hsl(220 10% 50%)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Nome Completo</label>
-                            <InputField id="reg-name" value={regName} onChange={e => setRegName(e.target.value)} placeholder="Seu nome" icon={<UserIcon />} />
+                            <label style={{ fontSize: 11, fontWeight: 600, color: 'hsl(220 10% 50%)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Full Name</label>
+                            <InputField id="reg-name" value={regName} onChange={e => setRegName(e.target.value)} placeholder="Your name" icon={<UserIcon />} />
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
                             <label style={{ fontSize: 11, fontWeight: 600, color: 'hsl(220 10% 50%)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>E-mail</label>
-                            <InputField id="reg-email" type="email" value={regEmail} onChange={e => setRegEmail(e.target.value)} placeholder="seu@email.com" icon={<MailIcon />} />
+                            <InputField id="reg-email" type="email" value={regEmail} onChange={e => setRegEmail(e.target.value)} placeholder="you@email.com" icon={<MailIcon />} />
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-                            <label style={{ fontSize: 11, fontWeight: 600, color: 'hsl(220 10% 50%)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Telefone (opcional)</label>
+                            <label style={{ fontSize: 11, fontWeight: 600, color: 'hsl(220 10% 50%)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Phone (optional)</label>
                             <InputField id="reg-phone" type="tel" value={regPhone} onChange={e => setRegPhone(e.target.value)} placeholder="(11) 99999-9999" icon={<PhoneIcon />} required={false} />
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-                            <label style={{ fontSize: 11, fontWeight: 600, color: 'hsl(220 10% 50%)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Senha</label>
-                            <InputField id="reg-password" type="password" value={regPassword} onChange={e => setRegPassword(e.target.value)} placeholder="Mín. 6 caracteres" icon={<LockIcon />} />
+                            <label style={{ fontSize: 11, fontWeight: 600, color: 'hsl(220 10% 50%)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Password</label>
+                            <InputField id="reg-password" type="password" value={regPassword} onChange={e => setRegPassword(e.target.value)} placeholder="Min. 6 characters" icon={<LockIcon />} />
                         </div>
 
                         {error && (
@@ -313,13 +313,13 @@ export default function ClientLogin() {
                         )}
 
                         <button type="submit" disabled={loading} style={{ marginTop: 4, width: '100%', padding: '13px', borderRadius: 12, border: 'none', cursor: loading ? 'not-allowed' : 'pointer', background: 'hsl(217 91% 60%)', color: '#fff', fontSize: 14, fontWeight: 700, boxShadow: '0 4px 18px hsl(217 91% 60% / 0.35)', opacity: loading ? 0.7 : 1, transition: 'all 0.2s' }}>
-                            {loading ? 'Criando conta...' : 'Criar Conta'}
+                            {loading ? 'Creating account...' : 'Create Account'}
                         </button>
 
                         <p style={{ textAlign: 'center', fontSize: 12, color: 'hsl(220 10% 50%)', marginTop: 4 }}>
-                            Já tem conta?{' '}
+                            Already have an account?{' '}
                             <button type="button" onClick={() => setTab('login')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'hsl(217 91% 65%)', fontWeight: 600, fontSize: 12 }}>
-                                Entrar →
+                                Sign in →
                             </button>
                         </p>
                     </form>

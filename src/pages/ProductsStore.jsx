@@ -7,13 +7,13 @@ import { Select } from '@/components/ui/OldSelect';
 const fmt = v => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v || 0);
 
 const CAT_CONFIG = {
-    todos:     { label: 'Todos',       emoji: '🛍️' },
-    cabelo:    { label: 'Cabelo',      emoji: '💈' },
-    barba:     { label: 'Barba',       emoji: '🪒' },
-    acessorio: { label: 'Acessórios',  emoji: '🧴' },
+    todos:     { label: 'All',         emoji: '🛍️' },
+    cabelo:    { label: 'Hair',        emoji: '💈' },
+    barba:     { label: 'Beard',       emoji: '🪒' },
+    acessorio: { label: 'Accessories', emoji: '🧴' },
 };
 
-// ─── Ícone carrinho ───────────────────────────────────────────────────────────
+// ─── Cart icon ───────────────────────────────────────────────────────────────
 function CartIcon({ count }) {
     return (
         <div className="relative">
@@ -29,7 +29,7 @@ function CartIcon({ count }) {
     );
 }
 
-// ─── Modal Carrinho ───────────────────────────────────────────────────────────
+// ─── Cart Modal ──────────────────────────────────────────────────────────────
 function CartModal({ cart, barbers, onClose, onRemove, onChangeQty, onCheckout, saving }) {
     const [barberId, setBarberId] = useState('');
     const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
@@ -41,19 +41,19 @@ function CartModal({ cart, barbers, onClose, onRemove, onChangeQty, onCheckout, 
                 {/* Header */}
                 <div className="flex items-center justify-between px-6 py-4 border-b border-border flex-shrink-0">
                     <h2 className="text-base font-bold text-foreground flex items-center gap-2">
-                        <CartIcon count={0} /> Carrinho
+                        <CartIcon count={0} /> Cart
                     </h2>
                     <button onClick={onClose} className="text-muted-foreground hover:text-foreground transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                     </button>
                 </div>
 
-                {/* Itens */}
+                {/* Items */}
                 <div className="flex-1 overflow-y-auto px-6 py-4 space-y-3">
                     {cart.length === 0 ? (
                         <div className="text-center py-10">
                             <p className="text-4xl mb-3">🛒</p>
-                            <p className="text-sm text-muted-foreground">Carrinho vazio</p>
+                            <p className="text-sm text-muted-foreground">Cart is empty</p>
                         </div>
                     ) : cart.map(item => (
                         <div key={item.id} className="flex items-center gap-3 p-3 rounded-xl bg-secondary/50">
@@ -64,7 +64,7 @@ function CartModal({ cart, barbers, onClose, onRemove, onChangeQty, onCheckout, 
                                 <p className="text-sm font-semibold text-foreground truncate">{item.name}</p>
                                 <p className="text-xs text-primary font-bold">{fmt(item.price)}</p>
                             </div>
-                            {/* Controle de qtd */}
+                            {/* Quantity control */}
                             <div className="flex items-center gap-2 flex-shrink-0">
                                 <button onClick={() => onChangeQty(item.id, item.qty - 1)} className="w-6 h-6 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary transition-colors text-sm font-bold">−</button>
                                 <span className="text-sm font-bold w-5 text-center text-foreground">{item.qty}</span>
@@ -82,12 +82,12 @@ function CartModal({ cart, barbers, onClose, onRemove, onChangeQty, onCheckout, 
                 {cart.length > 0 && (
                     <div className="px-6 py-4 border-t border-border flex-shrink-0 space-y-4">
                         <div>
-                            <label className="block text-xs text-muted-foreground mb-1.5 font-medium">Barbeiro responsável (opcional)</label>
+                            <label className="block text-xs text-muted-foreground mb-1.5 font-medium">Responsible barber (optional)</label>
                             <Select
                                 value={barberId}
                                 onChange={setBarberId}
                                 options={[
-                                    { value: '', label: 'Sem barbeiro associado' },
+                                    { value: '', label: 'No barber assigned' },
                                     ...barbers.map(b => ({ value: b.id, label: b.name }))
                                 ]}
                                 triggerClassName="w-full px-3 py-2.5 rounded-lg border border-border bg-secondary text-foreground text-sm hover:bg-white/5"
@@ -108,7 +108,7 @@ function CartModal({ cart, barbers, onClose, onRemove, onChangeQty, onCheckout, 
                                 ) : (
                                     <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                                 )}
-                                Finalizar Compra
+                                Complete Purchase
                             </button>
                         </div>
                     </div>
@@ -118,7 +118,7 @@ function CartModal({ cart, barbers, onClose, onRemove, onChangeQty, onCheckout, 
     );
 }
 
-// ─── Toast simples ────────────────────────────────────────────────────────────
+// ─── Simple toast ─────────────────────────────────────────────────────────────
 function Toast({ message, onDone }) {
     useEffect(() => { const t = setTimeout(onDone, 2500); return () => clearTimeout(t); }, []);
     return (
@@ -129,7 +129,7 @@ function Toast({ message, onDone }) {
     );
 }
 
-// ─── Página Principal ─────────────────────────────────────────────────────────
+// ─── Main Page ───────────────────────────────────────────────────────────────
 export default function ProductsStore() {
     const [products, setProducts] = useState([]);
     const [barbers, setBarbers] = useState([]);
@@ -152,7 +152,7 @@ export default function ProductsStore() {
         setLoading(true);
         try {
             const [prods, brbs] = await Promise.all([Product.list(), Barber.list()]);
-            // Oculta o produto fantasma usado para vendas de planos
+            // Hide the placeholder product used for plan sales
             setProducts(prods.filter(p => p.is_active !== false && p.name !== 'Assinatura de Plano'));
             setBarbers(brbs.filter(b => b.is_active !== false));
             await loadReservations();
@@ -185,7 +185,7 @@ export default function ProductsStore() {
             }
             return [...prev, { ...product, qty: 1 }];
         });
-        setToast(`${product.name} adicionado ao carrinho`);
+        setToast(`${product.name} added to cart`);
     };
 
     const removeFromCart = (id) => setCart(prev => prev.filter(i => i.id !== id));
@@ -212,14 +212,14 @@ export default function ProductsStore() {
             }
             setCart([]);
             setShowCart(false);
-            setToast('Compra finalizada com sucesso! 🎉');
+            setToast('Purchase completed successfully! 🎉');
             await load();
         } finally { setSaving(false); }
     };
 
     const handleAproveReservation = async (res) => {
         try {
-            // Cria venda
+            // Create sale
             await Sale.create({
                 productId: res.product_id,
                 barberId: null,
@@ -227,10 +227,10 @@ export default function ProductsStore() {
                 unitPrice: res.price / (res.quantity || 1),
                 date: new Date().toISOString().slice(0, 10),
             });
-            // O estoque já foi reduzido no momento da criação da reserva! Não precisa reduzir de novo.
-            // Marca reservada concluida
+            // Stock was already reduced when the reservation was created! No need to reduce it again.
+            // Mark reservation as completed
             await ProductReservation.update(res.id, { status: 'concluido' });
-            setToast('Reserva aprovada com sucesso!');
+            setToast('Reservation approved successfully!');
             await loadReservations();
         } catch (e) {
             console.error(e);
@@ -247,18 +247,18 @@ export default function ProductsStore() {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                     <div>
                         <h1 className="text-2xl font-bold text-foreground">
-                            <TypingText delay={0.1} holdDelay={4000} loop={false} text="Loja de Produtos" />
+                            <TypingText delay={0.1} holdDelay={4000} loop={false} text="Product Store" />
                         </h1>
-                        <p className="text-sm text-muted-foreground mt-0.5">Gestão de Vendas e Reservas de Clientes</p>
+                        <p className="text-sm text-muted-foreground mt-0.5">Sales and Client Reservation Management</p>
                     </div>
                     
                     <TabsList className="inline-flex p-1 bg-secondary border border-border rounded-xl">
                         <TabsHighlightItem value="loja" className="flex-1">
-                            <TabsTrigger value="loja" className="px-4 py-2 text-sm">Venda Direta</TabsTrigger>
+                            <TabsTrigger value="loja" className="px-4 py-2 text-sm">Direct Sale</TabsTrigger>
                         </TabsHighlightItem>
                         <TabsHighlightItem value="reservas" className="flex-1">
                             <TabsTrigger value="reservas" className="px-4 py-2 text-sm flex items-center gap-2">
-                                Reservas {reservations.length > 0 && <span className="bg-primary text-primary-foreground text-[10px] px-1.5 rounded-full">{reservations.length}</span>}
+                                Reservations {reservations.length > 0 && <span className="bg-primary text-primary-foreground text-[10px] px-1.5 rounded-full">{reservations.length}</span>}
                             </TabsTrigger>
                         </TabsHighlightItem>
                     </TabsList>
@@ -267,7 +267,7 @@ export default function ProductsStore() {
                 <TabsContents>
                     <TabsContent value="loja">
                         <div className="space-y-6">
-                            {/* Botão carrinho */}
+                            {/* Cart button */}
                             <div className="flex justify-end">
                                 <button
                                     onClick={() => setShowCart(true)}
@@ -275,8 +275,8 @@ export default function ProductsStore() {
                                 >
                                     <CartIcon count={cartCount} />
                                     <div className="text-left">
-                                        <p className="text-xs text-muted-foreground leading-none">Carrinho</p>
-                                        <p className="text-sm font-bold text-foreground">{cartCount > 0 ? fmt(cartTotal) : 'Vazio'}</p>
+                                        <p className="text-xs text-muted-foreground leading-none">Cart</p>
+                                        <p className="text-sm font-bold text-foreground">{cartCount > 0 ? fmt(cartTotal) : 'Empty'}</p>
                                     </div>
                                     {cartCount > 0 && (
                                         <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center">
@@ -287,22 +287,22 @@ export default function ProductsStore() {
                             </div>
 
 
-            {/* Busca + Filtro de categoria */}
+            {/* Search + Category filter */}
             <div className="flex flex-col sm:flex-row gap-3">
-                {/* Busca */}
+                {/* Search */}
                 <div className="relative flex-1 max-w-sm">
                     <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                     <input
                         type="text"
-                        placeholder="Buscar produtos..."
+                        placeholder="Search products..."
                         value={search}
                         onChange={e => setSearch(e.target.value)}
                         className="w-full pl-9 pr-4 py-2.5 text-sm rounded-lg border border-border bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
                     />
                 </div>
-                {/* Filtros de categoria */}
+                {/* Category filters */}
                 <div className="flex gap-2 flex-wrap">
                     {Object.entries(CAT_CONFIG).map(([key, cfg]) => (
                         <button
@@ -321,7 +321,7 @@ export default function ProductsStore() {
                 </div>
             </div>
 
-            {/* Grid de produtos */}
+            {/* Product grid */}
             {loading ? (
                 <div className="flex items-center justify-center h-48">
                     <div className="w-8 h-8 border-2 border-primary/20 border-t-primary rounded-full animate-spin" />
@@ -329,7 +329,7 @@ export default function ProductsStore() {
             ) : filtered.length === 0 ? (
                 <div className="rounded-xl border border-dashed border-border bg-card/50 flex flex-col items-center justify-center py-16 gap-3">
                     <p className="text-4xl">🔍</p>
-                    <p className="text-sm text-muted-foreground">Nenhum produto encontrado</p>
+                    <p className="text-sm text-muted-foreground">No products found</p>
                 </div>
             ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
@@ -341,27 +341,27 @@ export default function ProductsStore() {
                                 key={product.id}
                                 className="rounded-2xl border border-border bg-card flex flex-col overflow-hidden group hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-200"
                             >
-                                {/* Imagem / Ícone */}
+                                {/* Image / Icon */}
                                 <div className="h-36 bg-gradient-to-br from-primary/5 to-primary/10 flex items-center justify-center relative overflow-hidden">
                                     <span className="text-6xl group-hover:scale-110 transition-transform duration-300">
                                         {CAT_CONFIG[product.category]?.emoji || '📦'}
                                     </span>
                                     {outOfStock && (
                                         <div className="absolute inset-0 bg-background/70 flex items-center justify-center">
-                                            <span className="text-xs font-bold text-muted-foreground px-2 py-1 rounded-full bg-secondary border border-border">Sem estoque</span>
+                                            <span className="text-xs font-bold text-muted-foreground px-2 py-1 rounded-full bg-secondary border border-border">Out of stock</span>
                                         </div>
                                     )}
                                     {!outOfStock && product.stock !== undefined && product.stock <= 3 && (
                                         <div className="absolute top-2 right-2">
                                             <span className="text-[10px] font-bold text-orange-400 px-2 py-0.5 rounded-full bg-orange-500/10 border border-orange-500/20">
-                                                Últimas {product.stock}!
+                                                Only {product.stock} left!
                                             </span>
                                         </div>
                                     )}
                                     {inCart > 0 && (
                                         <div className="absolute top-2 left-2">
                                             <span className="text-[10px] font-bold text-primary px-2 py-0.5 rounded-full bg-primary/15 border border-primary/30">
-                                                {inCart} no carrinho
+                                                {inCart} in cart
                                             </span>
                                         </div>
                                     )}
@@ -378,18 +378,18 @@ export default function ProductsStore() {
                                     <div className="flex items-center justify-between">
                                         <p className="text-xl font-bold text-primary">{fmt(product.price)}</p>
                                         {product.stock !== undefined && (
-                                            <p className="text-xs text-muted-foreground">{product.stock} em estoque</p>
+                                            <p className="text-xs text-muted-foreground">{product.stock} in stock</p>
                                         )}
                                     </div>
 
-                                    {/* Botão adicionar */}
+                                    {/* Add button */}
                                     {inCart === 0 ? (
                                         <button
                                             onClick={() => addToCart(product)}
                                             disabled={outOfStock}
                                             className="w-full py-2.5 rounded-xl bg-primary/10 text-primary text-sm font-semibold border border-primary/20 hover:bg-primary hover:text-primary-foreground transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                                         >
-                                            {outOfStock ? 'Indisponível' : '+ Adicionar ao Carrinho'}
+                                            {outOfStock ? 'Unavailable' : '+ Add to Cart'}
                                         </button>
                                     ) : (
                                         <div className="flex items-center gap-2">
@@ -410,16 +410,16 @@ export default function ProductsStore() {
 
                     <TabsContent value="reservas">
                         <div className="bg-card border border-border rounded-2xl p-6">
-                            <h2 className="text-lg font-bold mb-4">Pedidos Pendentes ({reservations.length})</h2>
+                            <h2 className="text-lg font-bold mb-4">Pending Orders ({reservations.length})</h2>
                             {reservations.length === 0 ? (
-                                <p className="text-muted-foreground text-sm">Nenhuma reserva pendente no momento.</p>
+                                <p className="text-muted-foreground text-sm">No pending reservations at the moment.</p>
                             ) : (
                                 <div className="space-y-3">
                                     {reservations.map(res => (
                                         <div key={res.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl border border-border bg-secondary/50">
                                             <div>
                                                 <p className="font-bold text-foreground">{res.quantity || 1}x {res.product_name}</p>
-                                                <p className="text-sm text-muted-foreground">Cliente: {res.client_name}</p>
+                                                <p className="text-sm text-muted-foreground">Client: {res.client_name}</p>
                                             </div>
                                             <div className="flex items-center gap-4">
                                                 <p className="font-bold text-primary">{fmt(res.price)}</p>
@@ -427,7 +427,7 @@ export default function ProductsStore() {
                                                     onClick={() => handleAproveReservation(res)}
                                                     className="px-4 py-2 bg-primary text-primary-foreground rounded-lg font-bold text-sm hover:bg-primary/90"
                                                 >
-                                                    Aprovar Venda
+                                                    Approve Sale
                                                 </button>
                                             </div>
                                         </div>
@@ -439,7 +439,7 @@ export default function ProductsStore() {
                 </TabsContents>
             </Tabs>
 
-            {/* Barra flutuante quando há itens no carrinho */}
+            {/* Floating bar when there are items in the cart */}
             {cartCount > 0 && !showCart && tab === 'loja' && (
                 <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40">
                     <button
@@ -447,13 +447,13 @@ export default function ProductsStore() {
                         className="flex items-center gap-4 px-6 py-3.5 rounded-2xl bg-primary text-primary-foreground shadow-2xl shadow-primary/40 hover:bg-primary/90 transition-all font-semibold text-sm"
                     >
                         <span className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center font-bold text-xs">{cartCount}</span>
-                        Ver Carrinho
+                        View Cart
                         <span className="font-bold">{fmt(cartTotal)}</span>
                     </button>
                 </div>
             )}
 
-            {/* Modal carrinho */}
+            {/* Cart modal */}
             {showCart && (
                 <CartModal
                     cart={cart}

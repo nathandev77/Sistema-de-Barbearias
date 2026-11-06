@@ -3,13 +3,13 @@
  * ╔══════════════════════════════════════════════════════════════════════════╗
  * ║          SaaS Barber — Security Audit Script v2.0                       ║
  * ║          OWASP Top 10 (2021) + AI-Generated App Attack Vectors          ║
- * ║          Especialista em Cibersegurança — Nível Sênior                  ║
+ * ║          Cybersecurity Specialist — Senior Level                        ║
  * ╚══════════════════════════════════════════════════════════════════════════╝
  *
- * Uso:
+ * Usage:
  *   node scripts/security_audit.mjs [--base-url http://localhost:3001] [--verbose]
  *
- * Cobertura:
+ * Coverage:
  *   A01 – Broken Access Control (BOLA/BFLA, Tenant Bypass, IDOR)
  *   A02 – Cryptographic Failures (sensitive data in responses, weak headers)
  *   A03 – Injection (XSS stored/reflected, SQL Injection, NoSQL Injection)
@@ -156,18 +156,18 @@ function sleep(ms) { return new Promise((r) => setTimeout(r, ms)); }
 // reqRaw = req with absolute URL support (alias for non-/api endpoints)
 const reqRaw = (method, url, body = null, headers = {}) => req(method, url, body, headers);
 
-// ─── SETUP: Criar tenants de teste ────────────────────────────────────────────
+// ─── SETUP: Create test tenants ───────────────────────────────────────────────
 let tokenA = null;
 let tokenB = null;
 let tenantASlug = `audit-tenant-a-${Date.now()}`;
 let tenantBSlug = `audit-tenant-b-${Date.now()}`;
 
 async function setupTenants() {
-  section('SETUP — Criando Tenants de Teste');
+  section('SETUP — Creating Test Tenants');
 
   // Tenant A
   const resA = await req('POST', '/auth/register', {
-    name: 'Barbearia Audit A',
+    name: 'Audit Barbershop A',
     email: `audita${Date.now()}@gmail.com`,
     password: 'Audit@Pass1!',
     phone: '+5511987654321',
@@ -176,17 +176,17 @@ async function setupTenants() {
 
   if (resA.status === 201 && resA.body?.token) {
     tokenA = resA.body.token;
-    pass('Tenant A criado com sucesso');
+    pass('Tenant A created successfully');
   } else if (resA.status === 409) {
-    warn('Tenant A já existe — use --clean para resetar');
+    warn('Tenant A already exists — use --clean to reset');
   } else {
-    warn(`Tenant A não criado (${resA.status}) — alguns testes de isolamento serão pulados`);
+    warn(`Tenant A not created (${resA.status}) — some isolation tests will be skipped`);
     if (VERBOSE) log(`  ${dim(JSON.stringify(resA.body))}`);
   }
 
   // Tenant B
   const resB = await req('POST', '/auth/register', {
-    name: 'Barbearia Audit B',
+    name: 'Audit Barbershop B',
     email: `auditb${Date.now()}@gmail.com`,
     password: 'Audit@Pass2!',
     phone: '+5511987654322',
@@ -195,9 +195,9 @@ async function setupTenants() {
 
   if (resB.status === 201 && resB.body?.token) {
     tokenB = resB.body.token;
-    pass('Tenant B criado com sucesso');
+    pass('Tenant B created successfully');
   } else {
-    warn(`Tenant B não criado (${resB.status})`);
+    warn(`Tenant B not created (${resB.status})`);
   }
 }
 
@@ -207,53 +207,53 @@ async function setupTenants() {
 async function testBrokenAccessControl() {
   section('A01 – Broken Access Control');
 
-  // 1. Acesso sem token
+  // 1. Access without token
   const res1 = await req('GET', '/barbers');
   if (res1.status === 401 || res1.status === 403) {
-    pass('Acesso a /barbers sem token bloqueado', `HTTP ${res1.status}`);
+    pass('Access to /barbers without token blocked', `HTTP ${res1.status}`);
   } else {
-    fail('Acesso a /barbers sem token PERMITIDO', `Retornou ${res1.status} — rota protegida deveria exigir JWT`, 'CRITICAL');
+    fail('Access to /barbers without token ALLOWED', `Returned ${res1.status} — protected route should require JWT`, 'CRITICAL');
   }
 
-  // 2. Token inválido/manipulado
+  // 2. Invalid/tampered token
   const fakeToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5hbnRJZCI6Ijk5OTk5IiwiaWF0IjoxNjAwMDAwMDAwfQ.AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
   const res2 = await req('GET', '/barbers', null, { Authorization: `Bearer ${fakeToken}` });
   if (res2.status === 401 || res2.status === 403) {
-    pass('Token JWT manipulado rejeitado', `HTTP ${res2.status}`);
+    pass('Tampered JWT token rejected', `HTTP ${res2.status}`);
   } else {
-    fail('Token JWT manipulado ACEITO', `Retornou ${res2.status} — possível vulnerabilidade JWT`, 'CRITICAL');
+    fail('Tampered JWT token ACCEPTED', `Returned ${res2.status} — possible JWT vulnerability`, 'CRITICAL');
   }
 
-  // 3. Tenant Bypass – Token de A acessando dados de B
+  // 3. Tenant Bypass – A's token accessing B's data
   if (tokenA && tokenB) {
     const clientsB = await req('GET', `/clients?tenantId=${tenantBSlug}`, null, {
       Authorization: `Bearer ${tokenA}`,
     });
     if (clientsB.body && Array.isArray(clientsB.body) && clientsB.body.length > 0) {
-      fail('Tenant Bypass detectado', `Token do Tenant A leu ${clientsB.body.length} clientes do Tenant B`, 'CRITICAL');
+      fail('Tenant Bypass detected', `Tenant A token read ${clientsB.body.length} clients from Tenant B`, 'CRITICAL');
     } else {
-      pass('Tenant Bypass bloqueado', 'Token A não acessa dados do Tenant B');
+      pass('Tenant Bypass blocked', 'Token A cannot access Tenant B data');
     }
   } else {
-    warn('Teste de Tenant Bypass pulado — tokens não disponíveis');
+    warn('Tenant Bypass test skipped — tokens not available');
   }
 
-  // 4. IDOR – Acessar endpoint com ID numérico arbitrário
+  // 4. IDOR – Access endpoint with an arbitrary numeric ID
   const res4 = await req('GET', '/clients/99999999');
   if (res4.status === 401 || res4.status === 403) {
-    pass('IDOR protegido — acesso sem token bloqueado', `HTTP ${res4.status}`);
+    pass('IDOR protected — access without token blocked', `HTTP ${res4.status}`);
   } else if (res4.status === 404) {
-    pass('IDOR: ID inexistente retorna 404 corretamente');
+    pass('IDOR: nonexistent ID correctly returns 404');
   } else {
-    fail('IDOR potencial', `Acesso a /clients/99999999 retornou ${res4.status}`, 'HIGH');
+    fail('Potential IDOR', `Access to /clients/99999999 returned ${res4.status}`, 'HIGH');
   }
 
-  // 5. Acesso a rota de SaaS admin sem token
+  // 5. Access to SaaS admin route without token
   const res5 = await req('GET', '/saas/tenants');
   if (res5.status === 401 || res5.status === 403) {
-    pass('Rota SaaS admin protegida sem token', `HTTP ${res5.status}`);
+    pass('SaaS admin route protected without token', `HTTP ${res5.status}`);
   } else {
-    fail('Rota SaaS /saas/tenants acessível sem autenticação', `HTTP ${res5.status}`, 'CRITICAL');
+    fail('SaaS route /saas/tenants accessible without authentication', `HTTP ${res5.status}`, 'CRITICAL');
   }
 }
 
@@ -263,43 +263,43 @@ async function testBrokenAccessControl() {
 async function testCryptographicFailures() {
   section('A02 – Cryptographic Failures');
 
-  // 1. Headers de segurança (HTTPS/HSTS)
+  // 1. Security headers (HTTPS/HSTS)
   const res = await req('GET', `${BASE_URL}/health`);
   
   const hstsHeader = res.headers['strict-transport-security'];
   if (hstsHeader) {
-    pass('HSTS header presente', hstsHeader);
+    pass('HSTS header present', hstsHeader);
   } else {
-    warn('HSTS header ausente — adicione em produção com Traefik/Nginx');
+    warn('HSTS header missing — add it in production with Traefik/Nginx');
   }
 
   // 2. X-Content-Type-Options
   const xcto = res.headers['x-content-type-options'];
   if (xcto === 'nosniff') {
-    pass('X-Content-Type-Options: nosniff presente');
+    pass('X-Content-Type-Options: nosniff present');
   } else {
-    fail('X-Content-Type-Options ausente', 'Helmet deve estar configurado corretamente', 'MEDIUM');
+    fail('X-Content-Type-Options missing', 'Helmet must be configured correctly', 'MEDIUM');
   }
 
-  // 3. Password em resposta de login (nunca deve aparecer)
+  // 3. Password in login response (must never appear)
   const loginRes = await req('POST', '/auth/login', {
     email: 'fake@test.com',
     password: 'fakepass',
   });
   const bodyStr = JSON.stringify(loginRes.body || {});
   if (bodyStr.includes('"password"')) {
-    fail('Hash de senha exposto na resposta', 'Campo "password" presente no body de resposta', 'CRITICAL');
+    fail('Password hash exposed in response', 'Field "password" present in response body', 'CRITICAL');
   } else {
-    pass('Hash de senha não exposto em respostas');
+    pass('Password hash not exposed in responses');
   }
 
-  // 4. Verificar se resposta de erro vaza stack trace
+  // 4. Check whether error responses leak stack traces
   const errRes = await req('POST', '/auth/login', { email: null, password: null });
   const errStr = JSON.stringify(errRes.body || {});
   if (errStr.includes('at Object') || errStr.includes('stack') || errStr.includes('node_modules')) {
-    fail('Stack trace vazando em resposta de erro', errStr.slice(0, 100), 'HIGH');
+    fail('Stack trace leaking in error response', errStr.slice(0, 100), 'HIGH');
   } else {
-    pass('Stack trace não exposto em erros');
+    pass('Stack trace not exposed in errors');
   }
 }
 
@@ -317,9 +317,9 @@ async function testInjection() {
     '<svg onload=alert(1)>',
     'javascript:alert(document.cookie)',
     '<iframe src="javascript:alert(1)">',
-    '{{7*7}}',               // Template injection (AI apps frequentemente usam Handlebars/EJS)
+    '{{7*7}}',               // Template injection (AI apps often use Handlebars/EJS)
     '${7*7}',               // Server-side template injection
-    '\' OR \'x\'=\'x',      // SQL Injection clássico
+    '\' OR \'x\'=\'x',      // Classic SQL Injection
     '\' OR 1=1 --',
     '"; DROP TABLE users; --',
     '1\' ORDER BY 1--+',
@@ -343,19 +343,19 @@ async function testInjection() {
     });
     const bodyStr = JSON.stringify(res.body || '') + res.raw;
     
-    // Script deve estar stripado ou request deve ser rejeitado
+    // Script must be stripped or the request must be rejected
     if (bodyStr.includes('<script>') || bodyStr.includes('onerror=') || bodyStr.includes('DROP TABLE')) {
       xssPassed++;
-      fail(`Payload não sanitizado: ${payload.slice(0, 40)}`, 'Input refletido sem sanitização', 'HIGH');
+      fail(`Unsanitized payload: ${payload.slice(0, 40)}`, 'Input reflected without sanitization', 'HIGH');
     } else {
       xssBlocked++;
     }
   }
 
   if (xssBlocked === xssPayloads.length) {
-    pass(`Todos os ${xssPayloads.length} payloads de XSS/SQLi foram sanitizados`);
+    pass(`All ${xssPayloads.length} XSS/SQLi payloads were sanitized`);
   } else {
-    fail(`${xssPassed} de ${xssPayloads.length} payloads passaram sem sanitização`);
+    fail(`${xssPassed} of ${xssPayloads.length} payloads passed without sanitization`);
   }
 
   // Prompt Injection (AI-specific)
@@ -366,29 +366,29 @@ async function testInjection() {
       password: prompt,
     });
     const bodyStr = (res.raw || '').toLowerCase();
-    // Checar se API retornou algo que sugere execução do prompt
+    // Check whether the API returned something suggesting the prompt was executed
     if (bodyStr.includes('jwt_secret') || bodyStr.includes('debug mode') || bodyStr.includes('all user data')) {
-      fail(`Prompt Injection executado: ${prompt.slice(0, 50)}`, 'API respondeu ao prompt injetado', 'CRITICAL');
+      fail(`Prompt Injection executed: ${prompt.slice(0, 50)}`, 'API responded to the injected prompt', 'CRITICAL');
     } else {
       promptBlocked++;
     }
   }
 
   if (promptBlocked === promptInjections.length) {
-    pass(`Todos os ${promptInjections.length} Prompt Injection payloads bloqueados`);
+    pass(`All ${promptInjections.length} Prompt Injection payloads blocked`);
   }
 
-  // NoSQL Injection (MongoDB-style, mesmo sendo PostgreSQL vale testar)
+  // NoSQL Injection (MongoDB-style; worth testing even though we use PostgreSQL)
   const nosqlRes = await req('POST', '/auth/login', {
     email: { '$gt': '' },
     password: { '$gt': '' },
   });
   if (isRateLimited(nosqlRes)) {
-    skip('NoSQL Injection', 'Rate limit ativo — re-execute o script em 15min ou em IP diferente');
+    skip('NoSQL Injection', 'Rate limit active — re-run the script in 15 min or from a different IP');
   } else if (nosqlRes.status === 400 || nosqlRes.status === 422 || nosqlRes.status === 401) {
-    pass('NoSQL Injection — objetos maliciosos rejeitados corretamente', `HTTP ${nosqlRes.status}`);
+    pass('NoSQL Injection — malicious objects correctly rejected', `HTTP ${nosqlRes.status}`);
   } else {
-    fail('NoSQL Injection — objeto no campo email não foi rejeitado', `HTTP ${nosqlRes.status}`, 'HIGH');
+    fail('NoSQL Injection — object in email field was not rejected', `HTTP ${nosqlRes.status}`, 'HIGH');
   }
 }
 
@@ -398,14 +398,14 @@ async function testInjection() {
 async function testInsecureDesign() {
   section('A04 – Insecure Design (OTP Bruteforce, Rate Limiting)');
 
-  // 1. OTP Bruteforce — deve bloquear após 3 tentativas
+  // 1. OTP Bruteforce — must block after 3 attempts
   const testEmail = `otp-test-${Date.now()}@gmail.com`;
 
-  // Solicitar OTP
+  // Request OTP
   const otpReq = await req('POST', '/otp/request', { email: testEmail });
   if (VERBOSE) log(`  ${dim('OTP Request: ' + JSON.stringify(otpReq.body))}`);
 
-  // Verifica se o OTP request foi aceito
+  // Check whether the OTP request was accepted
   const otpGenerated = otpReq.status === 200;
 
 
@@ -416,40 +416,40 @@ async function testInsecureDesign() {
   for (let attempt = 1; attempt <= 5; attempt++) {
     const res = await req('POST', '/otp/verify', {
       email: testEmail,
-      code: `000${attempt}00`, // Códigos errados 
+      code: `000${attempt}00`, // Wrong codes 
     });
     lastStatus = res.status;
     lastError = res.body?.error || '';
 
-    if (res.status === 429 || lastError.includes('bloqueado') || lastError.includes('Máximo')) {
+    if (res.status === 429 || lastError.includes('blocked') || lastError.includes('Maximum')) {
       blockedAt = attempt;
       break;
     }
-    // 410 = OTP não encontrado/expirado (sem Redis rodando)
+    // 410 = OTP not found/expired (Redis not running)
     if (res.status === 410) {
-      warn('OTP: Redis não está rodando localmente — in-memory fallback pode não persistir entre requests',
-        'Execute Redis localmente para testar bloqueio de bruteforce');
+      warn('OTP: Redis is not running locally — in-memory fallback may not persist between requests',
+        'Run Redis locally to test bruteforce blocking');
       break;
     }
     await sleep(100);
   }
 
   if (blockedAt !== null && blockedAt <= 3) {
-    pass(`OTP bloqueado na tentativa ${blockedAt}`, 'Força bruta de OTP prevenida');
+    pass(`OTP blocked at attempt ${blockedAt}`, 'OTP brute force prevented');
   } else if (blockedAt !== null) {
-    warn(`OTP bloqueado na tentativa ${blockedAt}`, 'Ideal é bloquear até a 3ª tentativa');
+    warn(`OTP blocked at attempt ${blockedAt}`, 'Ideally block by the 3rd attempt');
   } else if (lastStatus === 410) {
-    warn('OTP bruteforce: teste inconclusivo — Redis necessário para persistência de sessão OTP', 
-      'Inicie Redis com: docker run -d -p 6379:6379 redis:alpine');
+    warn('OTP bruteforce: inconclusive test — Redis required for OTP session persistence', 
+      'Start Redis with: docker run -d -p 6379:6379 redis:alpine');
   } else if (lastStatus === 0) {
-    warn('OTP bruteforce: servidor reiniciou durante o teste (nodemon/deploy) — re-execute em ambiente estável',
-      'Status 0 = conexão encerrada pelo servidor. O controlador OTP e a lógica de bloqueio estão corretos.');
+    warn('OTP bruteforce: server restarted during the test (nodemon/deploy) — re-run in a stable environment',
+      'Status 0 = connection closed by the server. The OTP controller and blocking logic are correct.');
   } else {
-    fail('OTP não bloqueado após 5 tentativas erradas', `Último status: ${lastStatus} — "${lastError}"`, 'CRITICAL');
+    fail('OTP not blocked after 5 wrong attempts', `Last status: ${lastStatus} — "${lastError}"`, 'CRITICAL');
   }
 
 
-  // 2. Rate limiting global
+  // 2. Global rate limiting
   const rateLimitResults = [];
   const batchSize = 20;
   for (let i = 0; i < batchSize; i++) {
@@ -463,23 +463,23 @@ async function testInsecureDesign() {
 
   const tooManyRequests = rateLimitResults.includes(429);
   if (tooManyRequests) {
-    pass('Rate limiting global ativo', `Bloqueou após ${rateLimitResults.indexOf(429) + 1} requisições`);
+    pass('Global rate limiting active', `Blocked after ${rateLimitResults.indexOf(429) + 1} requests`);
   } else {
-    warn(`${batchSize} requisições consecutivas sem rate limit 429`, 'Verificar configuração do Traefik/proxy');
+    warn(`${batchSize} consecutive requests without a 429 rate limit`, 'Check the Traefik/proxy configuration');
   }
 
-  // 3. Account enumeration — mesmo erro para email inexistente e senha errada
-  const resInvalid = await req('POST', '/auth/login', { email: 'naoexiste@gmail.com', password: 'qualquercoisa' });
-  const resWrongPass = await req('POST', '/auth/login', { email: 'alguem@gmail.com', password: 'senhaerrada' });
+  // 3. Account enumeration — same error for nonexistent email and wrong password
+  const resInvalid = await req('POST', '/auth/login', { email: 'doesnotexist@gmail.com', password: 'anything' });
+  const resWrongPass = await req('POST', '/auth/login', { email: 'someone@gmail.com', password: 'wrongpassword' });
 
   const msgInvalid = resInvalid.body?.error || '';
   const msgWrongPass = resWrongPass.body?.error || '';
 
-  // Respostas devem ser idênticas ou muito similares (anti-enumeration)
+  // Responses must be identical or very similar (anti-enumeration)
   if (msgInvalid && msgWrongPass && msgInvalid === msgWrongPass) {
-    pass('Anti-enumeration: mesma mensagem de erro para email inválido e senha errada');
+    pass('Anti-enumeration: same error message for invalid email and wrong password');
   } else {
-    warn('Anti-enumeration: mensagens diferentes podem vazar existência de conta', `"${msgInvalid}" vs "${msgWrongPass}"`);
+    warn('Anti-enumeration: different messages may leak account existence', `"${msgInvalid}" vs "${msgWrongPass}"`);
   }
 }
 
@@ -495,11 +495,11 @@ async function testSecurityMisconfiguration() {
   });
   const corsHeader = res.headers['access-control-allow-origin'];
   if (corsHeader === '*') {
-    fail('CORS configurado com wildcard (*)', 'Em produção, use o domínio específico do frontend', 'HIGH');
+    fail('CORS configured with wildcard (*)', 'In production, use the specific frontend domain', 'HIGH');
   } else if (corsHeader && corsHeader.includes('evil-attacker')) {
-    fail('CORS permite origem de atacante', `access-control-allow-origin: ${corsHeader}`, 'CRITICAL');
+    fail('CORS allows attacker origin', `access-control-allow-origin: ${corsHeader}`, 'CRITICAL');
   } else {
-    pass('CORS não permite origem arbitrária de atacante', `ACAO: ${corsHeader || 'não presente'}`);
+    pass('CORS does not allow arbitrary attacker origin', `ACAO: ${corsHeader || 'not present'}`);
   }
 
   // 2. Helmet headers
@@ -512,28 +512,28 @@ async function testSecurityMisconfiguration() {
 
   for (const header of requiredHeaders) {
     if (helmRes.headers[header]) {
-      pass(`Header de segurança presente: ${header}`, helmRes.headers[header]);
+      pass(`Security header present: ${header}`, helmRes.headers[header]);
     } else {
-      fail(`Header de segurança ausente: ${header}`, 'Verificar configuração do Helmet', 'MEDIUM');
+      fail(`Security header missing: ${header}`, 'Check the Helmet configuration', 'MEDIUM');
     }
   }
 
-  // 3. X-Powered-By (vazar tecnologia)
+  // 3. X-Powered-By (technology leak)
   const poweredBy = helmRes.headers['x-powered-by'];
   if (!poweredBy) {
-    pass('X-Powered-By removido (fingerprinting prevenido)');
+    pass('X-Powered-By removed (fingerprinting prevented)');
   } else {
-    warn(`X-Powered-By presente: ${poweredBy}`, 'Remove com helmet() ou app.disable("x-powered-by")');
+    warn(`X-Powered-By present: ${poweredBy}`, 'Remove with helmet() or app.disable("x-powered-by")');
   }
 
-  // 4. Endpoint de debug/swagger exposto em produção
+  // 4. Debug/swagger endpoint exposed in production
   const debugEndpoints = ['/api-docs', '/swagger', '/docs', '/.env', '/debug', '/metrics'];
   for (const ep of debugEndpoints) {
     const res = await req('GET', `${BASE_URL}${ep}`);
     if (res.status === 200) {
-      fail(`Endpoint sensível exposto: ${ep}`, `HTTP 200 — possível vazamento de informações`, 'HIGH');
+      fail(`Sensitive endpoint exposed: ${ep}`, `HTTP 200 — possible information leak`, 'HIGH');
     } else {
-      pass(`Endpoint sensível protegido: ${ep}`, `HTTP ${res.status}`);
+      pass(`Sensitive endpoint protected: ${ep}`, `HTTP ${res.status}`);
     }
   }
 }
@@ -558,30 +558,30 @@ async function testVulnerableComponents() {
     const low = vulns.low || 0;
 
     if (critical > 0) {
-      fail(`npm audit: ${critical} vulnerabilidade(s) CRÍTICA(S)`, 'Execute: npm audit fix', 'CRITICAL');
+      fail(`npm audit: ${critical} CRITICAL vulnerability(ies)`, 'Run: npm audit fix', 'CRITICAL');
     } else if (high > 0) {
-      fail(`npm audit: ${high} vulnerabilidade(s) HIGH`, 'Execute: npm audit fix', 'HIGH');
+      fail(`npm audit: ${high} HIGH vulnerability(ies)`, 'Run: npm audit fix', 'HIGH');
     } else if (moderate > 0) {
-      warn(`npm audit: ${moderate} vulnerabilidade(s) MODERATE`, 'Execute: npm audit fix');
+      warn(`npm audit: ${moderate} MODERATE vulnerability(ies)`, 'Run: npm audit fix');
     } else if (low > 0) {
-      warn(`npm audit: ${low} vulnerabilidade(s) LOW`);
+      warn(`npm audit: ${low} LOW vulnerability(ies)`);
     } else {
-      pass('npm audit: Nenhuma vulnerabilidade conhecida');
+      pass('npm audit: No known vulnerabilities');
     }
   } catch (e) {
-    // npm audit retorna exit code != 0 quando há vulns
+    // npm audit returns exit code != 0 when there are vulns
     try {
       const audit = JSON.parse(e.stdout || '{}');
       const vulns = audit.metadata?.vulnerabilities || {};
       const critical = vulns.critical || 0;
       const high = vulns.high || 0;
       if (critical > 0) {
-        fail(`npm audit: ${critical} crítica(s), ${high} alta(s)`, 'Execute: npm audit fix --force', 'CRITICAL');
+        fail(`npm audit: ${critical} critical, ${high} high`, 'Run: npm audit fix --force', 'CRITICAL');
       } else {
-        warn(`npm audit: ${high} alta(s) e ${vulns.moderate || 0} moderada(s)`);
+        warn(`npm audit: ${high} high and ${vulns.moderate || 0} moderate`);
       }
     } catch {
-      warn('npm audit não pôde ser executado — verifique manualmente');
+      warn('npm audit could not be run — check manually');
     }
   }
 }
@@ -592,57 +592,57 @@ async function testVulnerableComponents() {
 async function testAuthFailures() {
   section('A07 – Identification & Authentication Failures');
 
-  // 1. JWT com algoritmo "none"
+  // 1. JWT with algorithm "none"
   const noneToken = Buffer.from(JSON.stringify({ alg: 'none', typ: 'JWT' })).toString('base64url')
     + '.' + Buffer.from(JSON.stringify({ tenantId: '1', iat: Date.now() })).toString('base64url')
     + '.';
   const noneRes = await req('GET', '/barbers', null, { Authorization: `Bearer ${noneToken}` });
   if (noneRes.status === 401 || noneRes.status === 403) {
-    pass('JWT com algoritmo "none" rejeitado', `HTTP ${noneRes.status}`);
+    pass('JWT with algorithm "none" rejected', `HTTP ${noneRes.status}`);
   } else {
-    fail('JWT com algoritmo "none" ACEITO', 'Vulnerabilidade crítica de bypass de autenticação', 'CRITICAL');
+    fail('JWT with algorithm "none" ACCEPTED', 'Critical authentication bypass vulnerability', 'CRITICAL');
   }
 
-  // 2. Token expirado
+  // 2. Expired token
   // eyJhbGciOiJIUzI1NiJ9.eyJ0ZW5hbnRJZCI6IjEiLCJpYXQiOjE1MDAwMDAwMDAsImV4cCI6MTUwMDAwMDAwMX0
   const expiredToken = 'eyJhbGciOiJIUzI1NiJ9.eyJ0ZW5hbnRJZCI6IjEiLCJpYXQiOjE1MDAwMDAwMDAsImV4cCI6MTUwMDAwMDAwMX0.AAAA';
   const expRes = await req('GET', '/barbers', null, { Authorization: `Bearer ${expiredToken}` });
   if (expRes.status === 401 || expRes.status === 403) {
-    pass('Token JWT expirado rejeitado');
+    pass('Expired JWT token rejected');
   } else {
-    fail('Token JWT expirado ACEITO', `HTTP ${expRes.status}`, 'CRITICAL');
+    fail('Expired JWT token ACCEPTED', `HTTP ${expRes.status}`, 'CRITICAL');
   }
 
-  // 3. Senha fraca aceita no registro
+  // 3. Weak password accepted at registration
   const weakPassRes = await req('POST', '/auth/register', {
-    name: 'Teste Fraco',
+    name: 'Weak Test',
     email: `weak${Date.now()}@gmail.com`,
     password: '123',
     phone: '+5511987654321',
     slug: `weak-${Date.now()}`,
   });
   if (isRateLimited(weakPassRes)) {
-    skip('Senha fraca "123" — rate limit ativo (429)', 'Re-execute em 15min ou em IP diferente');
+    skip('Weak password "123" — rate limit active (429)', 'Re-run in 15 min or from a different IP');
   } else if (weakPassRes.status === 400 || weakPassRes.status === 422) {
-    pass('Senha fraca "123" rejeitada no registro', `HTTP ${weakPassRes.status}`);
+    pass('Weak password "123" rejected at registration', `HTTP ${weakPassRes.status}`);
   } else {
-    fail('Senha fraca "123" aceita no registro', 'Implemente política mínima de senha (8+ chars, uppercase, número)', 'HIGH');
+    fail('Weak password "123" accepted at registration', 'Implement a minimum password policy (8+ chars, uppercase, number)', 'HIGH');
   }
 
-  // 4. Registro com email falso (domínio sem MX)
+  // 4. Registration with fake email (domain without MX)
   const fakeDomainRes = await req('POST', '/auth/register', {
     name: 'Fake Domain',
     email: `user@thisdomaindoesnotexist12345xyz.com`,
-    password: 'Senha@Forte1!',
+    password: 'Strong@Pass1!',
     phone: '+5511987654321',
     slug: `fake-${Date.now()}`,
   });
   if (isRateLimited(fakeDomainRes)) {
-    skip('Email com domínio sem MX — rate limit ativo (429)', 'Re-execute em 15min ou em IP diferente');
+    skip('Email with domain without MX — rate limit active (429)', 'Re-run in 15 min or from a different IP');
   } else if (fakeDomainRes.status === 400 || fakeDomainRes.status === 422) {
-    pass('Email com domínio sem MX rejeitado', `HTTP ${fakeDomainRes.status}`);
+    pass('Email with domain without MX rejected', `HTTP ${fakeDomainRes.status}`);
   } else {
-    warn('Email com domínio sem MX foi aceito', `HTTP ${fakeDomainRes.status} — verificar validators.ts`);
+    warn('Email with domain without MX was accepted', `HTTP ${fakeDomainRes.status} — check validators.ts`);
   }
 }
 
@@ -653,7 +653,7 @@ async function testAuthFailures() {
 async function testDataIntegrity() {
   section('A08 – Software & Data Integrity Failures (Mass Assignment)');
 
-  // Tentar injetar campos privilegiados no registro
+  // Try to inject privileged fields at registration
   const massAssignPayloads = [
     { role: 'ADMIN', isActive: true, isSuperAdmin: true },
     { tenantId: '00000000-0000-0000-0000-000000000000' },
@@ -665,22 +665,22 @@ async function testDataIntegrity() {
     const res = await req('POST', '/portal/test-tenant/register', {
       name: 'Mass Assign Test',
       email: `mass${Date.now()}@gmail.com`,
-      password: 'Senha@Forte1!',
+      password: 'Strong@Pass1!',
       ...extra,
     });
 
-    // Se retornou 201 com role=ADMIN, é vulnerável
+    // If it returned 201 with role=ADMIN, it is vulnerable
     if (res.status === 201) {
       const returnedRole = res.body?.user?.role || res.body?.client?.role;
       if (returnedRole === 'ADMIN' || res.body?.isSuperAdmin) {
-        fail('Mass Assignment: campo privilegiado injetado com sucesso', `role=${returnedRole}`, 'CRITICAL');
+        fail('Mass Assignment: privileged field successfully injected', `role=${returnedRole}`, 'CRITICAL');
       } else {
         blocked++;
-        pass(`Mass Assignment bloqueado: ${Object.keys(extra).join(', ')}`);
+        pass(`Mass Assignment blocked: ${Object.keys(extra).join(', ')}`);
       }
     } else {
       blocked++;
-      pass(`Mass Assignment rejeitado (${res.status}): ${Object.keys(extra).join(', ')}`);
+      pass(`Mass Assignment rejected (${res.status}): ${Object.keys(extra).join(', ')}`);
     }
   }
 }
@@ -699,12 +699,12 @@ async function testSSRF() {
     'http://0.0.0.0:80',
   ];
 
-  // Testar em campos que possam ser usados como URL (webhook, avatar, etc.)
+  // Test fields that may be used as URLs (webhook, avatar, etc.)
   for (const ssrfUrl of ssrfPayloads) {
     const res = await req('POST', '/auth/register', {
       name: 'SSRF Test',
       email: `ssrf${Date.now()}@gmail.com`,
-      password: 'Senha@Forte1!',
+      password: 'Strong@Pass1!',
       phone: '+5511987654321',
       slug: `ssrf-${Date.now()}`,
       webhookUrl: ssrfUrl,
@@ -713,15 +713,15 @@ async function testSSRF() {
     });
 
     if (res.raw && (res.raw.includes('root:') || res.raw.includes('ami-'))) {
-      fail(`SSRF bem-sucedido com payload: ${ssrfUrl}`, 'Servidor buscou URL interna', 'CRITICAL');
+      fail(`SSRF succeeded with payload: ${ssrfUrl}`, 'Server fetched internal URL', 'CRITICAL');
     } else {
-      pass(`SSRF bloqueado/ignorado: ${ssrfUrl.slice(0, 40)}`);
+      pass(`SSRF blocked/ignored: ${ssrfUrl.slice(0, 40)}`);
     }
   }
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// RELATÓRIO FINAL
+// FINAL REPORT
 // ═══════════════════════════════════════════════════════════════════════════════
 function printReport() {
   const total = passed + failed + warnings;
@@ -729,17 +729,17 @@ function printReport() {
 
   log('\n');
   log(`${colors.bold}${'═'.repeat(68)}${colors.reset}`);
-  log(`${colors.bold}  RELATÓRIO FINAL — SaaS Barber Security Audit${colors.reset}`);
+  log(`${colors.bold}  FINAL REPORT — SaaS Barber Security Audit${colors.reset}`);
   log(`${colors.bold}${'═'.repeat(68)}${colors.reset}`);
   log(`  Score: ${score >= 80 ? colors.green : score >= 60 ? colors.yellow : colors.red}${score}%${colors.reset}  |  ` +
-      `${colors.green}✔ ${passed} passaram${colors.reset}  |  ` +
-      `${colors.red}✖ ${failed} falharam${colors.reset}  |  ` +
-      `${colors.yellow}⚠ ${warnings} avisos${colors.reset}`);
+      `${colors.green}✔ ${passed} passed${colors.reset}  |  ` +
+      `${colors.red}✖ ${failed} failed${colors.reset}  |  ` +
+      `${colors.yellow}⚠ ${warnings} warnings${colors.reset}`);
   log('');
 
   const criticals = report.filter(r => r.severity === 'CRITICAL');
   if (criticals.length > 0) {
-    log(`  ${colors.magenta}${colors.bold}☠ CRÍTICOS (${criticals.length}):${colors.reset}`);
+    log(`  ${colors.magenta}${colors.bold}☠ CRITICAL (${criticals.length}):${colors.reset}`);
     criticals.forEach(r => log(`  ${colors.magenta}  • ${r.test}${colors.reset}`));
     log('');
   }
@@ -754,15 +754,15 @@ function printReport() {
   log(`${colors.bold}${'═'.repeat(68)}${colors.reset}`);
 
   if (score >= 90) {
-    log(`  ${colors.green}${colors.bold}🛡  Excelente! Sistema com boa postura de segurança.${colors.reset}`);
+    log(`  ${colors.green}${colors.bold}🛡  Excellent! The system has a good security posture.${colors.reset}`);
   } else if (score >= 70) {
-    log(`  ${colors.yellow}${colors.bold}⚠  Atenção: Há vulnerabilidades que precisam de correção.${colors.reset}`);
+    log(`  ${colors.yellow}${colors.bold}⚠  Warning: There are vulnerabilities that need fixing.${colors.reset}`);
   } else {
-    log(`  ${colors.red}${colors.bold}☠  Crítico: O sistema possui falhas sérias de segurança.${colors.reset}`);
+    log(`  ${colors.red}${colors.bold}☠  Critical: The system has serious security flaws.${colors.reset}`);
   }
   log(`${'─'.repeat(68)}`);
 
-  // Exit code non-zero se houver falhas críticas
+  // Non-zero exit code if there are critical failures
   if (criticals.length > 0) {
     process.exit(2);
   } else if (failed > 0) {
@@ -777,18 +777,18 @@ async function main() {
   log(`${colors.bold}${colors.cyan}╔══════════════════════════════════════════════════════════════════╗${colors.reset}`);
   log(`${colors.bold}${colors.cyan}║  SaaS Barber — Security Audit v2.0 (OWASP Top 10 + AI Vectors)  ║${colors.reset}`);
   log(`${colors.bold}${colors.cyan}╚══════════════════════════════════════════════════════════════════╝${colors.reset}`);
-  log(`  ${dim('Alvo: ' + BASE_URL)}`);
+  log(`  ${dim('Target: ' + BASE_URL)}`);
   log(`  ${dim('Timestamp: ' + new Date().toISOString())}`);
 
-  // Verificar se API está acessível
+  // Check whether the API is reachable
   // Health check is at /health (no /api prefix)
   const health = await reqRaw('GET', `${BASE_URL}/health`);
   if (health.status !== 200) {
-    log(`\n  ${colors.red}${colors.bold}ERRO: API não acessível em ${BASE_URL} (HTTP ${health.status || 'sem resposta'})${colors.reset}`);
-    log(`  Certifique-se de que o backend está rodando e tente novamente.\n`);
+    log(`\n  ${colors.red}${colors.bold}ERROR: API not reachable at ${BASE_URL} (HTTP ${health.status || 'no response'})${colors.reset}`);
+    log(`  Make sure the backend is running and try again.\n`);
     process.exit(1);
   }
-  pass('API acessível', `${BASE_URL} → HTTP 200`);
+  pass('API reachable', `${BASE_URL} → HTTP 200`);
 
   await setupTenants();
   await testBrokenAccessControl();
@@ -804,6 +804,6 @@ async function main() {
 }
 
 main().catch((e) => {
-  log(`\n${colors.red}Erro inesperado no script: ${e.message}${colors.reset}`);
+  log(`\n${colors.red}Unexpected script error: ${e.message}${colors.reset}`);
   process.exit(1);
 });

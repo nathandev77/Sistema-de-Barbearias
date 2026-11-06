@@ -23,12 +23,20 @@ import { Appointment, Sale, Barber, Expense, fetchApi } from "@/api/base44Client
 
 const PERIODOS = ["hoje", "semana", "mes", "mes-anterior", "3meses", "ano"];
 const PERIODO_LABELS = {
-  "hoje": "Hoje",
-  "semana": "Última Semana",
-  "mes": "Mês Atual",
-  "mes-anterior": "Mês Anterior",
-  "3meses": "Últimos 3 Meses",
-  "ano": "Este Ano"
+  "hoje": "Today",
+  "semana": "Last Week",
+  "mes": "Current Month",
+  "mes-anterior": "Previous Month",
+  "3meses": "Last 3 Months",
+  "ano": "This Year"
+};
+
+// Display labels for stored expense category values
+const CATEGORY_LABELS = {
+  "aluguel": "Rent",
+  "material": "Supplies / Product",
+  "utilidade": "Utilities",
+  "outro": "Other"
 };
 
 function periodoRange(p) {
@@ -97,7 +105,7 @@ export default function ControlePage() {
       let receitaProdutos = 0;
       let receitaPlanos = 0;
       let totalDespesas = 0;
-      let totalBarbeiros = 0; // Aproximação de comissão: 40% servicos
+      let totalBarbeiros = 0; // Commission approximation: 40% of services
 
       appointments.forEach(a => {
           if(a.status !== "concluido") return;
@@ -112,7 +120,7 @@ export default function ControlePage() {
           const d = new Date(s.date);
           if (d >= start && d <= end) {
               receitaProdutos += Number(s.total) || 0;
-              // Produto pode ter comissão, mas como não temos na Venda o %, vamos fixar 10% se houver vendedor
+              // Products may carry commission, but since the Sale has no %, we fix it at 10% if there is a seller
               if(s.barberName) {
                   totalBarbeiros += (Number(s.total) || 0) * 0.10;
               }
@@ -157,16 +165,16 @@ export default function ControlePage() {
   }, [expenses, start, end]);
 
   const composicao = [
-    { label: "Serviços", valor: fin.receitaServicos, tone: "sky" },
-    { label: "Produtos", valor: fin.receitaProdutos, tone: "violet" },
-    { label: "Planos", valor: fin.receitaPlanos, tone: "amber" },
+    { label: "Services", valor: fin.receitaServicos, tone: "sky" },
+    { label: "Products", valor: fin.receitaProdutos, tone: "violet" },
+    { label: "Plans", valor: fin.receitaPlanos, tone: "amber" },
   ];
 
   return (
     <PageShell>
       <PageHeader
-        title="Controle Geral"
-        subtitle="Lucro Líquido = Receitas Totais − Despesas − Total a pagar aos barbeiros."
+        title="General Overview"
+        subtitle="Net Profit = Total Revenue − Expenses − Total payable to barbers."
         actions={
           <Select value={periodo} onValueChange={setPeriodo}>
             <SelectTrigger className="h-10 w-[180px] rounded-full bg-card/70 border-border"><SelectValue /></SelectTrigger>
@@ -178,17 +186,17 @@ export default function ControlePage() {
       />
 
       <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 px-8 pb-6">
-        <StatCard label="Receita de serviços" value={formatBRL(fin.receitaServicos)} icon={DollarSign} tone="sky" />
-        <StatCard label="Receita de produtos" value={formatBRL(fin.receitaProdutos)} icon={ShoppingBag} tone="violet" />
-        <StatCard label="Receita de planos" value={formatBRL(fin.receitaPlanos)} icon={Star} tone="amber" />
-        <StatCard label="Despesas" value={formatBRL(fin.despesas)} icon={Receipt} tone="rose" />
-        <StatCard label="Total aos barbeiros" value={formatBRL(fin.totalBarbeiros)} icon={Wallet} tone="slate" />
-        <StatCard label="Lucro líquido" value={formatBRL(fin.lucro)} icon={TrendingUp} tone={fin.lucro >= 0 ? "emerald" : "rose"} />
+        <StatCard label="Service revenue" value={formatBRL(fin.receitaServicos)} icon={DollarSign} tone="sky" />
+        <StatCard label="Product revenue" value={formatBRL(fin.receitaProdutos)} icon={ShoppingBag} tone="violet" />
+        <StatCard label="Plan revenue" value={formatBRL(fin.receitaPlanos)} icon={Star} tone="amber" />
+        <StatCard label="Expenses" value={formatBRL(fin.despesas)} icon={Receipt} tone="rose" />
+        <StatCard label="Total to barbers" value={formatBRL(fin.totalBarbeiros)} icon={Wallet} tone="slate" />
+        <StatCard label="Net profit" value={formatBRL(fin.lucro)} icon={TrendingUp} tone={fin.lucro >= 0 ? "emerald" : "rose"} />
       </div>
 
       <div className="px-8 pb-16 space-y-4">
         <SectionCard>
-          <SectionHeader title="Composição da receita" right={<span className="text-sm text-muted-foreground font-medium">Total {formatBRL(fin.receitaTotal)}</span>} />
+          <SectionHeader title="Revenue breakdown" right={<span className="text-sm text-muted-foreground font-medium">Total {formatBRL(fin.receitaTotal)}</span>} />
           <div className="px-5 py-4 space-y-3">
             {composicao.map((c) => {
               const pct = fin.receitaTotal > 0 ? (c.valor / fin.receitaTotal) * 100 : 0;
@@ -214,30 +222,30 @@ export default function ControlePage() {
         <SectionCard>
           <div className="flex items-center justify-between p-5 border-b border-border/60">
             <h3 className="text-base font-semibold text-foreground tracking-tight flex items-center gap-2">
-              Despesas registradas no período
+              Expenses recorded in the period
               <span className="px-2 py-0.5 rounded-full bg-secondary text-muted-foreground text-xs font-bold">{despesasPeriodo.length}</span>
             </h3>
             <Button onClick={() => setOpen(true)} className="rounded-full h-8 px-4 gap-2 text-xs bg-primary hover:bg-primary/90">
-              <Plus className="h-3 w-3" /> Lançar despesa
+              <Plus className="h-3 w-3" /> Add expense
             </Button>
           </div>
           <DataTable
             widths={["16%", "40%", "18%", "16%", "10%"]}
-            head={<><Th>Data</Th><Th>Descrição</Th><Th>Categoria</Th><Th>Valor</Th><Th className="text-right">Ações</Th></>}
+            head={<><Th>Date</Th><Th>Description</Th><Th>Category</Th><Th>Amount</Th><Th className="text-right">Actions</Th></>}
           >
             {loading ? (
-                <EmptyRow colSpan={5} title="Carregando despesas..." />
+                <EmptyRow colSpan={5} title="Loading expenses..." />
             ) : despesasPeriodo.length === 0 ? (
-              <EmptyRow colSpan={5} title="Nenhuma despesa no período." hint="Use o botão acima para lançar contas pagas." />
+              <EmptyRow colSpan={5} title="No expenses in this period." hint="Use the button above to record paid bills." />
             ) : despesasPeriodo.map((e) => (
               <Row key={e.id}>
                 <Td className="text-muted-foreground tabular-nums truncate">{e.date ? new Date(e.date).toLocaleDateString('pt-BR') : "N/A"}</Td>
                 <Td className="font-medium truncate">{e.description}</Td>
-                <Td><Pill tone="slate">{e.category || "Outro"}</Pill></Td>
+                <Td><Pill tone="slate">{CATEGORY_LABELS[e.category] || e.category || "Other"}</Pill></Td>
                 <Td className="tabular-nums font-medium text-rose-400">{formatBRL(e.amount)}</Td>
                 <Td>
                   <div className="flex items-center justify-end">
-                    <IconBtn label="Excluir" danger onClick={() => setDeleteId(e.id)}><Trash2 className="h-4 w-4" /></IconBtn>
+                    <IconBtn label="Delete" danger onClick={() => setDeleteId(e.id)}><Trash2 className="h-4 w-4" /></IconBtn>
                   </div>
                 </Td>
               </Row>
@@ -251,11 +259,11 @@ export default function ControlePage() {
       <AlertDialog open={!!deleteId} onOpenChange={(o) => !o && setDeleteId(null)}>
         <AlertDialogContent className="bg-card border-border">
           <AlertDialogHeader>
-            <AlertDialogTitle>Excluir esta despesa?</AlertDialogTitle>
-            <AlertDialogDescription>Isso afetará o lucro do período.</AlertDialogDescription>
+            <AlertDialogTitle>Delete this expense?</AlertDialogTitle>
+            <AlertDialogDescription>This will affect the profit for the period.</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Voltar</AlertDialogCancel>
+            <AlertDialogCancel>Back</AlertDialogCancel>
             <AlertDialogAction onClick={async () => {
               if (deleteId) {
                 await Expense.delete(deleteId);
@@ -263,7 +271,7 @@ export default function ControlePage() {
               }
               setDeleteId(null);
             }} className="bg-destructive text-white hover:bg-destructive/90">
-              <Trash2 className="h-4 w-4" /> Excluir
+              <Trash2 className="h-4 w-4" /> Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -301,7 +309,7 @@ function DespesaForm({ open, onOpenChange, onSave }) {
         onOpenChange(false);
         onSave();
     } catch(err) {
-        alert("Erro ao salvar: " + err.message);
+        alert("Error saving: " + err.message);
     }
   };
 
@@ -309,34 +317,34 @@ function DespesaForm({ open, onOpenChange, onSave }) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="bg-card border-border max-w-lg p-0 gap-0 overflow-hidden">
         <DialogHeader className="px-6 py-5 border-b border-border/60 space-y-1">
-          <DialogTitle className="text-lg font-semibold tracking-tight">Lançar Despesa</DialogTitle>
-          <DialogDescription className="text-sm text-muted-foreground">Registre aluguel, conta de luz, materiais, etc.</DialogDescription>
+          <DialogTitle className="text-lg font-semibold tracking-tight">Add Expense</DialogTitle>
+          <DialogDescription className="text-sm text-muted-foreground">Record rent, electricity bill, supplies, etc.</DialogDescription>
         </DialogHeader>
         <form onSubmit={save}>
           <div className="px-6 py-5 space-y-4">
-            <FormField label="Descrição" required>
-              <Input value={descricao} onChange={(e) => setDescricao(e.target.value)} className="h-10 bg-background border-border" placeholder="Ex: Conta de Luz" />
+            <FormField label="Description" required>
+              <Input value={descricao} onChange={(e) => setDescricao(e.target.value)} className="h-10 bg-background border-border" placeholder="E.g.: Electricity Bill" />
             </FormField>
             
-            <FormField label="Categoria">
+            <FormField label="Category">
               <Select value={categoria} onValueChange={setCategoria}>
                 <SelectTrigger className="h-10 bg-background border-border"><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="aluguel">Aluguel</SelectItem>
-                  <SelectItem value="material">Material / Produto</SelectItem>
-                  <SelectItem value="utilidade">Conta (Luz, Água...)</SelectItem>
-                  <SelectItem value="outro">Outro</SelectItem>
+                  <SelectItem value="aluguel">{CATEGORY_LABELS.aluguel}</SelectItem>
+                  <SelectItem value="material">{CATEGORY_LABELS.material}</SelectItem>
+                  <SelectItem value="utilidade">Bill (Electricity, Water...)</SelectItem>
+                  <SelectItem value="outro">{CATEGORY_LABELS.outro}</SelectItem>
                 </SelectContent>
               </Select>
             </FormField>
 
-            <FormField label="Valor (R$)" required>
+            <FormField label="Amount (R$)" required>
               <Input type="number" step="0.01" value={valor} onChange={(e) => setValor(e.target.value)} className="h-10 bg-background border-border" />
             </FormField>
           </div>
           <div className="flex items-center justify-end gap-2 px-6 py-4 border-t border-border/60 bg-card/60">
-            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Voltar</Button>
-            <Button type="submit" className="bg-primary hover:bg-primary/90">Salvar Despesa</Button>
+            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Back</Button>
+            <Button type="submit" className="bg-primary hover:bg-primary/90">Save Expense</Button>
           </div>
         </form>
       </DialogContent>

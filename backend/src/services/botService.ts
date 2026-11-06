@@ -1,7 +1,7 @@
 import { prisma } from '../prisma';
 import { AppointmentService } from './appointmentService';
 
-// Helper: Sanitiza número de telefone do WhatsApp
+// Helper: Sanitizes a WhatsApp phone number
 const sanitizePhone = (phone: string): string => {
   return phone
     .split('@')[0]
@@ -9,7 +9,7 @@ const sanitizePhone = (phone: string): string => {
     .trim();
 };
 
-// Helper: Busca nome do contato na Evolution API pelo número de telefone
+// Helper: Fetches the contact name from the Evolution API by phone number
 const fetchContactName = async (phone: string, instanceName?: string): Promise<string> => {
   try {
     const EVOLUTION_URL = process.env.EVOLUTION_URL || 'https://controlbarber-evolution-api.mrsnvp.easypanel.host';
@@ -46,7 +46,7 @@ const fetchContactName = async (phone: string, instanceName?: string): Promise<s
 
 const getTenantBySlug = async (slug: string) => {
   const tenant = await prisma.tenant.findUnique({ where: { slug } });
-  if (!tenant) throw new Error('Barbearia não encontrada');
+  if (!tenant) throw new Error('Barbershop not found');
   return tenant;
 };
 
@@ -56,7 +56,7 @@ export class BotService {
     const tenant = await prisma.tenant.findFirst({
       where: { OR: [{ id: tenantId }, { slug: tenantId }] }
     });
-    if (!tenant) throw new Error('Barbearia não encontrada.');
+    if (!tenant) throw new Error('Barbershop not found.');
     
     const cleanPhone = sanitizePhone(phone);
     const resolvedName = name?.trim();
@@ -95,8 +95,8 @@ export class BotService {
       const slots = await AppointmentService.getAvailableSlots(barberId, date, tenant.id);
       return { date, availableSlots: slots };
     } else {
-      // Se não enviou barberId, não faz muito sentido no novo AppointmentService,
-      // mas vamos emular o comportamento anterior (buscando agendamentos globais)
+      // If no barberId was sent, it doesn't make much sense with the new AppointmentService,
+      // but we emulate the previous behavior (fetching global appointments)
       const appointments = await prisma.appointment.findMany({ where: { tenantId: tenant.id, date } });
       const bookedTimes = appointments.map(a => a.time);
 
@@ -145,7 +145,7 @@ export class BotService {
     const tenant = await prisma.tenant.findFirst({ 
       where: { OR: [{ id: data.tenantId }, { slug: data.tenantId }] } 
     });
-    if (!tenant) throw new Error('Barbearia não encontrada pelo ID ou Slug');
+    if (!tenant) throw new Error('Barbershop not found by ID or Slug');
 
     let finalServiceIds: string[] = [];
     if (data.serviceIds && data.serviceIds.length > 0) {
@@ -155,7 +155,7 @@ export class BotService {
     }
 
     if (finalServiceIds.length === 0) {
-      throw new Error('serviceId ou serviceIds é obrigatório.');
+      throw new Error('serviceId or serviceIds is required.');
     }
 
     const [services, barber] = await Promise.all([
@@ -164,7 +164,7 @@ export class BotService {
     ]);
 
     if (services.length === 0 || !barber) {
-      throw new Error('Serviço ou barbeiro inválidos para essa barbearia.');
+      throw new Error('Invalid service or barber for this barbershop.');
     }
     const validServiceIds = services.map(s => s.id);
 
@@ -180,7 +180,7 @@ export class BotService {
             create: { tenantId: tenant.id, phone: cleanPhone, name: resolvedClientName || 'Cliente WhatsApp' }
           });
         } else {
-          throw new Error('Cliente não encontrado. Por favor, reinicie a conversa.');
+          throw new Error('Client not found. Please restart the conversation.');
         }
       }
       
@@ -195,10 +195,10 @@ export class BotService {
         create: { tenantId: tenant.id, phone: cleanPhone, name: resolvedClientName || 'Cliente WhatsApp' }
       });
     } else {
-      throw new Error('É obrigatório informar o clientId ou o clientPhone');
+      throw new Error('Either clientId or clientPhone is required');
     }
 
-    // A lógica pesada foi extraída e unificada
+    // The heavy logic was extracted and unified
     const dailyAppointments = await prisma.appointment.count({
       where: {
         tenantId: tenant.id,
@@ -209,7 +209,7 @@ export class BotService {
     });
 
     if (dailyAppointments >= 1) {
-      throw new Error('Você já possui um agendamento marcado para este dia.');
+      throw new Error('You already have an appointment booked for this day.');
     }
 
     const slotTaken = await prisma.appointment.findFirst({
@@ -223,7 +223,7 @@ export class BotService {
     });
 
     if (slotTaken) {
-      throw new Error('Este horário não está mais disponível com este barbeiro.');
+      throw new Error('This time slot is no longer available with this barber.');
     }
 
     const activeSubscription = await prisma.subscription.findFirst({
@@ -238,11 +238,11 @@ export class BotService {
     });
 
     let finalPrice = services.reduce((acc: number, s: any) => acc + s.price, 0);
-    let appointmentNotes = 'Agendado via n8n/WhatsApp genérico';
+    let appointmentNotes = 'Booked via n8n/generic WhatsApp';
 
     if (activeSubscription) {
       finalPrice = 0;
-      appointmentNotes += ' (Pago via Plano)';
+      appointmentNotes += ' (Paid via Plan)';
       await prisma.subscription.update({
         where: { id: activeSubscription.id },
         data: { creditsLeft: activeSubscription.creditsLeft - 1 }

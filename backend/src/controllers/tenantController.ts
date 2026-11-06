@@ -12,7 +12,7 @@ export const getTenantSettings = async (req: Request, res: Response, next: NextF
     });
 
     if (!tenant) {
-      return res.status(404).json({ error: 'Tenant não encontrado' });
+      return res.status(404).json({ error: 'Tenant not found' });
     }
 
     res.json(tenant);
@@ -27,7 +27,7 @@ export const updateTenantSettings = async (req: Request, res: Response, next: Ne
     const { workingDays } = req.body;
 
     if (workingDays === undefined) {
-      return res.status(400).json({ error: 'workingDays é obrigatório' });
+      return res.status(400).json({ error: 'workingDays is required' });
     }
 
     const tenant = await prisma.tenant.update({

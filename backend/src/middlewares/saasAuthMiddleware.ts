@@ -18,25 +18,25 @@ export const saasAuthMiddleware = (req: Request, res: Response, next: NextFuncti
   const masterKey = req.headers['x-super-admin-key'];
 
   if (typeof masterKey !== 'string') {
-    res.status(401).json({ error: 'Não autorizado. Chave Mestra inválida ou ausente.' });
+    res.status(401).json({ error: 'Unauthorized. Master Key invalid or missing.' });
     return;
   }
 
-  // Permite uma ou múltiplas chaves separadas por vírgula em SUPER_ADMIN_KEYS ou SUPER_ADMIN_KEY
+  // Allows one or multiple comma-separated keys in SUPER_ADMIN_KEYS or SUPER_ADMIN_KEY
   const configuredKeys = (process.env.SUPER_ADMIN_KEYS || process.env.SUPER_ADMIN_KEY || '')
     .split(',')
     .map(k => k.trim())
     .filter(Boolean);
 
   if (configuredKeys.length === 0) {
-    res.status(500).json({ error: 'SUPER_ADMIN_KEY não configurada no servidor.' });
+    res.status(500).json({ error: 'SUPER_ADMIN_KEY is not configured on the server.' });
     return;
   }
 
   const isAuthorized = configuredKeys.some(key => safeKeyCompare(masterKey, key));
 
   if (!isAuthorized) {
-    res.status(401).json({ error: 'Não autorizado. Chave Mestra inválida.' });
+    res.status(401).json({ error: 'Unauthorized. Invalid Master Key.' });
     return;
   }
 

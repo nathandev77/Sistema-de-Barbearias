@@ -25,9 +25,9 @@ export function formatSmart(isoString) {
   try {
     const d = new Date(isoString);
     if (isNaN(d.getTime())) return isoString;
-    const date = d.toLocaleDateString("pt-BR", { day: "2-digit", month: "short" });
+    const date = d.toLocaleDateString("en-US", { day: "2-digit", month: "short" });
     const time = d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
-    return `${date} às ${time}`;
+    return `${date} at ${time}`;
   } catch (e) {
     return isoString;
   }

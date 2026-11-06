@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
-// Estende a interface Request do Express para incluir os dados do usuário autenticado
+// Extends Express's Request interface to include the authenticated user's data
 declare global {
   namespace Express {
     interface Request {
@@ -15,38 +15,38 @@ declare global {
 }
 
 export function requireAuth(req: Request, res: Response, next: NextFunction) {
-  // 1. Extrai o token do header
+  // 1. Extract the token from the header
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'Acesso negado. Token não fornecido ou inválido.' });
+    return res.status(401).json({ error: 'Access denied. Token missing or invalid.' });
   }
 
   const token = authHeader.split(' ')[1];
 
   try {
-    // 2. Verifica e decodifica o token usando a chave secreta do servidor
-    // Se o frontend tentar falsificar isso, o JWT vai falhar criptograficamente.
+    // 2. Verify and decode the token using the server's secret key
+    // If the frontend tries to forge this, the JWT will fail cryptographically.
     const secret = process.env.JWT_SECRET;
     if (!secret) {
-      return res.status(500).json({ error: 'Configuração interna inválida.' });
+      return res.status(500).json({ error: 'Invalid internal configuration.' });
     }
     const decoded = jwt.verify(token, secret) as { id: string; tenantId: string; role: string };
 
-    // 3. Injeta os dados seguros na requisição.
-    // NUNCA confiaremos no tenantId enviado no body da requisição,
-    // usaremos EXCLUSIVAMENTE este tenantId validado pelo token.
+    // 3. Inject the secure data into the request.
+    // We will NEVER trust the tenantId sent in the request body,
+    // we will use EXCLUSIVELY this tenantId validated by the token.
     req.user = decoded;
     
     next();
   } catch (error) {
-    return res.status(401).json({ error: 'Token expirado ou corrompido.' });
+    return res.status(401).json({ error: 'Token expired or corrupted.' });
   }
 }
 
 export function requireRole(allowedRoles: string[]) {
   return (req: Request, res: Response, next: NextFunction) => {
     if (!req.user || !allowedRoles.includes(req.user.role)) {
-      return res.status(403).json({ error: 'Permissão insuficiente para esta ação.' });
+      return res.status(403).json({ error: 'Insufficient permission for this action.' });
     }
     next();
   };

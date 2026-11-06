@@ -21,6 +21,9 @@ import {
 import { formatBRL, normalizeText } from "@/lib/formatters";
 import { Service } from "@/api/base44Client";
 
+// Display labels for stored category values (stored values stay in Portuguese)
+const CATEGORY_LABELS = { Cabelo: "Hair", Barba: "Beard", "Estética": "Aesthetics", Outros: "Other" };
+
 const EMPTY = {
   name: "", description: "", duration_minutes: 30, durationMinutes: 30, price: 0,
   category: "Cabelo", is_active: true
@@ -68,43 +71,43 @@ export default function ServicesPage() {
 
   return (
     <PageShell>
-      <PageHeader title="Serviços" subtitle="Cadastre e gerencie os serviços prestados pela barbearia." />
+      <PageHeader title="Services" subtitle="Add and manage the services offered by the barbershop." />
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 px-8 pb-6">
-        <StatCard label="Serviços" value={services.length} icon={Tag} tone="sky" />
-        <StatCard label="Ativos" value={ativos} icon={Power} tone="emerald" />
-        <StatCard label="Inclusos em planos" value={ativos} icon={Tag} tone="amber" />
-        <StatCard label="Ticket médio" value={formatBRL(ticketMedio)} icon={Tag} tone="violet" />
+        <StatCard label="Services" value={services.length} icon={Tag} tone="sky" />
+        <StatCard label="Active" value={ativos} icon={Power} tone="emerald" />
+        <StatCard label="Included in plans" value={ativos} icon={Tag} tone="amber" />
+        <StatCard label="Average ticket" value={formatBRL(ticketMedio)} icon={Tag} tone="violet" />
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-3 px-8 pb-6">
         <div className="flex flex-wrap items-center gap-3 flex-1 min-w-0">
-          <SearchInput value={search} onChange={setSearch} placeholder="Pesquisar serviço ou categoria" />
+          <SearchInput value={search} onChange={setSearch} placeholder="Search service or category" />
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger className="h-10 w-[160px] rounded-full bg-card/70 border-border"><SelectValue /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="todos">Todos os status</SelectItem>
-              <SelectItem value="Ativo">Ativos</SelectItem>
-              <SelectItem value="Inativo">Inativos</SelectItem>
+              <SelectItem value="todos">All statuses</SelectItem>
+              <SelectItem value="Ativo">Active</SelectItem>
+              <SelectItem value="Inativo">Inactive</SelectItem>
             </SelectContent>
           </Select>
         </div>
         <Button onClick={() => { setEditing(null); setOpen(true); }} className="rounded-full h-10 px-5 gap-2 bg-primary hover:bg-primary/90">
-          <Plus className="h-4 w-4" /> Novo serviço
+          <Plus className="h-4 w-4" /> New service
         </Button>
       </div>
 
       <div className="px-8 pb-16">
         <SectionCard>
-          <SectionHeader title="Serviços cadastrados" count={rows.length} />
+          <SectionHeader title="Registered services" count={rows.length} />
           <DataTable
             widths={["22%", "16%", "12%", "12%", "14%", "12%", "12%"]}
-            head={<><Th>Serviço</Th><Th>Categoria</Th><Th>Duração</Th><Th>Preço</Th><Th>Comissão</Th><Th>Status</Th><Th className="text-right">Ações</Th></>}
+            head={<><Th>Service</Th><Th>Category</Th><Th>Duration</Th><Th>Price</Th><Th>Commission</Th><Th>Status</Th><Th className="text-right">Actions</Th></>}
           >
             {loading ? (
-                <EmptyRow colSpan={7} title="Carregando serviços..." />
+                <EmptyRow colSpan={7} title="Loading services..." />
             ) : rows.length === 0 ? (
-              <EmptyRow colSpan={7} title="Nenhum serviço encontrado." hint="Cadastre um novo serviço para começar." />
+              <EmptyRow colSpan={7} title="No services found." hint="Add a new service to get started." />
             ) : rows.map((s) => {
               const duration = s.durationMinutes || s.duration_minutes || 30;
               const isActive = s.isActive !== false && s.is_active !== false;
@@ -116,15 +119,15 @@ export default function ServicesPage() {
                       {s.description && <span className="text-[11px] text-muted-foreground truncate">{s.description}</span>}
                     </div>
                   </Td>
-                  <Td className="text-muted-foreground truncate">{s.category || "Cabelo"}</Td>
+                  <Td className="text-muted-foreground truncate">{CATEGORY_LABELS[s.category || "Cabelo"] ?? s.category}</Td>
                   <Td className="tabular-nums font-medium">{duration} min</Td>
                   <Td className="tabular-nums font-semibold">{formatBRL(s.price)}</Td>
                   <Td className="text-muted-foreground tabular-nums">40%</Td> 
-                  <Td><Pill tone={isActive ? "emerald" : "slate"}>{isActive ? "Ativo" : "Inativo"}</Pill></Td>
+                  <Td><Pill tone={isActive ? "emerald" : "slate"}>{isActive ? "Active" : "Inactive"}</Pill></Td>
                   <Td>
                     <div className="flex items-center justify-end gap-1">
-                      <IconBtn label="Editar" onClick={() => { setEditing(s); setOpen(true); }}><Pencil className="h-4 w-4" /></IconBtn>
-                      <IconBtn label="Excluir" danger onClick={() => setDeleteId(s.id)}><Trash2 className="h-4 w-4" /></IconBtn>
+                      <IconBtn label="Edit" onClick={() => { setEditing(s); setOpen(true); }}><Pencil className="h-4 w-4" /></IconBtn>
+                      <IconBtn label="Delete" danger onClick={() => setDeleteId(s.id)}><Trash2 className="h-4 w-4" /></IconBtn>
                     </div>
                   </Td>
                 </Row>
@@ -139,11 +142,11 @@ export default function ServicesPage() {
       <AlertDialog open={!!deleteId} onOpenChange={(o) => !o && setDeleteId(null)}>
         <AlertDialogContent className="bg-card border-border">
           <AlertDialogHeader>
-            <AlertDialogTitle>Excluir este serviço?</AlertDialogTitle>
-            <AlertDialogDescription>O histórico de atendimentos e planos existentes não serão afetados, mas o serviço deixará de estar disponível para novos agendamentos.</AlertDialogDescription>
+            <AlertDialogTitle>Delete this service?</AlertDialogTitle>
+            <AlertDialogDescription>Existing service history and plans will not be affected, but the service will no longer be available for new appointments.</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Voltar</AlertDialogCancel>
+            <AlertDialogCancel>Back</AlertDialogCancel>
             <AlertDialogAction onClick={async () => {
               if (deleteId) {
                 await Service.delete(deleteId);
@@ -151,7 +154,7 @@ export default function ServicesPage() {
               }
               setDeleteId(null);
             }} className="bg-destructive text-white hover:bg-destructive/90">
-              <Trash2 className="h-4 w-4" /> Excluir
+              <Trash2 className="h-4 w-4" /> Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -199,7 +202,7 @@ function ServiceForm({ open, onOpenChange, service, onSave }) {
       onOpenChange(false);
       onSave();
     } catch(err) {
-      alert("Erro ao salvar serviço: " + err.message);
+      alert("Error saving service: " + err.message);
     }
   };
 
@@ -207,48 +210,48 @@ function ServiceForm({ open, onOpenChange, service, onSave }) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="bg-card border-border max-w-2xl p-0 gap-0 overflow-hidden">
         <DialogHeader className="px-6 py-5 border-b border-border/60 space-y-1">
-          <DialogTitle className="text-lg font-semibold tracking-tight">{service ? "Editar serviço" : "Novo serviço"}</DialogTitle>
-          <DialogDescription className="text-sm text-muted-foreground">Serviços podem ser agendados e incluídos em planos.</DialogDescription>
+          <DialogTitle className="text-lg font-semibold tracking-tight">{service ? "Edit service" : "New service"}</DialogTitle>
+          <DialogDescription className="text-sm text-muted-foreground">Services can be booked and included in plans.</DialogDescription>
         </DialogHeader>
         <div className="px-6 py-5 grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-[70vh] overflow-y-auto">
-          <FormField label="Nome do serviço" required>
+          <FormField label="Service name" required>
             <Input value={form.name} onChange={(e) => set({ name: e.target.value })} className="h-10 bg-background border-border" />
           </FormField>
-          <FormField label="Categoria">
+          <FormField label="Category">
             <Select value={form.category} onValueChange={(v) => set({ category: v })}>
               <SelectTrigger className="h-10 bg-background border-border"><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="Cabelo">Cabelo</SelectItem>
-                <SelectItem value="Barba">Barba</SelectItem>
-                <SelectItem value="Estética">Estética</SelectItem>
-                <SelectItem value="Outros">Outros</SelectItem>
+                <SelectItem value="Cabelo">Hair</SelectItem>
+                <SelectItem value="Barba">Beard</SelectItem>
+                <SelectItem value="Estética">Aesthetics</SelectItem>
+                <SelectItem value="Outros">Other</SelectItem>
               </SelectContent>
             </Select>
           </FormField>
           <div className="sm:col-span-2">
-            <FormField label="Descrição (opcional)">
+            <FormField label="Description (optional)">
               <Textarea value={form.description} onChange={(e) => set({ description: e.target.value })} rows={2} className="bg-background border-border resize-none" />
             </FormField>
           </div>
-          <FormField label="Duração (minutos)">
+          <FormField label="Duration (minutes)">
             <Input type="number" step="5" value={form.duration_minutes} onChange={(e) => set({ duration_minutes: e.target.value })} className="h-10 bg-background border-border" />
           </FormField>
-          <FormField label="Preço base (R$)">
+          <FormField label="Base price (R$)">
             <Input type="number" value={form.price} onChange={(e) => set({ price: e.target.value })} className="h-10 bg-background border-border" />
           </FormField>
           <FormField label="Status">
             <Select value={form.is_active ? "Ativo" : "Inativo"} onValueChange={(v) => set({ is_active: v === "Ativo" })}>
               <SelectTrigger className="h-10 bg-background border-border"><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="Ativo">Ativo</SelectItem>
-                <SelectItem value="Inativo">Inativo</SelectItem>
+                <SelectItem value="Ativo">Active</SelectItem>
+                <SelectItem value="Inativo">Inactive</SelectItem>
               </SelectContent>
             </Select>
           </FormField>
         </div>
         <div className="flex items-center justify-end gap-2 px-6 py-4 border-t border-border/60 bg-card/60">
-          <Button variant="ghost" onClick={() => onOpenChange(false)}>Voltar</Button>
-          <Button onClick={save} className="bg-primary hover:bg-primary/90">Salvar</Button>
+          <Button variant="ghost" onClick={() => onOpenChange(false)}>Back</Button>
+          <Button onClick={save} className="bg-primary hover:bg-primary/90">Save</Button>
         </div>
       </DialogContent>
     </Dialog>

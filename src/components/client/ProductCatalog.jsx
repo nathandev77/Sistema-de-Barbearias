@@ -22,7 +22,7 @@ export default function ProductCatalog() {
     };
 
     const load = () => Product.list({ is_active: true }).then(prods => {
-        // Remove o produto oculto usado para registrar vendas de planos
+        // Remove the hidden product used to record plan sales
         setProducts(prods.filter(p => p.name !== 'Assinatura de Plano'));
     });
 
@@ -49,15 +49,15 @@ export default function ProductCatalog() {
             });
             setIsConfirmOpen(false);
             toast({
-                title: 'Reserva Realizada!',
-                description: `Sua solicitação de ${selectedProduct.selectedQty}x ${selectedProduct.name} foi enviada para a barbearia.`,
+                title: 'Reservation Made!',
+                description: `Your request for ${selectedProduct.selectedQty}x ${selectedProduct.name} has been sent to the barbershop.`,
             });
-            await load(); // Atualiza estoque na tela
+            await load(); // Refresh stock on screen
             setQuantities(prev => ({ ...prev, [selectedProduct.id]: 1 }));
         } catch (e) {
             toast({
-                title: 'Erro ao reservar',
-                description: 'Tente novamente mais tarde. ' + (e.message || ''),
+                title: 'Error making reservation',
+                description: 'Please try again later. ' + (e.message || ''),
                 variant: 'destructive',
             });
         } finally {
@@ -74,7 +74,7 @@ export default function ProductCatalog() {
             borderRadius: 24,
             padding: '32px',
         }}>
-            <h2 style={{ fontSize: 20, fontWeight: 700, color: '#fff', marginBottom: 24 }}>Produtos Disponíveis</h2>
+            <h2 style={{ fontSize: 20, fontWeight: 700, color: '#fff', marginBottom: 24 }}>Available Products</h2>
             
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 16 }}>
                 {products.map(p => (
@@ -91,7 +91,7 @@ export default function ProductCatalog() {
                                 R$ {p.price.toFixed(2)}
                             </div>
                             <div style={{ fontSize: 12, color: 'hsl(220 10% 50%)', marginTop: 4 }}>
-                                {p.stock > 0 ? `${p.stock} em estoque` : 'Sem estoque'}
+                                {p.stock > 0 ? `${p.stock} in stock` : 'Out of stock'}
                             </div>
                         </div>
 
@@ -113,7 +113,7 @@ export default function ProductCatalog() {
                                 cursor: p.stock > 0 ? 'pointer' : 'not-allowed', fontWeight: 600 
                             }}
                         >
-                            Solicitar Reserva
+                            Request Reservation
                         </button>
                     </div>
                 ))}
@@ -123,10 +123,10 @@ export default function ProductCatalog() {
                 open={isConfirmOpen}
                 onOpenChange={(v) => !loading && setIsConfirmOpen(v)}
                 onConfirm={confirmReservation}
-                title="Confirmar Reserva"
-                description={`Você deseja reservar ${selectedProduct?.selectedQty}x "${selectedProduct?.name}" por R$ ${(selectedProduct?.price * selectedProduct?.selectedQty || 0).toFixed(2)}? O pagamento será feito na barbearia e o produto já ficará separado para você.`}
-                confirmText={loading ? 'Reservando...' : 'Sim, Reservar'}
-                cancelText="Cancelar"
+                title="Confirm Reservation"
+                description={`Do you want to reserve ${selectedProduct?.selectedQty}x "${selectedProduct?.name}" for R$ ${(selectedProduct?.price * selectedProduct?.selectedQty || 0).toFixed(2)}? Payment will be made at the barbershop and the product will be set aside for you.`}
+                confirmText={loading ? 'Reserving...' : 'Yes, Reserve'}
+                cancelText="Cancel"
             />
         </div>
     );

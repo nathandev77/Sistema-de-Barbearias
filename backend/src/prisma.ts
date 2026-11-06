@@ -5,7 +5,7 @@ import { PrismaClient } from '@prisma/client';
 
 const connectionString = process.env.DATABASE_URL;
 
-// Criando o Pool de Conexões do Node (otimizado para o Supabase Pooler)
+// Creating the Node Connection Pool (optimized for the Supabase Pooler)
 const pool = new Pool({
   connectionString,
   max: 10,
@@ -18,8 +18,8 @@ pool.on('error', (err) => {
   console.error('[DATABASE POOL ERROR]:', err.message);
 });
 
-// Usando o Driver Nativo do Postgres (Mais leve e seguro no Prisma 7+)
+// Using the Native Postgres Driver (lighter and safer in Prisma 7+)
 const adapter = new PrismaPg(pool);
 
-// Exportando uma instância única (Singleton) do Prisma Client
+// Exporting a single (Singleton) Prisma Client instance
 export const prisma = new PrismaClient({ adapter });

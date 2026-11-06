@@ -2,36 +2,36 @@ import 'dotenv/config';
 import { prisma } from '../src/prisma';
 
 async function wipeData() {
-  console.log('Iniciando limpeza de dados de teste...');
+  console.log('Starting test data cleanup...');
   try {
-    // Apaga tabelas transacionais e operacionais
-    // Por conta do onDelete: Cascade configurado no schema, se a gente quisesse apagar tenants apagaria tudo,
-    // mas queremos manter os Tenants e Users.
+    // Delete transactional and operational tables
+    // Because of the onDelete: Cascade configured in the schema, deleting tenants would delete everything,
+    // but we want to keep the Tenants and Users.
     
     await prisma.appointment.deleteMany();
-    console.log('- Appointments apagados');
+    console.log('- Appointments deleted');
     
     await prisma.sale.deleteMany();
-    console.log('- Sales apagados');
+    console.log('- Sales deleted');
     
     await prisma.expense.deleteMany();
-    console.log('- Expenses apagados');
+    console.log('- Expenses deleted');
     
     await prisma.product.deleteMany();
-    console.log('- Products apagados');
+    console.log('- Products deleted');
     
     await prisma.client.deleteMany();
-    console.log('- Clients apagados');
+    console.log('- Clients deleted');
     
     await prisma.service.deleteMany();
-    console.log('- Services apagados');
+    console.log('- Services deleted');
     
     await prisma.barber.deleteMany();
-    console.log('- Barbers apagados');
+    console.log('- Barbers deleted');
 
-    console.log('✅ Banco de dados limpo com sucesso! (Tenants e Users preservados)');
+    console.log('✅ Database cleaned successfully! (Tenants and Users preserved)');
   } catch (error) {
-    console.error('Erro ao limpar banco de dados:', error);
+    console.error('Error cleaning database:', error);
   } finally {
     await prisma.$disconnect();
   }

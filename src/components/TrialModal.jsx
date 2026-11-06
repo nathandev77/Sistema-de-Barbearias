@@ -26,10 +26,10 @@ export default function TrialModal({ isOpen, onClose, initialBarbershopName = ''
 
         try {
             if (!barbershopName.trim() || barbershopName.trim().length < 2) {
-                throw new Error('Informe o nome da sua barbearia (mínimo 2 caracteres).');
+                throw new Error('Enter your barbershop name (minimum 2 characters).');
             }
             if (!email.trim() || !email.includes('@')) {
-                throw new Error('Informe um e-mail válido para receber os dados de acesso.');
+                throw new Error('Enter a valid email to receive your access details.');
             }
 
             const response = await auth.registerTrial({
@@ -40,7 +40,7 @@ export default function TrialModal({ isOpen, onClose, initialBarbershopName = ''
 
             setSuccessData(response);
         } catch (err) {
-            setError(err.message || 'Erro ao gerar teste grátis. Tente novamente.');
+            setError(err.message || 'Error creating free trial. Please try again.');
         } finally {
             setLoading(false);
         }
@@ -93,23 +93,23 @@ export default function TrialModal({ isOpen, onClose, initialBarbershopName = ''
                                 </div>
                                 <div>
                                     <span className="inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-primary bg-primary/10 px-2.5 py-0.5 rounded-full mb-1">
-                                        <Sparkles className="w-3 h-3" /> Teste 100% Grátis (4 Dias)
+                                        <Sparkles className="w-3 h-3" /> 100% Free Trial (4 Days)
                                     </span>
                                     <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-                                        Criar Acesso da Barbearia
+                                        Create Barbershop Access
                                     </h3>
                                 </div>
                             </div>
 
                             <p className="text-xs sm:text-sm text-gray-400 mb-6 leading-relaxed">
-                                Preencha o nome da sua barbearia e seu e-mail. Vamos gerar sua conta e enviar a <strong>senha provisória de acesso</strong> diretamente no seu e-mail.
+                                Enter your barbershop name and your email. We'll create your account and send the <strong>temporary access password</strong> straight to your email.
                             </p>
 
                             <form onSubmit={handleSubmit} className="space-y-4">
-                                {/* Nome da Barbearia */}
+                                {/* Barbershop Name */}
                                 <div>
                                     <label className="block text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-1.5">
-                                        Nome da Barbearia *
+                                        Barbershop Name *
                                     </label>
                                     <div className="relative">
                                         <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
@@ -120,7 +120,7 @@ export default function TrialModal({ isOpen, onClose, initialBarbershopName = ''
                                             required
                                             value={barbershopName}
                                             onChange={(e) => setBarbershopName(e.target.value)}
-                                            placeholder="Ex: Barbearia Estilo & Corte"
+                                            placeholder="e.g. Style & Cut Barbershop"
                                             className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white text-sm placeholder:text-gray-500 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                                         />
                                     </div>
@@ -129,7 +129,7 @@ export default function TrialModal({ isOpen, onClose, initialBarbershopName = ''
                                 {/* E-mail */}
                                 <div>
                                     <label className="block text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-1.5">
-                                        Seu Melhor E-mail *
+                                        Your Best Email *
                                     </label>
                                     <div className="relative">
                                         <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
@@ -140,19 +140,19 @@ export default function TrialModal({ isOpen, onClose, initialBarbershopName = ''
                                             required
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
-                                            placeholder="Ex: seuemail@gmail.com"
+                                            placeholder="e.g. youremail@gmail.com"
                                             className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white text-sm placeholder:text-gray-500 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                                         />
                                     </div>
                                     <p className="text-[11px] text-gray-400 mt-1">
-                                        Enviaremos seu acesso e senha para este e-mail.
+                                        We'll send your login and password to this email.
                                     </p>
                                 </div>
 
-                                {/* WhatsApp (Opcional) */}
+                                {/* WhatsApp (Optional) */}
                                 <div>
                                     <label className="block text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-1.5">
-                                        WhatsApp / Celular <span className="text-gray-400 font-normal">(Opcional)</span>
+                                        WhatsApp / Mobile <span className="text-gray-400 font-normal">(Optional)</span>
                                     </label>
                                     <div className="relative">
                                         <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
@@ -162,7 +162,7 @@ export default function TrialModal({ isOpen, onClose, initialBarbershopName = ''
                                             type="text"
                                             value={phone}
                                             onChange={(e) => setPhone(e.target.value)}
-                                            placeholder="Ex: (11) 98765-4321"
+                                            placeholder="e.g. (11) 98765-4321"
                                             className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white text-sm placeholder:text-gray-500 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                                         />
                                     </div>
@@ -172,7 +172,7 @@ export default function TrialModal({ isOpen, onClose, initialBarbershopName = ''
                                 <div className="flex items-start gap-2.5 p-3 rounded-xl bg-blue-950/40 border border-blue-500/20 text-xs text-blue-200">
                                     <ShieldCheck className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                                     <span>
-                                        <strong>Primeiro Acesso Seguro:</strong> Por segurança, no primeiro login será obrigatório trocar a senha temporária por uma nova senha sua.
+                                        <strong>Secure First Access:</strong> For security, on your first login you'll be required to replace the temporary password with a new password of your own.
                                     </span>
                                 </div>
 
@@ -193,11 +193,11 @@ export default function TrialModal({ isOpen, onClose, initialBarbershopName = ''
                                     {loading ? (
                                         <>
                                             <Loader2 className="w-4 h-4 animate-spin" />
-                                            Criando barbearia e enviando e-mail...
+                                            Creating barbershop and sending email...
                                         </>
                                     ) : (
                                         <>
-                                            <span>Receber Acesso por E-mail</span>
+                                            <span>Get Access by Email</span>
                                             <ArrowRight className="w-4 h-4" />
                                         </>
                                     )}
@@ -212,11 +212,11 @@ export default function TrialModal({ isOpen, onClose, initialBarbershopName = ''
                             </div>
 
                             <h3 className="text-2xl font-extrabold text-white tracking-tight mb-2">
-                                Barbearia Cadastrada! 🎉
+                                Barbershop Registered! 🎉
                             </h3>
 
                             <p className="text-sm text-gray-300 mb-6 leading-relaxed">
-                                Enviamos seus dados de login e a senha temporária para o e-mail:
+                                We've sent your login details and temporary password to:
                                 <br />
                                 <strong className="text-primary font-mono">{successData.email}</strong>
                             </p>
@@ -224,20 +224,20 @@ export default function TrialModal({ isOpen, onClose, initialBarbershopName = ''
                             {/* Credentials Card Summary */}
                             <div className="bg-black/50 border border-white/10 rounded-2xl p-4 text-left space-y-3 mb-6">
                                 <div className="flex justify-between items-center text-xs">
-                                    <span className="text-gray-400">Barbearia:</span>
+                                    <span className="text-gray-400">Barbershop:</span>
                                     <span className="text-white font-bold">{successData.barbershopName}</span>
                                 </div>
                                 <div className="flex justify-between items-center text-xs">
-                                    <span className="text-gray-400">Link Público:</span>
+                                    <span className="text-gray-400">Public Link:</span>
                                     <span className="text-primary font-mono text-[11px]">controlbarber.online/{successData.slug}</span>
                                 </div>
                                 <div className="flex justify-between items-center text-xs">
-                                    <span className="text-gray-400">Período Grátis:</span>
-                                    <span className="text-green-400 font-semibold">4 dias liberados</span>
+                                    <span className="text-gray-400">Free Period:</span>
+                                    <span className="text-green-400 font-semibold">4 days unlocked</span>
                                 </div>
                                 <div className="pt-2.5 border-t border-white/5 flex items-center gap-2 text-xs text-blue-300">
                                     <Mail className="w-4 h-4 text-primary shrink-0" />
-                                    <span>Sua <strong>senha provisória</strong> foi enviada para sua caixa de entrada.</span>
+                                    <span>Your <strong>temporary password</strong> has been sent to your inbox.</span>
                                 </div>
                             </div>
 
@@ -245,7 +245,7 @@ export default function TrialModal({ isOpen, onClose, initialBarbershopName = ''
                             <div className="p-3 bg-yellow-950/30 border border-yellow-500/20 rounded-xl text-yellow-200/90 text-xs text-left mb-6 flex items-start gap-2">
                                 <Lock className="w-4 h-4 text-yellow-400 shrink-0 mt-0.5" />
                                 <span>
-                                    <strong>Importante:</strong> Abra seu e-mail, copie a senha provisória e acesse o sistema. No primeiro login, você criará sua <strong>nova senha definitiva</strong>.
+                                    <strong>Important:</strong> Open your email, copy the temporary password and sign in. On your first login, you'll create your <strong>new permanent password</strong>.
                                 </span>
                             </div>
 
@@ -253,7 +253,7 @@ export default function TrialModal({ isOpen, onClose, initialBarbershopName = ''
                                 onClick={handleGoToLogin}
                                 className="w-full py-3.5 px-6 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-sm shadow-xl shadow-primary/30 flex items-center justify-center gap-2 transition-all transform hover:-translate-y-0.5"
                             >
-                                <span>Ir para o Login da Barbearia</span>
+                                <span>Go to Barbershop Login</span>
                                 <ArrowRight className="w-4 h-4" />
                             </button>
                         </div>

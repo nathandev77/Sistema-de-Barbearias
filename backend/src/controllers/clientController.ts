@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { prisma } from '../prisma';
 
 const clientSchema = z.object({
-  name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres."),
+  name: z.string().min(2, "Name must be at least 2 characters."),
   phone: z.string().optional(),
   email: z.string().email().optional().or(z.literal('')),
   notes: z.string().optional()
@@ -32,7 +32,7 @@ export const updateClient = async (req: Request, res: Response, next: NextFuncti
   try {
     const data = clientSchema.partial().parse(req.body);
     const client = await prisma.client.findFirst({ where: { id: req.params.id as string, tenantId: req.user!.tenantId } });
-    if (!client) return res.status(404).json({ error: 'Cliente não encontrado.' });
+    if (!client) return res.status(404).json({ error: 'Client not found.' });
     const updated = await prisma.client.update({ where: { id: req.params.id as string }, data });
     res.json(updated);
   } catch (error) { next(error); }
@@ -41,9 +41,9 @@ export const updateClient = async (req: Request, res: Response, next: NextFuncti
 export const deleteClient = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const client = await prisma.client.findFirst({ where: { id: req.params.id as string, tenantId: req.user!.tenantId } });
-    if (!client) return res.status(404).json({ error: 'Cliente não encontrado.' });
+    if (!client) return res.status(404).json({ error: 'Client not found.' });
     
-    // Excluir registros relacionados para não dar erro de restrição de chave estrangeira
+    // Delete related records to avoid a foreign key constraint error
     await prisma.appointment.deleteMany({ where: { clientId: client.id } });
     await prisma.subscription.deleteMany({ where: { clientId: client.id } });
     await prisma.productReservation.deleteMany({ where: { clientId: client.id } });

@@ -4,26 +4,26 @@ import rateLimit from 'express-rate-limit';
 
 const router = Router();
 
-// Rate limit específico para registro (anti-spam de criação de tenants)
+// Specific rate limit for registration (anti-spam for tenant creation)
 const registerLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hora
+  windowMs: 60 * 60 * 1000, // 1 hour
   max: 15,
-  message: 'Muitos cadastros deste IP. Aguarde alguns instantes.',
+  message: 'Too many sign-ups from this IP. Please wait a moment.',
   standardHeaders: true,
   legacyHeaders: false,
 });
 
-// Rota de Início Rápido de Teste Grátis (Nome da Barbearia + Email)
+// Free Trial Quick Start route (Barbershop Name + Email)
 router.post('/register-trial', registerLimiter, registerTrial);
 router.post('/trial-register', registerLimiter, registerTrial);
 
-// Rota para troca de senha obrigatória no primeiro acesso
+// Route for the mandatory password change on first access
 router.post('/first-access-password', firstAccessChangePassword);
 
-// Rota para uma nova Barbearia se cadastrar no SaaS (completo)
+// Route for a new Barbershop to sign up for the SaaS (full)
 router.post('/register', registerLimiter, registerTenant);
 
-// Rota pública para buscar dados de uma barbearia pelo slug (usada pelo portal do cliente)
+// Public route to fetch a barbershop's data by slug (used by the client portal)
 router.get('/tenant/:slug', async (req, res, next) => {
   try {
     const { prisma } = await import('../prisma');
@@ -31,15 +31,15 @@ router.get('/tenant/:slug', async (req, res, next) => {
       where: { slug: req.params.slug },
       select: { id: true, name: true, slug: true, isActive: true }
     });
-    if (!tenant) return res.status(404).json({ error: 'Barbearia não encontrada.' });
-    if (!tenant.isActive) return res.status(403).json({ error: 'Barbearia inativa.' });
+    if (!tenant) return res.status(404).json({ error: 'Barbershop not found.' });
+    if (!tenant.isActive) return res.status(403).json({ error: 'Barbershop inactive.' });
     res.json(tenant);
   } catch (error) {
     next(error);
   }
 });
 
-// Rota de Login para os usuários acessarem o sistema
+// Login route for users to access the system
 router.post('/login', login);
 
 export default router;

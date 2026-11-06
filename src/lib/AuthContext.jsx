@@ -12,7 +12,7 @@ export function AuthProvider({ children }) {
     useEffect(() => {
         const initialize = async () => {
             try {
-                // Simula carregamento de configurações públicas
+                // Simulate loading public settings
                 await new Promise(res => setTimeout(res, 200));
                 setIsLoadingPublicSettings(false);
 
